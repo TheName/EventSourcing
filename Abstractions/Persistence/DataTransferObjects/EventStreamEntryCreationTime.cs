@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.Abstractions.Persistence.DataTransferObjects
 {
     /// <summary>
     /// The event stream entry creation time value object.

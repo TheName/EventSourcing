@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.Abstractions.Persistence.DataTransferObjects
 {
     /// <summary>
     /// The event stream entries; represents a entries in an event stream;

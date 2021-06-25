@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EventSourcing.Abstractions.ValueObjects;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.Abstractions.Persistence.DataTransferObjects
 {
     /// <summary>
     /// The event stream entry; represents a single entry in an event stream.

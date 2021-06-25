@@ -1,4 +1,5 @@
 ﻿using System;
+using EventSourcing.Abstractions.Persistence.DataTransferObjects;
 using EventSourcing.Abstractions.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
@@ -11,7 +12,7 @@ namespace Abstractions.UnitTests.ValueObjects
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullCausationId(
             EventStreamEntryCreationTime creationTime,
-            CorrelationId correlationId)
+            EventStreamEntryCorrelationId correlationId)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
                 null,
@@ -22,8 +23,8 @@ namespace Abstractions.UnitTests.ValueObjects
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullCreationTime(
-            CausationId causationId,
-            CorrelationId correlationId)
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCorrelationId correlationId)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
                 causationId,
@@ -34,7 +35,7 @@ namespace Abstractions.UnitTests.ValueObjects
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullCorrelationId(
-            CausationId causationId,
+            EventStreamEntryCausationId causationId,
             EventStreamEntryCreationTime creationTime)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
@@ -46,9 +47,9 @@ namespace Abstractions.UnitTests.ValueObjects
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNonNullValues(
-            CausationId causationId,
+            EventStreamEntryCausationId causationId,
             EventStreamEntryCreationTime creationTime,
-            CorrelationId correlationId)
+            EventStreamEntryCorrelationId correlationId)
         {
             var _ = new EventStreamEntryMetadata(
                 causationId,
@@ -59,9 +60,9 @@ namespace Abstractions.UnitTests.ValueObjects
         [Theory]
         [AutoMoqData]
         public void ReturnTrue_When_ComparingDifferentObjectsWithSameValues(
-            CausationId causationId,
+            EventStreamEntryCausationId causationId,
             EventStreamEntryCreationTime creationTime,
-            CorrelationId correlationId)
+            EventStreamEntryCorrelationId correlationId)
         {
             var metadata1 = new EventStreamEntryMetadata(
                 causationId,
@@ -81,10 +82,10 @@ namespace Abstractions.UnitTests.ValueObjects
         [Theory]
         [AutoMoqData]
         public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentCausationId(
-            CausationId causationId1,
-            CausationId causationId2,
+            EventStreamEntryCausationId causationId1,
+            EventStreamEntryCausationId causationId2,
             EventStreamEntryCreationTime creationTime,
-            CorrelationId correlationId)
+            EventStreamEntryCorrelationId correlationId)
         {
             var metadata1 = new EventStreamEntryMetadata(
                 causationId1,
@@ -104,10 +105,10 @@ namespace Abstractions.UnitTests.ValueObjects
         [Theory]
         [AutoMoqData]
         public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentCreationTime(
-            CausationId causationId,
+            EventStreamEntryCausationId causationId,
             EventStreamEntryCreationTime creationTime1,
             EventStreamEntryCreationTime creationTime2,
-            CorrelationId correlationId)
+            EventStreamEntryCorrelationId correlationId)
         {
             var metadata1 = new EventStreamEntryMetadata(
                 causationId,
@@ -127,10 +128,10 @@ namespace Abstractions.UnitTests.ValueObjects
         [Theory]
         [AutoMoqData]
         public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentCorrelationId(
-            CausationId causationId,
+            EventStreamEntryCausationId causationId,
             EventStreamEntryCreationTime creationTime,
-            CorrelationId correlationId1,
-            CorrelationId correlationId2)
+            EventStreamEntryCorrelationId correlationId1,
+            EventStreamEntryCorrelationId correlationId2)
         {
             var metadata1 = new EventStreamEntryMetadata(
                 causationId,

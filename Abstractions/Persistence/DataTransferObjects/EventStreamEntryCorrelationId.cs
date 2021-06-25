@@ -1,22 +1,22 @@
 ﻿using System;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.Abstractions.Persistence.DataTransferObjects
 {
     /// <summary>
-    /// The correlation id.
+    /// The event stream entry correlation id.
     /// <remarks>
     /// Identifies the group of actions that caused the entry to be stored.
     /// </remarks>
     /// </summary>
-    public class CorrelationId
+    public class EventStreamEntryCorrelationId
     {
         private Guid Value { get; }
 
-        private CorrelationId(Guid value)
+        private EventStreamEntryCorrelationId(Guid value)
         {
             if (value == Guid.Empty)
             {
-                throw new ArgumentException($"{nameof(CorrelationId)} cannot be empty guid.", nameof(value));
+                throw new ArgumentException($"{nameof(EventStreamEntryCorrelationId)} cannot be empty guid.", nameof(value));
             }
             
             Value = value;
@@ -25,62 +25,62 @@ namespace EventSourcing.Abstractions.ValueObjects
         #region Operators
 
         /// <summary>
-        /// Implicit operator that converts the <see cref="CorrelationId"/> to <see cref="Guid"/>.
+        /// Implicit operator that converts the <see cref="EventStreamEntryCorrelationId"/> to <see cref="Guid"/>.
         /// </summary>
         /// <param name="id">
-        /// The <see cref="CorrelationId"/>.
+        /// The <see cref="EventStreamEntryCorrelationId"/>.
         /// </param>
         /// <returns>
         /// The <see cref="Guid"/>.
         /// </returns>
-        public static implicit operator Guid(CorrelationId id) => id.Value;
+        public static implicit operator Guid(EventStreamEntryCorrelationId id) => id.Value;
         
         /// <summary>
-        /// Implicit operator that converts the <see cref="Guid"/> to <see cref="CorrelationId"/>.
+        /// Implicit operator that converts the <see cref="Guid"/> to <see cref="EventStreamEntryCorrelationId"/>.
         /// </summary>
         /// <param name="id">
         /// The <see cref="Guid"/>.
         /// </param>
         /// <returns>
-        /// The <see cref="CorrelationId"/>.
+        /// The <see cref="EventStreamEntryCorrelationId"/>.
         /// </returns>
-        public static implicit operator CorrelationId(Guid id) => new CorrelationId(id);
+        public static implicit operator EventStreamEntryCorrelationId(Guid id) => new EventStreamEntryCorrelationId(id);
 
         /// <summary>
         /// The equality operator.
         /// </summary>
         /// <param name="correlationId">
-        /// The <see cref="CorrelationId"/>.
+        /// The <see cref="EventStreamEntryCorrelationId"/>.
         /// </param>
         /// <param name="otherCorrelationId">
-        /// The <see cref="CorrelationId"/>.
+        /// The <see cref="EventStreamEntryCorrelationId"/>.
         /// </param>
         /// <returns>
         /// True if <paramref name="correlationId"/> and <paramref name="otherCorrelationId"/> are equal, false otherwise.
         /// </returns>
-        public static bool operator ==(CorrelationId correlationId, CorrelationId otherCorrelationId) =>
+        public static bool operator ==(EventStreamEntryCorrelationId correlationId, EventStreamEntryCorrelationId otherCorrelationId) =>
             Equals(correlationId, otherCorrelationId);
 
         /// <summary>
         /// The inequality operator.
         /// </summary>
         /// <param name="correlationId">
-        /// The <see cref="CorrelationId"/>.
+        /// The <see cref="EventStreamEntryCorrelationId"/>.
         /// </param>
         /// <param name="otherCorrelationId">
-        /// The <see cref="CorrelationId"/>.
+        /// The <see cref="EventStreamEntryCorrelationId"/>.
         /// </param>
         /// <returns>
         /// True if <paramref name="correlationId"/> and <paramref name="otherCorrelationId"/> are not equal, false otherwise.
         /// </returns>
-        public static bool operator !=(CorrelationId correlationId, CorrelationId otherCorrelationId) =>
+        public static bool operator !=(EventStreamEntryCorrelationId correlationId, EventStreamEntryCorrelationId otherCorrelationId) =>
             !(correlationId == otherCorrelationId);
 
         #endregion
 
         /// <inheritdoc />
         public override bool Equals(object obj) =>
-            obj is CorrelationId other &&
+            obj is EventStreamEntryCorrelationId other &&
             other.GetHashCode() == GetHashCode();
 
         /// <inheritdoc />

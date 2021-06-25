@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.Abstractions.Persistence.DataTransferObjects
 {
     /// <summary>
     /// The event stream entry id value object.

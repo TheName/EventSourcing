@@ -1,4 +1,5 @@
 ﻿using System;
+using EventSourcing.Abstractions.Persistence.DataTransferObjects;
 
 namespace EventSourcing.Abstractions.ValueObjects
 {

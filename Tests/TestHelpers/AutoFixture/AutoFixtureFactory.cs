@@ -5,6 +5,7 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.Persistence.DataTransferObjects;
 using EventSourcing.Abstractions.ValueObjects;
 
 namespace TestHelpers.AutoFixture
@@ -15,8 +16,8 @@ namespace TestHelpers.AutoFixture
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization {ConfigureMembers = true});
 
-            fixture.Register<ISpecimenBuilder, CausationId>(builder => builder.Create<Guid>());
-            fixture.Register<ISpecimenBuilder, CorrelationId>(builder => builder.Create<Guid>());
+            fixture.Register<ISpecimenBuilder, EventStreamEntryCausationId>(builder => builder.Create<Guid>());
+            fixture.Register<ISpecimenBuilder, EventStreamEntryCorrelationId>(builder => builder.Create<Guid>());
             fixture.Register<ISpecimenBuilder, EventStreamEntries>(CreateEventStreamEntries);
             fixture.Register<ISpecimenBuilder, EventStreamEntryContent>(builder => builder.Create<string>());
             fixture.Register<ISpecimenBuilder, EventStreamEntryCreationTime>(builder => new DateTime(builder.Create<DateTime>().Ticks, DateTimeKind.Utc));

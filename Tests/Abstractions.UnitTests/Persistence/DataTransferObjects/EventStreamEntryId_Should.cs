@@ -1,31 +1,31 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.Abstractions.Persistence.DataTransferObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Abstractions.UnitTests.ValueObjects
+namespace Abstractions.UnitTests.Persistence.DataTransferObjects
 {
-    public class CorrelationId_Should
+    public class EventStreamEntryId_Should
     {
         [Fact]
         public void Throw_ArgumentException_When_CreatingWithEmptyGuid()
         {
-            Assert.Throws<ArgumentException>(() => (CorrelationId) Guid.Empty);
+            Assert.Throws<ArgumentException>(() => (EventStreamEntryId) Guid.Empty);
         }
 
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNonEmptyGuid(Guid id)
         {
-            CorrelationId _ = id;
+            EventStreamEntryId _ = id;
         }
 
         [Theory]
         [AutoMoqData]
         public void ReturnTrue_When_ComparingDifferentObjectsWithSameValue(Guid value)
         {
-            CorrelationId id1 = value;
-            CorrelationId id2 = value;
+            EventStreamEntryId id1 = value;
+            EventStreamEntryId id2 = value;
             
             Assert.Equal(id1, id2);
             Assert.True(id1 == id2);
@@ -36,8 +36,8 @@ namespace Abstractions.UnitTests.ValueObjects
         [AutoMoqData]
         public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentValue(Guid value, Guid otherValue)
         {
-            CorrelationId id1 = value;
-            CorrelationId id2 = otherValue;
+            EventStreamEntryId id1 = value;
+            EventStreamEntryId id2 = otherValue;
             
             Assert.NotEqual(id1, id2);
             Assert.False(id1 == id2);
@@ -46,7 +46,7 @@ namespace Abstractions.UnitTests.ValueObjects
 
         [Theory]
         [AutoMoqData]
-        public void ReturnValueToString_When_CallingToString(CorrelationId id)
+        public void ReturnValueToString_When_CallingToString(EventStreamEntryId id)
         {
             var idAsGuid = (Guid) id;
             

@@ -1,9 +1,9 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.Abstractions.Persistence.DataTransferObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Abstractions.UnitTests.ValueObjects
+namespace Abstractions.UnitTests.Persistence.DataTransferObjects
 {
     public class EventStreamEntryCreationTime_Should
     {

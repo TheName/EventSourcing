@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EventSourcing.Abstractions.Persistence.DataTransferObjects;
 
 namespace EventSourcing.Abstractions.ValueObjects
 {
@@ -15,7 +16,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// <summary>
         /// The causation id. See <see cref="CausationId"/>.
         /// </summary>
-        public CausationId CausationId { get; }
+        public EventStreamEntryCausationId CausationId { get; }
         
         /// <summary>
         /// The causation id. See <see cref="EventStreamEntryCreationTime"/>.
@@ -25,12 +26,12 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// <summary>
         /// The correlation id. See <see cref="CorrelationId"/>.
         /// </summary>
-        public CorrelationId CorrelationId { get; }
+        public EventStreamEntryCorrelationId CorrelationId { get; }
 
         public EventStreamEntryMetadata(
-            CausationId causationId,
+            EventStreamEntryCausationId causationId,
             EventStreamEntryCreationTime creationTime,
-            CorrelationId correlationId)
+            EventStreamEntryCorrelationId correlationId)
         {
             CausationId = causationId ?? throw new ArgumentNullException(nameof(causationId));
             CreationTime = creationTime ?? throw new ArgumentNullException(nameof(creationTime));

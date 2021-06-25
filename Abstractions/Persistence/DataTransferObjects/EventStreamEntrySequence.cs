@@ -1,4 +1,6 @@
-﻿namespace EventSourcing.Abstractions.ValueObjects
+﻿using EventSourcing.Abstractions.ValueObjects;
+
+namespace EventSourcing.Abstractions.Persistence.DataTransferObjects
 {
     /// <summary>
     /// The event stream entry sequence value object.

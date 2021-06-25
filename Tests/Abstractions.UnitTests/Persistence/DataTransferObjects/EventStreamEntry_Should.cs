@@ -1,9 +1,10 @@
 ﻿using System;
+using EventSourcing.Abstractions.Persistence.DataTransferObjects;
 using EventSourcing.Abstractions.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Abstractions.UnitTests.ValueObjects
+namespace Abstractions.UnitTests.Persistence.DataTransferObjects
 {
     public class EventStreamEntry_Should
     {
