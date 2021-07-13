@@ -3,9 +3,9 @@
 namespace EventSourcing.Abstractions
 {
     /// <summary>
-    /// The event stream entry content value object.
+    /// The event stream event content value object.
     /// <remarks>
-    /// The actual content of event stream entry.
+    /// The actual serialized content of event stream event.
     /// </remarks>
     /// </summary>
     public class EventStreamEventContent
@@ -49,32 +49,32 @@ namespace EventSourcing.Abstractions
         /// <summary>
         /// The equality operator.
         /// </summary>
-        /// <param name="eventStreamEntryContent">
+        /// <param name="content">
         /// The <see cref="EventStreamEventContent"/>.
         /// </param>
-        /// <param name="otherEventStreamEntryContent">
+        /// <param name="otherContent">
         /// The <see cref="EventStreamEventContent"/>.
         /// </param>
         /// <returns>
-        /// True if <paramref name="eventStreamEntryContent"/> and <paramref name="otherEventStreamEntryContent"/> are equal, false otherwise.
+        /// True if <paramref name="content"/> and <paramref name="otherContent"/> are equal, false otherwise.
         /// </returns>
-        public static bool operator ==(EventStreamEventContent eventStreamEntryContent, EventStreamEventContent otherEventStreamEntryContent) =>
-            Equals(eventStreamEntryContent, otherEventStreamEntryContent);
+        public static bool operator ==(EventStreamEventContent content, EventStreamEventContent otherContent) =>
+            Equals(content, otherContent);
 
         /// <summary>
         /// The inequality operator.
         /// </summary>
-        /// <param name="eventStreamEntryContent">
+        /// <param name="content">
         /// The <see cref="EventStreamEventContent"/>.
         /// </param>
-        /// <param name="otherEventStreamEntryContent">
+        /// <param name="otherContent">
         /// The <see cref="EventStreamEventContent"/>.
         /// </param>
         /// <returns>
-        /// True if <paramref name="eventStreamEntryContent"/> and <paramref name="otherEventStreamEntryContent"/> are not equal, false otherwise.
+        /// True if <paramref name="content"/> and <paramref name="otherContent"/> are not equal, false otherwise.
         /// </returns>
-        public static bool operator !=(EventStreamEventContent eventStreamEntryContent, EventStreamEventContent otherEventStreamEntryContent) =>
-            !(eventStreamEntryContent == otherEventStreamEntryContent);
+        public static bool operator !=(EventStreamEventContent content, EventStreamEventContent otherContent) =>
+            !(content == otherContent);
 
         #endregion
 

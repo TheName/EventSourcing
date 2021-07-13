@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using EventSourcing.Abstractions.Exceptions;
 
 namespace EventSourcing.Abstractions
@@ -10,16 +11,16 @@ namespace EventSourcing.Abstractions
     /// </summary>
     public class EventStream
     {
-        private readonly List<EventStreamEvent> _eventsToAppend;
+        private readonly List<EventStreamEntry> _entriesToAppend;
 
         /// <summary>
-        /// Creates a new instance of <see cref="EventStream"/> initialized with a new <see cref="EventStreamId"/> and empty <see cref="EventStreamEvents"/>.
+        /// Creates a new instance of <see cref="EventStream"/> initialized with a new <see cref="EventStreamId"/> and empty <see cref="EventStreamEntries"/>.
         /// </summary>
         /// <returns>
-        /// A new instance of <see cref="EventStream"/> with a new <see cref="EventStreamId"/> and an empty collection of events.
+        /// A new instance of <see cref="EventStream"/> with a new <see cref="EventStreamId"/> and an empty collection of entries.
         /// </returns>
         public static EventStream NewEventStream() =>
-            new EventStream(EventStreamId.NewEventStreamId(), EventStreamEvents.Empty);
+            new EventStream(EventStreamId.NewEventStreamId(), EventStreamEntries.Empty);
         
         /// <summary>
         /// The <see cref="EventStreamId"/> that identifies given stream of events.
@@ -27,19 +28,19 @@ namespace EventSourcing.Abstractions
         public EventStreamId StreamId { get; }
         
         /// <summary>
-        /// The <see cref="EventStreamEvents"/> already persisted in the stream of events.
+        /// The <see cref="EventStreamEntries"/> already persisted in the stream of events.
         /// </summary>
-        public EventStreamEvents Events { get; }
+        public EventStreamEntries Entries { get; }
         
         /// <summary>
-        /// The current highest <see cref="EventStreamEventSequence"/> of both persisted events and events to store in the stream of events.  
+        /// The current highest <see cref="EventStreamEntrySequence"/> of both persisted events and events to store in the stream of events.  
         /// </summary>
-        public EventStreamEventSequence CurrentSequence { get; private set; }
-        
+        public EventStreamEntrySequence CurrentSequence { get; private set; }
+
         /// <summary>
-        /// Gets the collection of <see cref="EventStreamEvent"/> that is to be appended to the stream of events.
+        /// Gets the collection of <see cref="EventStreamEntry"/> that is to be appended to the stream of events.
         /// </summary>
-        public IReadOnlyList<EventStreamEvent> EventsToAppend => _eventsToAppend.AsReadOnly();
+        public EventStreamEntries EntriesToAppend => new EventStreamEntries(_entriesToAppend);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStream"/> class.
@@ -47,89 +48,89 @@ namespace EventSourcing.Abstractions
         /// <param name="streamId">
         /// The <see cref="EventStreamId"/> that identifies the stream of events.
         /// </param>
-        /// <param name="events">
-        /// The collection of <see cref="EventStreamEvent"/> that are already stored in the stream of events.
+        /// <param name="entries">
+        /// The collection of <see cref="EventStreamEntry"/> that are already stored in the stream of events.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown when provided <paramref name="streamId"/> or <paramref name="events"/> is null.
+        /// Thrown when provided <paramref name="streamId"/> or <paramref name="entries"/> is null.
         /// </exception>
         /// <exception cref="InvalidEventStreamIdException">
-        /// Thrown when provided <paramref name="streamId"/> does not match <see cref="EventStreamId"/> assigned to <paramref name="events"/>.
+        /// Thrown when provided <paramref name="streamId"/> does not match <see cref="EventStreamId"/> assigned to <paramref name="entries"/>.
         /// </exception>
-        /// <exception cref="InvalidEventStreamEventSequenceException">
-        /// Thrown when provided <paramref name="events"/> has its `MinimumSequence` different than 0. 
+        /// <exception cref="InvalidEventStreamEntrySequenceException">
+        /// Thrown when provided <paramref name="entries"/> has its `MinimumSequence` different than 0. 
         /// </exception>
         public EventStream(
             EventStreamId streamId,
-            EventStreamEvents events)
+            EventStreamEntries entries)
         {
             StreamId = streamId ?? throw new ArgumentNullException(nameof(streamId));
-            Events = events ?? throw new ArgumentNullException(nameof(events));
-            CurrentSequence = Events.MaximumSequence;
-            _eventsToAppend = new List<EventStreamEvent>();
+            Entries = entries ?? throw new ArgumentNullException(nameof(entries));
+            CurrentSequence = Entries.MaximumSequence;
+            _entriesToAppend = new List<EventStreamEntry>();
             
-            if (Events.Count == 0)
+            if (Entries.Count == 0)
             {
                 return;
             }
             
-            if (Events.StreamId != StreamId)
+            if (Entries.StreamId != StreamId)
             {
-                throw InvalidEventStreamIdException.New(Events.StreamId, StreamId, nameof(streamId));
+                throw InvalidEventStreamIdException.New(Entries.StreamId, StreamId, nameof(streamId));
             }
 
-            if (Events.MinimumSequence != 0)
+            if (Entries.MinimumSequence != 0)
             {
-                throw InvalidEventStreamEventSequenceException.New(0, Events.MinimumSequence, nameof(events));
+                throw InvalidEventStreamEntrySequenceException.New(0, Entries.MinimumSequence, nameof(entries));
             }
         }
 
         /// <summary>
-        /// Appends provided <paramref name="events"/> to this instance of the stream of events.
+        /// Appends provided <paramref name="entries"/> to this instance of the stream of entries.
         /// </summary>
-        /// <param name="events">
-        /// The collection of <see cref="EventStreamEvent"/> that should be appended to the stream of events.
+        /// <param name="entries">
+        /// The collection of <see cref="EventStreamEntry"/> that should be appended to the stream of entries.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown when provided <paramref name="events"/> is null.
+        /// Thrown when provided <paramref name="entries"/> is null.
         /// </exception>
         /// <exception cref="InvalidEventStreamIdException">
-        /// Thrown when at least one of provided <paramref name="events"/> has <see cref="EventStreamId"/> that does not match <see cref="StreamId"/>.
+        /// Thrown when at least one of provided <paramref name="entries"/> has <see cref="EventStreamId"/> that does not match <see cref="StreamId"/>.
         /// </exception>
-        /// <exception cref="InvalidEventStreamEventSequenceException">
-        /// Thrown when at least one of provided <paramref name="events"/> has <see cref="EventStreamEventSequence"/> other than <see cref="CurrentSequence"/> + 1 (increased sequentially).
+        /// <exception cref="InvalidEventStreamEntrySequenceException">
+        /// Thrown when at least one of provided <paramref name="entries"/> has <see cref="EventStreamEntrySequence"/> other than <see cref="CurrentSequence"/> + 1 (increased sequentially).
         /// </exception>
-        public void AppendEvents(IEnumerable<EventStreamEvent> events)
+        public void AppendEntries(IEnumerable<EventStreamEntry> entries)
         {
-            foreach (var eventStreamEvent in events ?? throw new ArgumentNullException(nameof(events)))
+            foreach (var eventStreamEvent in entries ?? throw new ArgumentNullException(nameof(entries)))
             {
-                AppendEvent(eventStreamEvent);
+                AppendEntry(eventStreamEvent);
             }
         }
 
-        private void AppendEvent(EventStreamEvent @event)
+        private void AppendEntry(EventStreamEntry entry)
         {
-            if (@event.StreamId != StreamId)
+            if (entry.StreamId != StreamId)
             {
-                throw InvalidEventStreamIdException.New(StreamId, @event.StreamId, nameof(@event));
+                throw InvalidEventStreamIdException.New(StreamId, entry.StreamId, nameof(entry));
             }
 
-            EventStreamEventSequence expectedSequence = CurrentSequence + 1;
-            if (CurrentSequence == 0 && Events.Count == 0 && EventsToAppend.Count == 0)
+            EventStreamEntrySequence expectedSequence = CurrentSequence + 1;
+            if (CurrentSequence == 0 && Entries.Count == 0 && EntriesToAppend.Count == 0)
             {
                 expectedSequence = CurrentSequence;
             }
             
-            if (@event.EventSequence != expectedSequence)
+            if (entry.EntrySequence != expectedSequence)
             {
-                throw InvalidEventStreamEventSequenceException.New(
+                throw InvalidEventStreamEntrySequenceException.New(
                     expectedSequence,
-                    @event.EventSequence,
-                    nameof(@event));
+                    entry.EntrySequence,
+                    nameof(entry));
             }
             
-            _eventsToAppend.Add(@event);
-            CurrentSequence = @event.EventSequence;
+            _entriesToAppend.Add(entry);
+            CurrentSequence = entry.EntrySequence;
         }
 
         #region Operators
@@ -144,7 +145,7 @@ namespace EventSourcing.Abstractions
         /// The <see cref="EventStream"/>.
         /// </param>
         /// <returns>
-        /// True if <paramref name="event"/> and <paramref name="otherEventStream"/> are equal, false otherwise.
+        /// True if <paramref name="eventStream"/> and <paramref name="otherEventStream"/> are equal, false otherwise.
         /// </returns>
         public static bool operator ==(EventStream eventStream, EventStream otherEventStream) =>
             Equals(eventStream, otherEventStream);
@@ -185,14 +186,26 @@ namespace EventSourcing.Abstractions
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"Event Stream ID: {StreamId}, Current Sequence: {CurrentSequence}, Number of events to append: {_eventsToAppend.Count}";
+            $"Event Stream ID: {StreamId}, {Entries}, Current Sequence: {CurrentSequence}, {EntriesToAppendString()}";
+
+        private string EntriesToAppendString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append("Entries to append: ");
+            foreach (var eventStreamEntry in _entriesToAppend)
+            {
+                stringBuilder.Append($"\n\t{eventStreamEntry}");
+            }
+
+            return stringBuilder.ToString();
+        }
 
         private IEnumerable<object> GetPropertiesForHashCode()
         {
             yield return StreamId;
-            yield return Events;
+            yield return Entries;
             yield return CurrentSequence;
-            foreach (var eventStreamEvent in _eventsToAppend)
+            foreach (var eventStreamEvent in _entriesToAppend)
             {
                 yield return eventStreamEvent;
             }

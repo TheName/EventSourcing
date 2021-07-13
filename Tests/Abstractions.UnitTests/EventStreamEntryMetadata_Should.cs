@@ -5,15 +5,15 @@ using Xunit;
 
 namespace Abstractions.UnitTests
 {
-    public class EventStreamEventMetadata_Should
+    public class EventStreamEntryMetadata_Should
     {
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullCausationId(
-            EventStreamEventCreationTime creationTime,
-            EventStreamEventCorrelationId correlationId)
+            EventStreamEntryCreationTime creationTime,
+            EventStreamEntryCorrelationId correlationId)
         {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventMetadata(
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
                 null,
                 creationTime,
                 correlationId));
@@ -22,9 +22,9 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullCausationId_And_WithoutCreationTime(
-            EventStreamEventCorrelationId correlationId)
+            EventStreamEntryCorrelationId correlationId)
         {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventMetadata(
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
                 null,
                 correlationId));
         }
@@ -32,10 +32,10 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullCreationTime(
-            EventStreamEventCausationId causationId,
-            EventStreamEventCorrelationId correlationId)
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCorrelationId correlationId)
         {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventMetadata(
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
                 causationId,
                 null,
                 correlationId));
@@ -44,10 +44,10 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullCorrelationId(
-            EventStreamEventCausationId causationId,
-            EventStreamEventCreationTime creationTime)
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCreationTime creationTime)
         {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventMetadata(
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
                 causationId,
                 creationTime,
                 null));
@@ -56,9 +56,9 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullCorrelationId_And_WithoutCreationTime(
-            EventStreamEventCausationId causationId)
+            EventStreamEntryCausationId causationId)
         {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventMetadata(
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
                 causationId,
                 null));
         }
@@ -66,11 +66,11 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNonNullValues(
-            EventStreamEventCausationId causationId,
-            EventStreamEventCreationTime creationTime,
-            EventStreamEventCorrelationId correlationId)
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCreationTime creationTime,
+            EventStreamEntryCorrelationId correlationId)
         {
-            var _ = new EventStreamEventMetadata(
+            var _ = new EventStreamEntryMetadata(
                 causationId,
                 creationTime,
                 correlationId);
@@ -79,10 +79,10 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNonNullValues_And_WithoutCreationTime(
-            EventStreamEventCausationId causationId,
-            EventStreamEventCorrelationId correlationId)
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCorrelationId correlationId)
         {
-            var _ = new EventStreamEventMetadata(
+            var _ = new EventStreamEntryMetadata(
                 causationId,
                 correlationId);
         }
@@ -90,16 +90,16 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void ReturnTrue_When_ComparingDifferentObjectsWithSameValues(
-            EventStreamEventCausationId causationId,
-            EventStreamEventCreationTime creationTime,
-            EventStreamEventCorrelationId correlationId)
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCreationTime creationTime,
+            EventStreamEntryCorrelationId correlationId)
         {
-            var metadata1 = new EventStreamEventMetadata(
+            var metadata1 = new EventStreamEntryMetadata(
                 causationId,
                 creationTime,
                 correlationId);
             
-            var metadata2 = new EventStreamEventMetadata(
+            var metadata2 = new EventStreamEntryMetadata(
                 causationId,
                 creationTime,
                 correlationId);
@@ -112,17 +112,17 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentCausationId(
-            EventStreamEventCausationId causationId1,
-            EventStreamEventCausationId causationId2,
-            EventStreamEventCreationTime creationTime,
-            EventStreamEventCorrelationId correlationId)
+            EventStreamEntryCausationId causationId1,
+            EventStreamEntryCausationId causationId2,
+            EventStreamEntryCreationTime creationTime,
+            EventStreamEntryCorrelationId correlationId)
         {
-            var metadata1 = new EventStreamEventMetadata(
+            var metadata1 = new EventStreamEntryMetadata(
                 causationId1,
                 creationTime,
                 correlationId);
             
-            var metadata2 = new EventStreamEventMetadata(
+            var metadata2 = new EventStreamEntryMetadata(
                 causationId2,
                 creationTime,
                 correlationId);
@@ -135,17 +135,17 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentCreationTime(
-            EventStreamEventCausationId causationId,
-            EventStreamEventCreationTime creationTime1,
-            EventStreamEventCreationTime creationTime2,
-            EventStreamEventCorrelationId correlationId)
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCreationTime creationTime1,
+            EventStreamEntryCreationTime creationTime2,
+            EventStreamEntryCorrelationId correlationId)
         {
-            var metadata1 = new EventStreamEventMetadata(
+            var metadata1 = new EventStreamEntryMetadata(
                 causationId,
                 creationTime1,
                 correlationId);
             
-            var metadata2 = new EventStreamEventMetadata(
+            var metadata2 = new EventStreamEntryMetadata(
                 causationId,
                 creationTime2,
                 correlationId);
@@ -158,17 +158,17 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentCorrelationId(
-            EventStreamEventCausationId causationId,
-            EventStreamEventCreationTime creationTime,
-            EventStreamEventCorrelationId correlationId1,
-            EventStreamEventCorrelationId correlationId2)
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCreationTime creationTime,
+            EventStreamEntryCorrelationId correlationId1,
+            EventStreamEntryCorrelationId correlationId2)
         {
-            var metadata1 = new EventStreamEventMetadata(
+            var metadata1 = new EventStreamEntryMetadata(
                 causationId,
                 creationTime,
                 correlationId1);
             
-            var metadata2 = new EventStreamEventMetadata(
+            var metadata2 = new EventStreamEntryMetadata(
                 causationId,
                 creationTime,
                 correlationId2);
@@ -180,7 +180,7 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnExpectedValue_When_CallingToString(EventStreamEventMetadata eventStreamEntryMetadata)
+        public void ReturnExpectedValue_When_CallingToString(EventStreamEntryMetadata eventStreamEntryMetadata)
         {
             var expectedValue =
                 $"Causation ID: {eventStreamEntryMetadata.CausationId}, Creation Time: {eventStreamEntryMetadata.CreationTime}, Correlation ID: {eventStreamEntryMetadata.CorrelationId}";

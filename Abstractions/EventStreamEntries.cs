@@ -8,45 +8,45 @@ using EventSourcing.Abstractions.Exceptions;
 namespace EventSourcing.Abstractions
 {
     /// <summary>
-    /// Represents a read-only collection of consecutive events assigned to the same stream. 
+    /// Represents a read-only collection of consecutive entries assigned to the same stream. 
     /// </summary>
-    public class EventStreamEvents : IReadOnlyList<EventStreamEvent>
+    public class EventStreamEntries : IReadOnlyList<EventStreamEntry>
     {
-        private IReadOnlyList<EventStreamEvent> Value { get; }
+        private IReadOnlyList<EventStreamEntry> Value { get; }
 
         /// <summary>
-        /// A read-only instance of the <see cref="EventStreamEvents"/> that contains no events.
+        /// A read-only instance of the <see cref="EventStreamEntries"/> that contains no entries.
         /// </summary>
-        public static EventStreamEvents Empty { get; } = new EventStreamEvents(new EventStreamEvent[0]);
+        public static EventStreamEntries Empty { get; } = new EventStreamEntries(new EventStreamEntry[0]);
         
         /// <summary>
-        /// The minimum <see cref="EventStreamEventSequence"/> in this collection of events. 
+        /// The minimum <see cref="EventStreamEntrySequence"/> in this collection of entries. 
         /// </summary>
-        public EventStreamEventSequence MinimumSequence { get; }
+        public EventStreamEntrySequence MinimumSequence { get; }
         
         /// <summary>
-        /// The maximum <see cref="EventStreamEventSequence"/> in this collection of events.
+        /// The maximum <see cref="EventStreamEntrySequence"/> in this collection of entries.
         /// </summary>
-        public EventStreamEventSequence MaximumSequence { get; }
+        public EventStreamEntrySequence MaximumSequence { get; }
         
         internal EventStreamId StreamId { get; }
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventStreamEvents"/> class.
+        /// Initializes a new instance of the <see cref="EventStreamEntries"/> class.
         /// </summary>
         /// <param name="value">
-        /// An <see cref="IEnumerable{T}"/> of <see cref="EventStreamEvent"/>.
+        /// An <see cref="IEnumerable{T}"/> of <see cref="EventStreamEntry"/>.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown when <paramref name="value"/> is null.
         /// </exception>
-        /// <exception cref="InvalidEventStreamEventSequenceException">
-        /// Thrown when events provided in <paramref name="value"/> are not ordered increasingly by sequence or the sequence is increasing by more than one. 
+        /// <exception cref="InvalidEventStreamEntrySequenceException">
+        /// Thrown when entries provided in <paramref name="value"/> are not ordered increasingly by sequence or the sequence is increasing by more than one. 
         /// </exception>
         /// <exception cref="InvalidEventStreamIdException">
-        /// Thrown when any of the events provided in <paramref name="value"/> has a different stream id than others. 
+        /// Thrown when any of the entries provided in <paramref name="value"/> has a different stream id than others. 
         /// </exception>
-        public EventStreamEvents(IEnumerable<EventStreamEvent> value)
+        public EventStreamEntries(IEnumerable<EventStreamEntry> value)
         {
             Value = value?.ToList() ?? throw new ArgumentNullException(nameof(value));
             MaximumSequence = 0;
@@ -57,18 +57,18 @@ namespace EventSourcing.Abstractions
                 return;
             }
 
-            MinimumSequence = Value[0].EventSequence;
+            MinimumSequence = Value[0].EntrySequence;
             StreamId = Value[0].StreamId;
             
             var previousSequence = MinimumSequence;
             for (var i = 1; i < Value.Count; i++)
             {
-                if (Value[i].EventSequence != previousSequence + 1)
+                if (Value[i].EntrySequence != previousSequence + 1)
                 {
-                    throw InvalidEventStreamEventSequenceException.New(
+                    throw InvalidEventStreamEntrySequenceException.New(
                         previousSequence + 1,
-                        Value[i].EventSequence,
-                        $"{nameof(EventStreamEvents)} have to be ordered increasingly by sequence and sequence has to increase by one.",
+                        Value[i].EntrySequence,
+                        $"{nameof(EventStreamEntries)} have to be ordered increasingly by sequence and sequence has to increase by one.",
                         nameof(value));
                 }
 
@@ -77,11 +77,11 @@ namespace EventSourcing.Abstractions
                     throw InvalidEventStreamIdException.New(
                         StreamId,
                         Value[i].StreamId,
-                        $"{nameof(EventStreamEvents)} have to have same stream id.",
+                        $"{nameof(EventStreamEntries)} have to have same stream id.",
                         nameof(value));
                 }
 
-                previousSequence = Value[i].EventSequence;
+                previousSequence = Value[i].EntrySequence;
             }
 
             MaximumSequence = previousSequence;
@@ -92,39 +92,39 @@ namespace EventSourcing.Abstractions
         /// <summary>
         /// The equality operator.
         /// </summary>
-        /// <param name="events">
-        /// The <see cref="EventStreamEvents"/>.
+        /// <param name="entries">
+        /// The <see cref="EventStreamEntries"/>.
         /// </param>
-        /// <param name="otherEvents">
-        /// The <see cref="EventStreamEvents"/>.
+        /// <param name="otherEntries">
+        /// The <see cref="EventStreamEntries"/>.
         /// </param>
         /// <returns>
-        /// True if <paramref name="events"/> and <paramref name="otherEvents"/> are equal, false otherwise.
+        /// True if <paramref name="entries"/> and <paramref name="otherEntries"/> are equal, false otherwise.
         /// </returns>
-        public static bool operator ==(EventStreamEvents events, EventStreamEvents otherEvents) =>
-            Equals(events, otherEvents);
+        public static bool operator ==(EventStreamEntries entries, EventStreamEntries otherEntries) =>
+            Equals(entries, otherEntries);
 
         /// <summary>
         /// The inequality operator.
         /// </summary>
-        /// <param name="events">
-        /// The <see cref="EventStreamEvents"/>.
+        /// <param name="entries">
+        /// The <see cref="EventStreamEntries"/>.
         /// </param>
-        /// <param name="otherEvents">
-        /// The <see cref="EventStreamEvents"/>.
+        /// <param name="otherEntries">
+        /// The <see cref="EventStreamEntries"/>.
         /// </param>
         /// <returns>
-        /// True if <paramref name="events"/> and <paramref name="otherEvents"/> are not equal, false otherwise.
+        /// True if <paramref name="entries"/> and <paramref name="otherEntries"/> are not equal, false otherwise.
         /// </returns>
-        public static bool operator !=(EventStreamEvents events, EventStreamEvents otherEvents) =>
-            !(events == otherEvents);
+        public static bool operator !=(EventStreamEntries entries, EventStreamEntries otherEntries) =>
+            !(entries == otherEntries);
 
         #endregion
 
         #region IReadOnlyList<EventStreamEvent> proxy
 
         /// <inheritdoc />
-        public IEnumerator<EventStreamEvent> GetEnumerator() => 
+        public IEnumerator<EventStreamEntry> GetEnumerator() => 
             Value.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() =>
@@ -135,14 +135,14 @@ namespace EventSourcing.Abstractions
             Value.Count;
 
         /// <inheritdoc />
-        public EventStreamEvent this[int index] =>
+        public EventStreamEntry this[int index] =>
             Value[index];
         
         #endregion
 
         /// <inheritdoc />
         public override bool Equals(object obj) =>
-            obj is EventStreamEvents other &&
+            obj is EventStreamEntries other &&
             other.GetPropertiesForHashCode().SequenceEqual(GetPropertiesForHashCode());
 
         /// <inheritdoc />
@@ -161,7 +161,7 @@ namespace EventSourcing.Abstractions
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append("Events: ");
+            stringBuilder.Append("Entries: ");
             foreach (var eventStreamEntry in Value)
             {
                 stringBuilder.Append($"\n\t{eventStreamEntry}");

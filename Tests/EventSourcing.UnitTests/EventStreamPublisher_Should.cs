@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -19,27 +18,11 @@ namespace EventSourcing.UnitTests
     {
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_Creating_And_EventConverterIsNull(
-            IEventStreamStagingWriter storeStagingWriter,
-            IEventStreamWriter storeWriter,
-            IEventStreamBusPublisher streamBusPublisher)
-        {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
-                null,
-                storeStagingWriter,
-                storeWriter,
-                streamBusPublisher));
-        }
-        
-        [Theory]
-        [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_StagingWriterIsNull(
-            IEventStreamEventConverter eventConverter,
             IEventStreamWriter storeWriter,
             IEventStreamBusPublisher streamBusPublisher)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
-                eventConverter,
                 null,
                 storeWriter,
                 streamBusPublisher));
@@ -48,12 +31,10 @@ namespace EventSourcing.UnitTests
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_WriterIsNull(
-            IEventStreamEventConverter eventConverter,
             IEventStreamStagingWriter storeStagingWriter,
             IEventStreamBusPublisher streamBusPublisher)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
-                eventConverter,
                 storeStagingWriter,
                 null,
                 streamBusPublisher));
@@ -62,12 +43,10 @@ namespace EventSourcing.UnitTests
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_BusPublisherIsNull(
-            IEventStreamEventConverter eventConverter,
             IEventStreamStagingWriter storeStagingWriter,
             IEventStreamWriter storeWriter)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
-                eventConverter,
                 storeStagingWriter,
                 storeWriter,
                 null));
@@ -76,12 +55,11 @@ namespace EventSourcing.UnitTests
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_Creating_And_AllParametersAreNotNull(
-            IEventStreamEventConverter eventConverter,
             IEventStreamStagingWriter storeStagingWriter,
             IEventStreamWriter storeWriter,
             IEventStreamBusPublisher streamBusPublisher)
         {
-            _ = new EventStreamPublisher(eventConverter, storeStagingWriter, storeWriter, streamBusPublisher);
+            _ = new EventStreamPublisher(storeStagingWriter, storeWriter, streamBusPublisher);
         }
 
         [Theory]
@@ -94,8 +72,7 @@ namespace EventSourcing.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public async Task DoNothing_When_Publishing_And_StreamContainsNoEventsToAppend(
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
+        public async Task DoNothing_When_Publishing_And_StreamContainsNoEntriesToAppend(
             [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             [Frozen] Mock<IEventStreamBusPublisher> streamBusPublisherMock,
@@ -103,7 +80,6 @@ namespace EventSourcing.UnitTests
         {
             await publisher.PublishAsync(EventStream.NewEventStream(), CancellationToken.None);
             
-            eventConverterMock.VerifyNoOtherCalls();
             storeStagingWriterMock.VerifyNoOtherCalls();
             storeWriterMock.VerifyNoOtherCalls();
             streamBusPublisherMock.VerifyNoOtherCalls();
@@ -111,155 +87,86 @@ namespace EventSourcing.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public async Task ConvertAllEventsToAppend_When_Publishing(
+        public async Task WriteAllEntriesToAppendToStaging_When_Publishing(
             [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
-            EventStreamPublisher publisher)
-        {
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
-                        @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
-            
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            await PublishAndIgnoreExceptionsAsync(publisher, stream);
-
-            foreach (var eventStreamEvent in eventsToAppend)
-            {
-                eventConverterMock.Verify(
-                    converter => converter.ToDescriptorAsync(eventStreamEvent, It.IsAny<CancellationToken>()),
-                    Times.Once);
-            }
-            
-            eventConverterMock.VerifyNoOtherCalls();
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public async Task WriteAllConvertedEventsToStaging_When_Publishing(
-            [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            List<EventStreamEventDescriptor> eventDescriptors,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
+            EventStreamEntries entriesToAppend,
             [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
             EventStreamPublisher publisher)
         {
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
-                        @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
             
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            for (var i = 0; i < eventsToAppend.Count; i++)
-            {
-                var eventToAppend = eventsToAppend[i];
-                var eventDescriptor = eventDescriptors[i];
-                eventConverterMock
-                    .Setup(converter => converter.ToDescriptorAsync(eventToAppend, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventDescriptor);
-            }
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
 
             await PublishAndIgnoreExceptionsAsync(publisher, stream);
 
             storeStagingWriterMock
                 .Verify(writer => writer.WriteAsync(
-                        It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                        stream.EntriesToAppend,
                         It.IsAny<CancellationToken>()),
                     Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public async Task WriteAllConvertedEventsToStream_When_Publishing(
+        public async Task WriteAllEntriesToAppendToStream_When_Publishing(
             [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            List<EventStreamEventDescriptor> eventDescriptors,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
+            EventStreamEntries entriesToAppend,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             EventStreamPublisher publisher)
         {
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((@event, i) => new EventStreamEntry(
                         @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
+                        @event.EntryId,
+                        Convert.ToUInt32(i++),
+                        @event.EventDescriptor,
+                        @event.EntryMetadata)));
             
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            for (var i = 0; i < eventsToAppend.Count; i++)
-            {
-                var eventToAppend = eventsToAppend[i];
-                var eventDescriptor = eventDescriptors[i];
-                eventConverterMock
-                    .Setup(converter => converter.ToDescriptorAsync(eventToAppend, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventDescriptor);
-            }
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
 
             await PublishAndIgnoreExceptionsAsync(publisher, stream);
 
             storeWriterMock
                 .Verify(writer => writer.WriteAsync(
-                        It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                        stream.EntriesToAppend,
                         It.IsAny<CancellationToken>()),
                     Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public async Task PublishAllConvertedEventsToStream_When_Publishing_And_WriteResultIsSuccessful(
+        public async Task PublishAllEntriesToAppendToStream_When_Publishing_And_WriteResultIsSuccessful(
             [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            List<EventStreamEventDescriptor> eventDescriptors,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
+            EventStreamEntries entriesToAppend,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             [Frozen] Mock<IEventStreamBusPublisher> streamBusPublisherMock,
             EventStreamPublisher publisher)
         {
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
-                        @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
             
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            for (var i = 0; i < eventsToAppend.Count; i++)
-            {
-                var eventToAppend = eventsToAppend[i];
-                var eventDescriptor = eventDescriptors[i];
-                eventConverterMock
-                    .Setup(converter => converter.ToDescriptorAsync(eventToAppend, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventDescriptor);
-            }
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(EventStreamWriteResult.Success);
 
@@ -267,70 +174,58 @@ namespace EventSourcing.UnitTests
 
             streamBusPublisherMock
                 .Verify(busPublisher => busPublisher.PublishAsync(
-                        It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                        stream.EntriesToAppend,
                         It.IsAny<CancellationToken>()),
                     Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public async Task MarkStagedEventsAsPublished_After_PublishingAllConvertedEvents_When_Publishing_And_WriteResultIsSuccessful(
+        public async Task MarkStagedEntriesAsPublished_After_PublishingAllEntriesToAppend_When_Publishing_And_WriteResultIsSuccessful(
             EventStreamStagingId stagingId,
             [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            List<EventStreamEventDescriptor> eventDescriptors,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
+            EventStreamEntries entriesToAppend,
             [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             [Frozen] Mock<IEventStreamBusPublisher> streamBusPublisherMock,
             EventStreamPublisher publisher)
         {
-            var wereConvertedEventsPublished = false;
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
-                        @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
+            var wereEntriesPublished = false;
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
             
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            for (var i = 0; i < eventsToAppend.Count; i++)
-            {
-                var eventToAppend = eventsToAppend[i];
-                var eventDescriptor = eventDescriptors[i];
-                eventConverterMock
-                    .Setup(converter => converter.ToDescriptorAsync(eventToAppend, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventDescriptor);
-            }
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
 
             storeStagingWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(stagingId);
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(EventStreamWriteResult.Success);
 
             streamBusPublisherMock
                 .Setup(busPublisher => busPublisher.PublishAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
-                .Callback(() => wereConvertedEventsPublished = true);
+                .Callback(() => wereEntriesPublished = true);
 
             storeStagingWriterMock
                 .Setup(writer => writer.MarkAsPublishedAsync(
                     stagingId,
                     It.IsAny<CancellationToken>()))
-                .Returns(() => wereConvertedEventsPublished ? Task.CompletedTask : Task.FromException(new Exception()));
+                .Returns(() => wereEntriesPublished ? Task.CompletedTask : Task.FromException(new Exception()));
 
             await publisher.PublishAsync(stream, CancellationToken.None);
         }
@@ -338,46 +233,26 @@ namespace EventSourcing.UnitTests
         [Theory]
         [AutoMoqData]
         public async Task Throw_EventStreamOptimisticConcurrencyException_When_Publishing_And_WriteResultIsSequenceAlreadyTaken(
-            EventStreamStagingId stagingId,
             [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            List<EventStreamEventDescriptor> eventDescriptors,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
-            [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
+            EventStreamEntries entriesToAppend,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             EventStreamPublisher publisher)
         {
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
-                        @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
             
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            for (var i = 0; i < eventsToAppend.Count; i++)
-            {
-                var eventToAppend = eventsToAppend[i];
-                var eventDescriptor = eventDescriptors[i];
-                eventConverterMock
-                    .Setup(converter => converter.ToDescriptorAsync(eventToAppend, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventDescriptor);
-            }
-
-            storeStagingWriterMock
-                .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(stagingId);
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(EventStreamWriteResult.SequenceAlreadyTaken);
 
@@ -389,44 +264,32 @@ namespace EventSourcing.UnitTests
         public async Task MarkStagedEventsAsFailedToStore_When_Publishing_And_WriteResultIsSequenceAlreadyTaken(
             EventStreamStagingId stagingId,
             [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            List<EventStreamEventDescriptor> eventDescriptors,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
+            EventStreamEntries entriesToAppend,
             [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             EventStreamPublisher publisher)
         {
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
-                        @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
             
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            for (var i = 0; i < eventsToAppend.Count; i++)
-            {
-                var eventToAppend = eventsToAppend[i];
-                var eventDescriptor = eventDescriptors[i];
-                eventConverterMock
-                    .Setup(converter => converter.ToDescriptorAsync(eventToAppend, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventDescriptor);
-            }
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
 
             storeStagingWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(stagingId);
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(EventStreamWriteResult.SequenceAlreadyTaken);
 
@@ -440,46 +303,26 @@ namespace EventSourcing.UnitTests
         [Theory]
         [AutoMoqData]
         public async Task Throw_EventStreamAppendingFailedException_When_Publishing_And_WriteResultIsUnknownFailure(
-            EventStreamStagingId stagingId,
             [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            List<EventStreamEventDescriptor> eventDescriptors,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
-            [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
+            EventStreamEntries entriesToAppend,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             EventStreamPublisher publisher)
         {
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
-                        @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
             
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            for (var i = 0; i < eventsToAppend.Count; i++)
-            {
-                var eventToAppend = eventsToAppend[i];
-                var eventDescriptor = eventDescriptors[i];
-                eventConverterMock
-                    .Setup(converter => converter.ToDescriptorAsync(eventToAppend, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventDescriptor);
-            }
-
-            storeStagingWriterMock
-                .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(stagingId);
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(EventStreamWriteResult.UnknownFailure);
 
@@ -491,44 +334,32 @@ namespace EventSourcing.UnitTests
         public async Task MarkAsFailedToStoreAsync_When_Publishing_And_WriteResultIsUnknownFailure(
             EventStreamStagingId stagingId,
             [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            List<EventStreamEventDescriptor> eventDescriptors,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
+            EventStreamEntries entriesToAppend,
             [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             EventStreamPublisher publisher)
         {
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
-                        @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
             
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            for (var i = 0; i < eventsToAppend.Count; i++)
-            {
-                var eventToAppend = eventsToAppend[i];
-                var eventDescriptor = eventDescriptors[i];
-                eventConverterMock
-                    .Setup(converter => converter.ToDescriptorAsync(eventToAppend, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventDescriptor);
-            }
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
 
             storeStagingWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(stagingId);
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(EventStreamWriteResult.UnknownFailure);
 
@@ -546,45 +377,33 @@ namespace EventSourcing.UnitTests
             EventStreamWriteResult writeResult,
             EventStreamStagingId stagingId,
             [Frozen] EventStreamId eventStreamId,
-            EventStreamEvents eventsToAppend,
-            List<EventStreamEventDescriptor> eventDescriptors,
-            [Frozen] Mock<IEventStreamEventConverter> eventConverterMock,
+            EventStreamEntries entriesToAppend,
             [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             EventStreamPublisher publisher)
         {
-            uint initialSequence = 0;
-            eventsToAppend = new EventStreamEvents(
-                eventsToAppend
-                    .Select(@event => new EventStreamEvent(
-                        @event.StreamId,
-                        @event.EventId,
-                        initialSequence++,
-                        @event.Event,
-                        @event.EventMetadata)));
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
             
-            var stream = new EventStream(eventStreamId, EventStreamEvents.Empty);
-            stream.AppendEvents(eventsToAppend);
-
-            for (var i = 0; i < eventsToAppend.Count; i++)
-            {
-                var eventToAppend = eventsToAppend[i];
-                var eventDescriptor = eventDescriptors[i];
-                eventConverterMock
-                    .Setup(converter => converter.ToDescriptorAsync(eventToAppend, It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(eventDescriptor);
-            }
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
 
             storeStagingWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(stagingId)
                 .Verifiable();
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
-                    It.Is<IReadOnlyList<EventStreamEventDescriptor>>(list => list.SequenceEqual(eventDescriptors)),
+                    stream.EntriesToAppend,
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(writeResult)
                 .Verifiable();

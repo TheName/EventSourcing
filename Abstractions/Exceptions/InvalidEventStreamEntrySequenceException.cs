@@ -3,31 +3,31 @@
 namespace EventSourcing.Abstractions.Exceptions
 {
     /// <summary>
-    /// Provided <see cref="EventStreamEventSequence"/> is invalid. 
+    /// Provided <see cref="EventStreamEntrySequence"/> is invalid. 
     /// </summary>
     [Serializable]
-    public class InvalidEventStreamEventSequenceException : ArgumentException
+    public class InvalidEventStreamEntrySequenceException : ArgumentException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidEventStreamEventSequenceException"/> class.
+        /// Initializes a new instance of the <see cref="InvalidEventStreamEntrySequenceException"/> class.
         /// </summary>
-        public InvalidEventStreamEventSequenceException()
+        public InvalidEventStreamEntrySequenceException()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidEventStreamEventSequenceException"/> class with a specified error message.
+        /// Initializes a new instance of the <see cref="InvalidEventStreamEntrySequenceException"/> class with a specified error message.
         /// </summary>
         /// <param name="message">
         /// The message that describes the error.
         /// </param>
-        public InvalidEventStreamEventSequenceException(string message)
+        public InvalidEventStreamEntrySequenceException(string message)
             : base(message)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidEventStreamEventSequenceException"/> class with a specified error message.
+        /// Initializes a new instance of the <see cref="InvalidEventStreamEntrySequenceException"/> class with a specified error message.
         /// </summary>
         /// <param name="message">
         /// The message that describes the error.
@@ -35,13 +35,13 @@ namespace EventSourcing.Abstractions.Exceptions
         /// <param name="paramName">
         /// The name of the parameter that caused the current exception.
         /// </param>
-        public InvalidEventStreamEventSequenceException(string message, string paramName)
+        public InvalidEventStreamEntrySequenceException(string message, string paramName)
             : base(message, paramName)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidEventStreamEventSequenceException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+        /// Initializes a new instance of the <see cref="InvalidEventStreamEntrySequenceException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
         /// </summary>
         /// <param name="message">
         /// The error message that explains the reason for the exception.
@@ -49,40 +49,40 @@ namespace EventSourcing.Abstractions.Exceptions
         /// <param name="innerException">
         /// The exception that is the cause of the current exception, or a null reference if no inner exception is specified.
         /// </param>
-        public InvalidEventStreamEventSequenceException(string message, Exception innerException)
+        public InvalidEventStreamEntrySequenceException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
         /// <summary>
-        /// Creates a new <see cref="InvalidEventStreamEventSequenceException"/> instance with a default message.
+        /// Creates a new <see cref="InvalidEventStreamEntrySequenceException"/> instance with a default message.
         /// </summary>
         /// <param name="expectedSequence">
-        /// The expected <see cref="EventStreamEventSequence"/>.
+        /// The expected <see cref="EventStreamEntrySequence"/>.
         /// </param>
         /// <param name="providedSequence">
-        /// The provided <see cref="EventStreamEventSequence"/>.
+        /// The provided <see cref="EventStreamEntrySequence"/>.
         /// </param>
         /// <param name="paramName">
         /// The name of the parameter that caused the current exception.
         /// </param>
         /// <returns>
-        /// A new <see cref="InvalidEventStreamEventSequenceException"/> instance.
+        /// A new <see cref="InvalidEventStreamEntrySequenceException"/> instance.
         /// </returns>
-        public static InvalidEventStreamEventSequenceException New(
-            EventStreamEventSequence expectedSequence,
-            EventStreamEventSequence providedSequence,
+        public static InvalidEventStreamEntrySequenceException New(
+            EventStreamEntrySequence expectedSequence,
+            EventStreamEntrySequence providedSequence,
             string paramName) =>
             New(expectedSequence, providedSequence, string.Empty, paramName);
 
         /// <summary>
-        /// Creates a new <see cref="InvalidEventStreamEventSequenceException"/> instance with a default message.
+        /// Creates a new <see cref="InvalidEventStreamEntrySequenceException"/> instance with a default message.
         /// </summary>
         /// <param name="expectedSequence">
-        /// The expected <see cref="EventStreamEventSequence"/>.
+        /// The expected <see cref="EventStreamEntrySequence"/>.
         /// </param>
         /// <param name="providedSequence">
-        /// The provided <see cref="EventStreamEventSequence"/>.
+        /// The provided <see cref="EventStreamEntrySequence"/>.
         /// </param>
         /// <param name="additionalMessage">
         /// An additional message that should be added after the default message.
@@ -91,21 +91,21 @@ namespace EventSourcing.Abstractions.Exceptions
         /// The name of the parameter that caused the current exception.
         /// </param>
         /// <returns>
-        /// A new <see cref="InvalidEventStreamEventSequenceException"/> instance.
+        /// A new <see cref="InvalidEventStreamEntrySequenceException"/> instance.
         /// </returns>
-        public static InvalidEventStreamEventSequenceException New(
-            EventStreamEventSequence expectedSequence,
-            EventStreamEventSequence providedSequence,
+        public static InvalidEventStreamEntrySequenceException New(
+            EventStreamEntrySequence expectedSequence,
+            EventStreamEntrySequence providedSequence,
             string additionalMessage,
             string paramName)
         {
-            var message = $"Provided {nameof(EventStreamEventSequence)} is invalid. Expected {nameof(EventStreamEventSequence)}: {expectedSequence}, Provided {nameof(EventStreamEventSequence)}: {providedSequence}.";
+            var message = $"Provided {nameof(EventStreamEntrySequence)} is invalid. Expected {nameof(EventStreamEntrySequence)}: {expectedSequence}, Provided {nameof(EventStreamEntrySequence)}: {providedSequence}.";
             if (!string.IsNullOrWhiteSpace(additionalMessage))
             {
                 message = $"{message} {additionalMessage}";
             }
 
-            return new InvalidEventStreamEventSequenceException(
+            return new InvalidEventStreamEntrySequenceException(
                 message,
                 paramName);
         }

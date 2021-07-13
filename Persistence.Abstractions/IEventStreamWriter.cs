@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 
@@ -11,10 +10,10 @@ namespace EventSourcing.Persistence.Abstractions
     public interface IEventStreamWriter
     {
         /// <summary>
-        /// Writes <paramref name="eventDescriptors"/> and returns a single <see cref="EventStreamWriteResult"/> that represents the writing result.
+        /// Writes <paramref name="eventStreamEntries"/> and returns a single <see cref="EventStreamWriteResult"/> that represents the writing result.
         /// </summary>
-        /// <param name="eventDescriptors">
-        /// The <see cref="IEnumerable{T}"/> of <see cref="EventStreamEventDescriptor"/> that should be stored.
+        /// <param name="eventStreamEntries">
+        /// The <see cref="EventStreamEntries"/> that should be stored.
         /// </param>
         /// <param name="cancellationToken">
         /// The <see cref="CancellationToken"/>.
@@ -23,7 +22,7 @@ namespace EventSourcing.Persistence.Abstractions
         /// The <see cref="EventStreamWriteResult"/> that represents the writing result.
         /// </returns>
         Task<EventStreamWriteResult> WriteAsync(
-            IReadOnlyList<EventStreamEventDescriptor> eventDescriptors,
+            EventStreamEntries eventStreamEntries,
             CancellationToken cancellationToken);
     }
 }

@@ -9,255 +9,59 @@ namespace Abstractions.UnitTests
     {
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamId(
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
-            EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
-        {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
-                null,
-                eventId,
-                eventSequence,
-                eventContent,
-                eventTypeIdentifier,
-                eventMetadata));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEventId(
-            EventStreamId streamId,
-            EventStreamEventSequence eventSequence,
-            EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
-        {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
-                streamId,
-                null,
-                eventSequence,
-                eventContent,
-                eventTypeIdentifier,
-                eventMetadata));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEventSequence(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
-        {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                null,
-                eventContent,
-                eventTypeIdentifier,
-                eventMetadata));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEventContent(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
-        {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
-                null,
-                eventTypeIdentifier,
-                eventMetadata));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEventTypeIdentifier(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
-            EventStreamEventContent eventContent,
-            EventStreamEventMetadata eventMetadata)
-        {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
-                eventContent,
-                null,
-                eventMetadata));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEventMetadata(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
-            EventStreamEventContent eventContent,
+        public void Throw_ArgumentNullException_When_CreatingWithNullEventContent(
             EventStreamEventTypeIdentifier eventTypeIdentifier)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
+                null,
+                eventTypeIdentifier));
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        public void Throw_ArgumentNullException_When_CreatingWithNullEventTypeIdentifier(
+            EventStreamEventContent eventContent)
+        {
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
                 eventContent,
-                eventTypeIdentifier,
                 null));
         }
 
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNonNullValues(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
             EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
+            EventStreamEventTypeIdentifier eventTypeIdentifier)
         {
             _ = new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
                 eventContent,
-                eventTypeIdentifier,
-                eventMetadata);
+                eventTypeIdentifier);
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnStreamIdProvidedDuringCreation_When_GettingStreamId(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
+        public void ReturnEventContentProvidedDuringCreation_When_GettingEventContent(
             EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
+            EventStreamEventTypeIdentifier eventTypeIdentifier)
         {
             var eventStreamEventDescriptor = new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
                 eventContent,
-                eventTypeIdentifier,
-                eventMetadata);
-            
-            Assert.Equal(streamId, eventStreamEventDescriptor.StreamId);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnEventIdProvidedDuringCreation_When_GettingEventId(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
-            EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
-        {
-            var eventStreamEventDescriptor = new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
-                eventContent,
-                eventTypeIdentifier,
-                eventMetadata);
-            
-            Assert.Equal(eventId, eventStreamEventDescriptor.EventId);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnEventSequenceProvidedDuringCreation_When_GettingEventSequence(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
-            EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
-        {
-            var eventStreamEventDescriptor = new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
-                eventContent,
-                eventTypeIdentifier,
-                eventMetadata);
-            
-            Assert.Equal(eventSequence, eventStreamEventDescriptor.EventSequence);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnEventProvidedDuringCreation_When_GettingEventContent(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
-            EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
-        {
-            var eventStreamEventDescriptor = new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
-                eventContent,
-                eventTypeIdentifier,
-                eventMetadata);
+                eventTypeIdentifier);
             
             Assert.Equal(eventContent, eventStreamEventDescriptor.EventContent);
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnEventProvidedDuringCreation_When_GettingEventTypeIdentifier(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
+        public void ReturnEventTypeIdentifierProvidedDuringCreation_When_GettingEventTypeIdentifier(
             EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
+            EventStreamEventTypeIdentifier eventTypeIdentifier)
         {
             var eventStreamEventDescriptor = new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
                 eventContent,
-                eventTypeIdentifier,
-                eventMetadata);
+                eventTypeIdentifier);
             
             Assert.Equal(eventTypeIdentifier, eventStreamEventDescriptor.EventTypeIdentifier);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnEventMetadataProvidedDuringCreation_When_GettingEventMetadata(
-            EventStreamId streamId,
-            EventStreamEventId eventId,
-            EventStreamEventSequence eventSequence,
-            EventStreamEventContent eventContent,
-            EventStreamEventTypeIdentifier eventTypeIdentifier,
-            EventStreamEventMetadata eventMetadata)
-        {
-            var eventStreamEventDescriptor = new EventStreamEventDescriptor(
-                streamId,
-                eventId,
-                eventSequence,
-                eventContent,
-                eventTypeIdentifier,
-                eventMetadata);
-            
-            Assert.Equal(eventMetadata, eventStreamEventDescriptor.EventMetadata);
         }
 
         [Theory]
@@ -266,105 +70,16 @@ namespace Abstractions.UnitTests
             EventStreamEventDescriptor eventStreamEventDescriptor)
         {
             var event1 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
                 eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
+                eventStreamEventDescriptor.EventTypeIdentifier);
             
             var event2 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
                 eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
+                eventStreamEventDescriptor.EventTypeIdentifier);
             
             Assert.Equal(event1, event2);
             Assert.True(event1 == event2);
             Assert.False(event1 != event2);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentStreamId(
-            EventStreamEventDescriptor eventStreamEventDescriptor,
-            EventStreamId differentStreamId)
-        {
-            var event1 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
-                eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
-            
-            var event2 = new EventStreamEventDescriptor(
-                differentStreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
-                eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
-            
-            Assert.NotEqual(event1, event2);
-            Assert.False(event1 == event2);
-            Assert.True(event1 != event2);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentEventId(
-            EventStreamEventDescriptor eventStreamEventDescriptor,
-            EventStreamEventId differentEventId)
-        {
-            var event1 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
-                eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
-            
-            var event2 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                differentEventId,
-                eventStreamEventDescriptor.EventSequence,
-                eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
-            
-            Assert.NotEqual(event1, event2);
-            Assert.False(event1 == event2);
-            Assert.True(event1 != event2);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentEventSequence(
-            EventStreamEventDescriptor eventStreamEventDescriptor,
-            EventStreamEventSequence differentEventSequence)
-        {
-            var event1 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
-                eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
-            
-            var event2 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                differentEventSequence,
-                eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
-            
-            Assert.NotEqual(event1, event2);
-            Assert.False(event1 == event2);
-            Assert.True(event1 != event2);
         }
 
         [Theory]
@@ -374,20 +89,12 @@ namespace Abstractions.UnitTests
             EventStreamEventContent differentEventContent)
         {
             var event1 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
                 eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
+                eventStreamEventDescriptor.EventTypeIdentifier);
             
             var event2 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
                 differentEventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
+                eventStreamEventDescriptor.EventTypeIdentifier);
             
             Assert.NotEqual(event1, event2);
             Assert.False(event1 == event2);
@@ -401,47 +108,12 @@ namespace Abstractions.UnitTests
             EventStreamEventTypeIdentifier differentEventTypeIdentifier)
         {
             var event1 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
                 eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
+                eventStreamEventDescriptor.EventTypeIdentifier);
             
             var event2 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
                 eventStreamEventDescriptor.EventContent,
-                differentEventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
-            
-            Assert.NotEqual(event1, event2);
-            Assert.False(event1 == event2);
-            Assert.True(event1 != event2);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentEventMetadata(
-            EventStreamEventDescriptor eventStreamEventDescriptor,
-            EventStreamEventMetadata differentEventMetadata)
-        {
-            var event1 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
-                eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                eventStreamEventDescriptor.EventMetadata);
-            
-            var event2 = new EventStreamEventDescriptor(
-                eventStreamEventDescriptor.StreamId,
-                eventStreamEventDescriptor.EventId,
-                eventStreamEventDescriptor.EventSequence,
-                eventStreamEventDescriptor.EventContent,
-                eventStreamEventDescriptor.EventTypeIdentifier,
-                differentEventMetadata);
+                differentEventTypeIdentifier);
             
             Assert.NotEqual(event1, event2);
             Assert.False(event1 == event2);
@@ -453,7 +125,7 @@ namespace Abstractions.UnitTests
         public void ReturnExpectedValue_When_CallingToString(EventStreamEventDescriptor eventStreamEventDescriptor)
         {
             var expectedValue =
-                $"Event Stream ID: {eventStreamEventDescriptor.StreamId}, Event ID: {eventStreamEventDescriptor.EventId}, Event Sequence: {eventStreamEventDescriptor.EventSequence}, Event Content: {eventStreamEventDescriptor.EventContent}, Event Type Identifier: {eventStreamEventDescriptor.EventTypeIdentifier}, EventMetadata: {eventStreamEventDescriptor.EventMetadata}";
+                $"Event Content: {eventStreamEventDescriptor.EventContent}, Event Type Identifier: {eventStreamEventDescriptor.EventTypeIdentifier}";
             
             Assert.Equal(expectedValue, eventStreamEventDescriptor.ToString());
         }

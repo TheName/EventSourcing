@@ -5,27 +5,27 @@ using Xunit;
 
 namespace Abstractions.UnitTests
 {
-    public class EventStreamEventCausationId_Should
+    public class EventStreamEntryCorrelationId_Should
     {
         [Fact]
         public void Throw_ArgumentException_When_CreatingWithEmptyGuid()
         {
-            Assert.Throws<ArgumentException>(() => (EventStreamEventCausationId) Guid.Empty);
+            Assert.Throws<ArgumentException>(() => (EventStreamEntryCorrelationId) Guid.Empty);
         }
 
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNonEmptyGuid(Guid id)
         {
-            EventStreamEventCausationId _ = id;
+            EventStreamEntryCorrelationId _ = id;
         }
 
         [Theory]
         [AutoMoqData]
         public void ReturnTrue_When_ComparingDifferentObjectsWithSameValue(Guid value)
         {
-            EventStreamEventCausationId id1 = value;
-            EventStreamEventCausationId id2 = value;
+            EventStreamEntryCorrelationId id1 = value;
+            EventStreamEntryCorrelationId id2 = value;
             
             Assert.Equal(id1, id2);
             Assert.True(id1 == id2);
@@ -36,8 +36,8 @@ namespace Abstractions.UnitTests
         [AutoMoqData]
         public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentValue(Guid value, Guid otherValue)
         {
-            EventStreamEventCausationId id1 = value;
-            EventStreamEventCausationId id2 = otherValue;
+            EventStreamEntryCorrelationId id1 = value;
+            EventStreamEntryCorrelationId id2 = otherValue;
             
             Assert.NotEqual(id1, id2);
             Assert.False(id1 == id2);
@@ -46,7 +46,7 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnValueToString_When_CallingToString(EventStreamEventCausationId id)
+        public void ReturnValueToString_When_CallingToString(EventStreamEntryCorrelationId id)
         {
             var idAsGuid = (Guid) id;
             

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 
@@ -11,10 +10,10 @@ namespace EventSourcing.EventBus.Abstractions
     public interface IEventStreamBusPublisher
     {
         /// <summary>
-        /// Publishes <paramref name="eventDescriptors"/> to the event bus.
+        /// Publishes <paramref name="eventStreamEntries"/> to the event bus.
         /// </summary>
-        /// <param name="eventDescriptors">
-        /// The <see cref="IEnumerable{T}"/> of <see cref="EventStreamEventDescriptor"/> that should be published.
+        /// <param name="eventStreamEntries">
+        /// The <see cref="EventStreamEntries"/> that should be published.
         /// </param>
         /// <param name="cancellationToken">
         /// The <see cref="CancellationToken"/>.
@@ -23,7 +22,7 @@ namespace EventSourcing.EventBus.Abstractions
         /// The task that represents the publishing.
         /// </returns>
         Task PublishAsync(
-            IReadOnlyList<EventStreamEventDescriptor> eventDescriptors,
+            EventStreamEntries eventStreamEntries,
             CancellationToken cancellationToken);
     }
 }

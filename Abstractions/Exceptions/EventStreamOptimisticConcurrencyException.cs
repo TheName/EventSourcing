@@ -3,7 +3,7 @@
 namespace EventSourcing.Abstractions.Exceptions
 {
     /// <summary>
-    /// Appending events to an event stream has failed due to optimistic concurrency exception.
+    /// Appending entries to an event stream has failed due to optimistic concurrency exception.
     /// Provided sequences were already persisted in the event stream.
     /// </summary>
     [Serializable]
@@ -44,17 +44,17 @@ namespace EventSourcing.Abstractions.Exceptions
         /// <summary>
         /// Creates a new <see cref="EventStreamOptimisticConcurrencyException"/> instance with a default message.
         /// </summary>
-        /// <param name="numberOfEventsToAppend">
-        /// The number of events that were supposed to be stored.
+        /// <param name="numberOfEntriesToAppend">
+        /// The number of entries that were supposed to be stored.
         /// </param>
         /// <param name="streamId">
-        /// The stream id that the events were supposed to be appended to.
+        /// The stream id that the entries were supposed to be appended to.
         /// </param>
         /// <returns>
         /// A new <see cref="EventStreamOptimisticConcurrencyException"/> instance.
         /// </returns>
-        public new static EventStreamOptimisticConcurrencyException New(int numberOfEventsToAppend, EventStreamId streamId) =>
+        public new static EventStreamOptimisticConcurrencyException New(int numberOfEntriesToAppend, EventStreamId streamId) =>
             new EventStreamOptimisticConcurrencyException(
-                $"Appending {numberOfEventsToAppend} events to {streamId} stream id failed due to optimistic concurrency exception. Another thread has already appended new events with same sequences.");
+                $"Appending {numberOfEntriesToAppend} entries to {streamId} stream id failed due to optimistic concurrency exception. Another thread has already appended new entries with same sequences.");
     }
 }

@@ -3,7 +3,7 @@
 namespace EventSourcing.Abstractions.Exceptions
 {
     /// <summary>
-    /// Appending events to an event stream has failed.
+    /// Appending entries to an event stream has failed.
     /// </summary>
     [Serializable]
     public class EventStreamAppendingFailedException : Exception
@@ -43,17 +43,17 @@ namespace EventSourcing.Abstractions.Exceptions
         /// <summary>
         /// Creates a new <see cref="EventStreamAppendingFailedException"/> instance with a default message.
         /// </summary>
-        /// <param name="numberOfEventsToAppend">
-        /// The number of events that were supposed to be stored.
+        /// <param name="numberOfEntriesToAppend">
+        /// The number of entries that were supposed to be stored.
         /// </param>
         /// <param name="streamId">
-        /// The stream id that the events were supposed to be appended to.
+        /// The stream id that the entries were supposed to be appended to.
         /// </param>
         /// <returns>
         /// A new <see cref="EventStreamAppendingFailedException"/> instance.
         /// </returns>
-        public static EventStreamAppendingFailedException New(int numberOfEventsToAppend, EventStreamId streamId) =>
+        public static EventStreamAppendingFailedException New(int numberOfEntriesToAppend, EventStreamId streamId) =>
             new EventStreamAppendingFailedException(
-                $"Appending {numberOfEventsToAppend} events to {streamId} stream id failed due to an unknown reason.");
+                $"Appending {numberOfEntriesToAppend} entries to {streamId} stream id failed due to an unknown reason.");
     }
 }

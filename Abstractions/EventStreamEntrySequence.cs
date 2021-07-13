@@ -6,11 +6,11 @@
     /// Identifies a sequence of event store entry.
     /// </remarks>
     /// </summary>
-    public class EventStreamEventSequence
+    public class EventStreamEntrySequence
     {
         private uint Value { get; }
 
-        private EventStreamEventSequence(uint value)
+        private EventStreamEntrySequence(uint value)
         {
             Value = value;
         }
@@ -18,26 +18,26 @@
         #region Operators
 
         /// <summary>
-        /// Implicit operator that converts the <see cref="EventStreamEventSequence"/> to <see cref="uint"/>.
+        /// Implicit operator that converts the <see cref="EventStreamEntrySequence"/> to <see cref="uint"/>.
         /// </summary>
         /// <param name="sequence">
-        /// The <see cref="EventStreamEventSequence"/>.
+        /// The <see cref="EventStreamEntrySequence"/>.
         /// </param>
         /// <returns>
         /// The <see cref="uint"/>.
         /// </returns>
-        public static implicit operator uint(EventStreamEventSequence sequence) => sequence.Value;
+        public static implicit operator uint(EventStreamEntrySequence sequence) => sequence.Value;
         
         /// <summary>
-        /// Implicit operator that converts the <see cref="uint"/> to <see cref="EventStreamEventSequence"/>.
+        /// Implicit operator that converts the <see cref="uint"/> to <see cref="EventStreamEntrySequence"/>.
         /// </summary>
         /// <param name="sequence">
         /// The <see cref="uint"/>.
         /// </param>
         /// <returns>
-        /// The <see cref="EventStreamEventSequence"/>.
+        /// The <see cref="EventStreamEntrySequence"/>.
         /// </returns>
-        public static implicit operator EventStreamEventSequence(uint sequence) => new EventStreamEventSequence(sequence);
+        public static implicit operator EventStreamEntrySequence(uint sequence) => new EventStreamEntrySequence(sequence);
 
         /// <summary>
         /// The equality operator.
@@ -51,7 +51,7 @@
         /// <returns>
         /// True if <paramref name="sequence"/> and <paramref name="otherSequence"/> are equal, false otherwise.
         /// </returns>
-        public static bool operator ==(EventStreamEventSequence sequence, EventStreamEventSequence otherSequence) =>
+        public static bool operator ==(EventStreamEntrySequence sequence, EventStreamEntrySequence otherSequence) =>
             Equals(sequence, otherSequence);
 
         /// <summary>
@@ -66,14 +66,14 @@
         /// <returns>
         /// True if <paramref name="sequence"/> and <paramref name="otherSequence"/> are not equal, false otherwise.
         /// </returns>
-        public static bool operator !=(EventStreamEventSequence sequence, EventStreamEventSequence otherSequence) =>
+        public static bool operator !=(EventStreamEntrySequence sequence, EventStreamEntrySequence otherSequence) =>
             !(sequence == otherSequence);
 
         #endregion
 
         /// <inheritdoc />
         public override bool Equals(object obj) =>
-            obj is EventStreamEventSequence other &&
+            obj is EventStreamEntrySequence other &&
             other.Value == Value;
 
         /// <inheritdoc />
