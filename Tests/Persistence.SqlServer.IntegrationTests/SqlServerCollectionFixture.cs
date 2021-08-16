@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using DbUp;
+using EventSourcing.Bus.Abstractions;
 using EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.Extensions;
 using EventSourcing.Extensions.DependencyInjection;
 using EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer;
@@ -9,6 +10,7 @@ using EventSourcing.Persistence.SqlServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Moq;
 using TestHelpers.Logging;
 using Xunit;
 using Xunit.Abstractions;
@@ -38,7 +40,8 @@ namespace Persistence.SqlServer.IntegrationTests
                         new SqlConnectionStringBuilder(persistenceConfiguration.ConnectionString);
                     sqlConnectionBuilder.InitialCatalog = $"{sqlConnectionBuilder.InitialCatalog}_{Guid.NewGuid()}";
                     persistenceConfiguration.ConnectionString = sqlConnectionBuilder.ConnectionString;
-                });
+                })
+                .AddSingleton(new Mock<IEventSourcingBusPublisher>().Object);
 
             serviceCollection
                 .AddEventSourcing()

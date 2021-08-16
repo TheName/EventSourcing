@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Bus.Abstractions;
 using EventSourcing.Persistence.Abstractions;
 
 namespace EventSourcing
@@ -12,13 +13,16 @@ namespace EventSourcing
     {
         private readonly IEventStreamStagingWriter _stagingWriter;
         private readonly IEventStreamWriter _streamWriter;
-        
+        private readonly IEventSourcingBusPublisher _busPublisher;
+
         public EventStreamPublisher(
             IEventStreamStagingWriter stagingWriter,
-            IEventStreamWriter streamWriter)
+            IEventStreamWriter streamWriter,
+            IEventSourcingBusPublisher busPublisher)
         {
             _stagingWriter = stagingWriter ?? throw new ArgumentNullException(nameof(stagingWriter));
             _streamWriter = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
+            _busPublisher = busPublisher ?? throw new ArgumentNullException(nameof(busPublisher));
         }
 
         public async Task PublishAsync(EventStream stream, CancellationToken cancellationToken)
@@ -34,7 +38,7 @@ namespace EventSourcing
             switch (writeResult)
             {
                 case EventStreamWriteResult.Success:
-                    // await _streamBusPublisher.PublishAsync(eventsToAppend, cancellationToken).ConfigureAwait(false);
+                    await _busPublisher.PublishAsync(eventsToAppend, cancellationToken).ConfigureAwait(false);
                     await _stagingWriter.MarkAsPublishedAsync(stagingId, cancellationToken).ConfigureAwait(false);
                     break;
                     

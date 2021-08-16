@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Bus.Abstractions;
 using EventSourcing.Persistence.Abstractions;
 using Moq;
 using TestHelpers.Attributes;
@@ -18,20 +19,36 @@ namespace EventSourcing.UnitTests
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_StagingWriterIsNull(
-            IEventStreamWriter storeWriter)
+            IEventStreamWriter storeWriter,
+            IEventSourcingBusPublisher busPublisher)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
                 null,
-                storeWriter));
+                storeWriter,
+                busPublisher));
         }
         
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_WriterIsNull(
-            IEventStreamStagingWriter storeStagingWriter)
+            IEventStreamStagingWriter storeStagingWriter,
+            IEventSourcingBusPublisher busPublisher)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
                 storeStagingWriter,
+                null,
+                busPublisher));
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        public void Throw_ArgumentNullException_When_Creating_And_BusPublisherIsNull(
+            IEventStreamStagingWriter storeStagingWriter,
+            IEventStreamWriter storeWriter)
+        {
+            Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
+                storeStagingWriter,
+                storeWriter,
                 null));
         }
         
@@ -39,9 +56,10 @@ namespace EventSourcing.UnitTests
         [AutoMoqData]
         public void NotThrow_When_Creating_And_AllParametersAreNotNull(
             IEventStreamStagingWriter storeStagingWriter,
-            IEventStreamWriter storeWriter)
+            IEventStreamWriter storeWriter,
+            IEventSourcingBusPublisher busPublisher)
         {
-            _ = new EventStreamPublisher(storeStagingWriter, storeWriter);
+            _ = new EventStreamPublisher(storeStagingWriter, storeWriter, busPublisher);
         }
 
         [Theory]
@@ -121,6 +139,99 @@ namespace EventSourcing.UnitTests
                         stream.EntriesToAppend,
                         It.IsAny<CancellationToken>()),
                     Times.Once);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        internal async Task PublishEventStoreEntriesToBus_When_Publishing_And_WriteResultIsSuccessful(
+            EventStreamStagingId stagingId,
+            [Frozen] EventStreamId eventStreamId,
+            EventStreamEntries entriesToAppend,
+            [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
+            [Frozen] Mock<IEventStreamWriter> storeWriterMock,
+            [Frozen] Mock<IEventSourcingBusPublisher> busPublisherMock,
+            EventStreamPublisher publisher)
+        {
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
+            
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
+
+            storeStagingWriterMock
+                .Setup(writer => writer.WriteAsync(
+                    stream.EntriesToAppend,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(stagingId);
+
+            storeWriterMock
+                .Setup(writer => writer.WriteAsync(
+                    stream.EntriesToAppend,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(EventStreamWriteResult.Success);
+
+            await publisher.PublishAsync(stream, CancellationToken.None);
+
+            busPublisherMock.Verify(
+                busPublisher => busPublisher.PublishAsync(
+                    stream.EntriesToAppend,
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        internal async Task NotMarkStagedEntriesAsPublished_When_Publishing_And_WriteResultIsSuccessful_AndBusPublishingFails(
+            Exception busPublishingException,
+            EventStreamStagingId stagingId,
+            [Frozen] EventStreamId eventStreamId,
+            EventStreamEntries entriesToAppend,
+            [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
+            [Frozen] Mock<IEventStreamWriter> storeWriterMock,
+            [Frozen] Mock<IEventSourcingBusPublisher> busPublisherMock,
+            EventStreamPublisher publisher)
+        {
+            entriesToAppend = new EventStreamEntries(
+                entriesToAppend
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i++),
+                        entry.EventDescriptor,
+                        entry.EntryMetadata)));
+            
+            var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
+            stream.AppendEntries(entriesToAppend);
+
+            storeStagingWriterMock
+                .Setup(writer => writer.WriteAsync(
+                    stream.EntriesToAppend,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(stagingId);
+
+            storeWriterMock
+                .Setup(writer => writer.WriteAsync(
+                    stream.EntriesToAppend,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(EventStreamWriteResult.Success);
+
+            busPublisherMock
+                .Setup(busPublisher => busPublisher.PublishAsync(stream.EntriesToAppend, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(busPublishingException);
+
+            await Assert.ThrowsAsync<Exception>(() => publisher.PublishAsync(stream, CancellationToken.None));
+
+            storeStagingWriterMock.Verify(
+                writer => writer.MarkAsPublishedAsync(
+                    stagingId,
+                    It.IsAny<CancellationToken>()),
+                Times.Never);
         }
 
         [Theory]
