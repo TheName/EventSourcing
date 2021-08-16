@@ -11,6 +11,11 @@ namespace EventSourcing.Persistence.Abstractions
     public class EventStreamStagingId
     {
         private Guid Value { get; }
+        
+        /// <summary>
+        /// Creates a new instance of <see cref="EventStreamStagingId"/> initialized with a random <see cref="Guid"/>.
+        /// </summary>
+        public static EventStreamStagingId NewEventStreamStagingId() => new EventStreamStagingId(Guid.NewGuid());
 
         private EventStreamStagingId(Guid value)
         {

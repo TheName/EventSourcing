@@ -17,11 +17,23 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\EventSourcing\EventSourcing.csproj" />
+      <ProjectReference Include="..\..\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.csproj" />
+      <ProjectReference Include="..\..\Extensions.DependencyInjection.Persistence.SqlServer\Extensions.DependencyInjection.Persistence.SqlServer.csproj" />
+      <ProjectReference Include="..\..\Persistence.SqlServer\Persistence.SqlServer.csproj" />
       <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

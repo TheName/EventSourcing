@@ -4,44 +4,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Exceptions;
-using EventSourcing.EventBus.Abstractions;
 using EventSourcing.Persistence.Abstractions;
 
 namespace EventSourcing
 {
-    /// <inheritdoc />
-    public class EventStreamPublisher : IEventStreamPublisher
+    internal class EventStreamPublisher : IEventStreamPublisher
     {
-        private readonly IEventStreamStagingWriter _storeStagingWriter;
-        private readonly IEventStreamWriter _storeWriter;
-        private readonly IEventStreamBusPublisher _streamBusPublisher;
+        private readonly IEventStreamStagingWriter _stagingWriter;
+        private readonly IEventStreamWriter _streamWriter;
         
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventStreamEntry"/> class.
-        /// </summary>
-        /// <param name="storeStagingWriter">
-        /// The <see cref="IEventStreamStagingWriter"/>.
-        /// </param>
-        /// <param name="storeWriter">
-        /// The <see cref="IEventStreamWriter"/>.
-        /// </param>
-        /// <param name="streamBusPublisher">
-        /// The <see cref="IEventStreamBusPublisher"/>.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when any of provided parameters is null.
-        /// </exception>
         public EventStreamPublisher(
-            IEventStreamStagingWriter storeStagingWriter,
-            IEventStreamWriter storeWriter,
-            IEventStreamBusPublisher streamBusPublisher)
+            IEventStreamStagingWriter stagingWriter,
+            IEventStreamWriter streamWriter)
         {
-            _storeStagingWriter = storeStagingWriter ?? throw new ArgumentNullException(nameof(storeStagingWriter));
-            _storeWriter = storeWriter ?? throw new ArgumentNullException(nameof(storeWriter));
-            _streamBusPublisher = streamBusPublisher ?? throw new ArgumentNullException(nameof(streamBusPublisher));
+            _stagingWriter = stagingWriter ?? throw new ArgumentNullException(nameof(stagingWriter));
+            _streamWriter = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
         }
 
-        /// <inheritdoc />
         public async Task PublishAsync(EventStream stream, CancellationToken cancellationToken)
         {
             var eventsToAppend = stream?.EntriesToAppend ?? throw new ArgumentNullException(nameof(stream));
@@ -50,21 +29,20 @@ namespace EventSourcing
                 return;
             }
 
-            var stagingId = await _storeStagingWriter.WriteAsync(eventsToAppend, cancellationToken).ConfigureAwait(false);
-            var writeResult = await _storeWriter.WriteAsync(eventsToAppend, cancellationToken).ConfigureAwait(false);
+            var stagingId = await _stagingWriter.WriteAsync(eventsToAppend, cancellationToken).ConfigureAwait(false);
+            var writeResult = await _streamWriter.WriteAsync(eventsToAppend, cancellationToken).ConfigureAwait(false);
             switch (writeResult)
             {
                 case EventStreamWriteResult.Success:
-                    await _streamBusPublisher.PublishAsync(eventsToAppend, cancellationToken).ConfigureAwait(false);
-                    await _storeStagingWriter.MarkAsPublishedAsync(stagingId, cancellationToken).ConfigureAwait(false);
+                    // await _streamBusPublisher.PublishAsync(eventsToAppend, cancellationToken).ConfigureAwait(false);
+                    await _stagingWriter.MarkAsPublishedAsync(stagingId, cancellationToken).ConfigureAwait(false);
                     break;
                     
                 case EventStreamWriteResult.SequenceAlreadyTaken:
-                    await _storeStagingWriter.MarkAsFailedToStoreAsync(stagingId, cancellationToken).ConfigureAwait(false);
+                    await _stagingWriter.MarkAsFailedToStoreAsync(stagingId, cancellationToken).ConfigureAwait(false);
                     throw EventStreamOptimisticConcurrencyException.New(eventsToAppend.Count, stream.StreamId);
                 
                 case EventStreamWriteResult.UnknownFailure:
-                    await _storeStagingWriter.MarkAsFailedToStoreAsync(stagingId, cancellationToken).ConfigureAwait(false);
                     throw EventStreamAppendingFailedException.New(eventsToAppend.Count, stream.StreamId);
                 
                 default:

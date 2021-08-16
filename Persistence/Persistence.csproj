@@ -4,30 +4,29 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RootNamespace>EventSourcing.Persistence.Abstractions</RootNamespace>
-        <AssemblyName>EventSourcing.Persistence.Abstractions</AssemblyName>
+        <RootNamespace>EventSourcing.Persistence</RootNamespace>
+        <AssemblyName>EventSourcing.Persistence</AssemblyName>
     </PropertyGroup>
 
     <!-- NuGet metadata -->
     <PropertyGroup>
-        <Title>EventSourcing.Persistence.Abstractions</Title>
-        <Description>This package contains abstractions over EventSourcing.Persistence packages.</Description>
+        <Title>EventSourcing.Persistence</Title>
+        <Description>This package contains default implementation of EventSourcing.Persistence.Abstraction package.</Description>
         <Authors>Dawid Szmidka</Authors>
-        <PackageId>EventSourcing.Persistence.Abstractions</PackageId>
+        <PackageId>EventSourcing.Persistence</PackageId>
         <Version>0.1.0-alpha</Version>
         <PackageReleaseNotes>
-            - Initial version of EventSourcing.Persistence.Abstractions project
+            - Initial version of EventSourcing.Persistence project
         </PackageReleaseNotes>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageTags>EventSourcing;EventSourcing.Persistence;EventSourcing.Persistence.Abstractions</PackageTags>
+        <PackageTags>EventSourcing;EventSourcing.Persistence</PackageTags>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <IncludeSource>true</IncludeSource>
         <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
     </PropertyGroup>
-    
     <ItemGroup>
-      <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+      <ProjectReference Include="..\Persistence.Abstractions\Persistence.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

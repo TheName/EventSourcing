@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer</RootNamespace>
+        <AssemblyName>EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer</Title>
+        <Description>This package contains DependencyInjection extensions for SqlServer implementation of EventSourcing.Persistence.Abstraction package.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.Extensions;EventSourcing.Extensions.DependencyInjection;EventSourcing.Persistence.SqlServer</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\Extensions.DependencyInjection.Persistence\Extensions.DependencyInjection.Persistence.csproj" />
+      <ProjectReference Include="..\Persistence.SqlServer\Persistence.SqlServer.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

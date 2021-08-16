@@ -23,6 +23,11 @@
         /// <summary>
         /// An unknown failure has happened. It is not clear why the write has failed.
         /// </summary>
-        UnknownFailure
+        UnknownFailure,
+        
+        /// <summary>
+        /// The provided input does not contain any data to insert.
+        /// </summary>
+        EmptyInput,
     }
 }

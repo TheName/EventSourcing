@@ -1,27 +1,28 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
+using EventSourcing.Persistence.Abstractions;
 
-namespace EventSourcing.EventBus.Abstractions
+namespace EventSourcing.Persistence
 {
     /// <summary>
-    /// The event stream bus publisher used to publish event descriptors to the event bus.
+    /// Repository that writes to EventStream
     /// </summary>
-    public interface IEventStreamBusPublisher
+    public interface IEventStreamWriteRepository
     {
         /// <summary>
-        /// Publishes <paramref name="eventStreamEntries"/> to the event bus.
+        /// Writes event stream entries to the EventStream
         /// </summary>
         /// <param name="eventStreamEntries">
-        /// The <see cref="EventStreamEntries"/> that should be published.
+        /// The <see cref="EventStreamEntries"/>
         /// </param>
         /// <param name="cancellationToken">
-        /// The <see cref="CancellationToken"/>.
+        /// The <see cref="CancellationToken"/>
         /// </param>
         /// <returns>
-        /// The task that represents the publishing.
+        /// The <see cref="EventStreamWriteResult"/>
         /// </returns>
-        Task PublishAsync(
+        Task<EventStreamWriteResult> WriteAsync(
             EventStreamEntries eventStreamEntries,
             CancellationToken cancellationToken);
     }
