@@ -178,11 +178,14 @@ namespace EventSourcing.UnitTests
 
             await publisher.PublishAsync(stream, CancellationToken.None);
 
-            busPublisherMock.Verify(
-                busPublisher => busPublisher.PublishAsync(
-                    stream.EntriesToAppend,
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+            foreach (var eventStreamEntry in entriesToAppend)
+            {
+                busPublisherMock.Verify(
+                    busPublisher => busPublisher.PublishAsync(
+                        eventStreamEntry,
+                        It.IsAny<CancellationToken>()),
+                    Times.Once);
+            }
         }
 
         [Theory]
@@ -222,7 +225,7 @@ namespace EventSourcing.UnitTests
                 .ReturnsAsync(EventStreamWriteResult.Success);
 
             busPublisherMock
-                .Setup(busPublisher => busPublisher.PublishAsync(stream.EntriesToAppend, It.IsAny<CancellationToken>()))
+                .Setup(busPublisher => busPublisher.PublishAsync(It.IsAny<EventStreamEntry>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(busPublishingException);
 
             await Assert.ThrowsAsync<Exception>(() => publisher.PublishAsync(stream, CancellationToken.None));

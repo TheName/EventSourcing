@@ -1,6 +1,10 @@
 ﻿using System;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.Configurations;
+using EventSourcing.Configurations;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace EventSourcing.Extensions.DependencyInjection
 {
@@ -30,6 +34,17 @@ namespace EventSourcing.Extensions.DependencyInjection
 
             serviceCollection
                 .AddTransient<IEventStreamPublisher, EventStreamPublisher>();
+            
+            serviceCollection
+                .AddOptions<EventSourcingConfiguration>()
+                .BindConfiguration(nameof(EventSourcingConfiguration))
+                .Validate(
+                    configuration => !string.IsNullOrWhiteSpace(configuration.BoundedContext),
+                    "BoundedContext cannot be empty.");
+
+            serviceCollection
+                .TryAddTransient<IEventSourcingConfiguration>(provider =>
+                    provider.GetRequiredService<IOptions<EventSourcingConfiguration>>().Value);
 
             return new EventSourcingBuilder(serviceCollection);
         }

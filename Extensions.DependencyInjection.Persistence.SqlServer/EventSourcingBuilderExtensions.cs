@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 namespace EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer
 {
     /// <summary>
-    /// The <see cref="IServiceCollection"/> extensions.
+    /// The <see cref="IEventSourcingBuilder"/> extensions.
     /// </summary>
     public static class EventSourcingBuilderExtensions
     {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Exceptions;
 using EventSourcing.Bus.Abstractions;
+using EventSourcing.Extensions;
 using EventSourcing.Persistence.Abstractions;
 
 namespace EventSourcing

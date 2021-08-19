@@ -25,6 +25,7 @@
         <IncludeSource>true</IncludeSource>
         <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
     </PropertyGroup>
+    
     <ItemGroup>
       <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     </ItemGroup>
