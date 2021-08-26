@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.Serialization.Json</RootNamespace>
+        <AssemblyName>EventSourcing.Serialization.Json</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.Serialization.Json</Title>
+        <Description>This package contains implementation of EventSourcing.Serialization.Abstractions package.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.Serialization.Json</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.Serialization.Json project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.Serialization;EventSourcing.Serialization.Json</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
+      <ProjectReference Include="..\Serialization.Abstractions\Serialization.Abstractions.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    </ItemGroup>
+
+</Project>

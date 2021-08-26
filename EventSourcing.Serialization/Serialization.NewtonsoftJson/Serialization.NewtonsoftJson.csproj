@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.Serialization.NewtonsoftJson</RootNamespace>
+        <AssemblyName>EventSourcing.Serialization.NewtonsoftJson</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.Serialization.NewtonsoftJson</Title>
+        <Description>This package contains implementation of EventSourcing.Serialization.Abstractions package.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.Serialization.NewtonsoftJson</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.Serialization.NewtonsoftJson project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.Serialization;EventSourcing.Serialization.NewtonsoftJson</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
+      <ProjectReference Include="..\Serialization.Abstractions\Serialization.Abstractions.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    </ItemGroup>
+
+</Project>

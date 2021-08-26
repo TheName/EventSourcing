@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using EventSourcing.Extensions.DependencyInjection;
 using EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ;
+using EventSourcing.Extensions.DependencyInjection.Serialization.Json;
 using EventSourcing.Persistence.Abstractions;
-using EventSourcing.Serialization.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -33,12 +30,12 @@ namespace Bus.RabbitMQ.IntegrationTests
                 .AddSingleton<IConfiguration>(configuration)
                 .AddLogging(builder => builder.AddProvider(new XUnitLoggerProvider(TestOutputHelperFunc)))
                 .AddSingleton(new Mock<IEventStreamStagingWriter>().Object)
-                .AddSingleton(new Mock<IEventStreamWriter>().Object)
-                .AddTransient<ISerializer, TestSerializer>();
+                .AddSingleton(new Mock<IEventStreamWriter>().Object);
             
             serviceCollection
                 .AddEventSourcing()
-                .WithRabbitMQBus();
+                .WithRabbitMQBus()
+                .WithJsonSerialization();
 
             _serviceProvider = serviceCollection
                 .BuildServiceProvider(new ServiceProviderOptions
@@ -56,13 +53,5 @@ namespace Bus.RabbitMQ.IntegrationTests
 
         public T GetService<T>() => 
             _serviceProvider.GetRequiredService<T>();
-        
-        private class TestSerializer : ISerializer
-        {
-            public Task<string> SerializeAsync(object @object, CancellationToken cancellationToken)
-            {
-                return Task.FromResult(JsonSerializer.Serialize(@object));
-            }
-        }
     }
 }

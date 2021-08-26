@@ -25,7 +25,7 @@ namespace Bus.RabbitMQ.UnitTests.Helpers
             string exchangeName,
             string routingKey,
             ulong deliveryTag,
-            string serializedMessage,
+            byte[] serializedMessage,
             Dictionary<string, string> headers,
             Mock<IBasicProperties> basicPropertiesMock,
             Mock<IModel> publishingChannelMock,
@@ -54,8 +54,8 @@ namespace Bus.RabbitMQ.UnitTests.Helpers
                 .Returns(taskCompletionSource);
 
             serializerMock
-                .Setup(serializer => serializer.SerializeAsync(message, CancellationToken.None))
-                .ReturnsAsync(serializedMessage);
+                .Setup(serializer => serializer.SerializeToUtf8Bytes(message))
+                .Returns(serializedMessage);
 
             await publisher.PublishAsync(
                 message,
@@ -74,12 +74,7 @@ namespace Bus.RabbitMQ.UnitTests.Helpers
                 return true;
             });
 
-            var assertMemory = new Func<ReadOnlyMemory<byte>, bool>(memory =>
-            {
-                var expected = Encoding.UTF8.GetBytes(serializedMessage);
-
-                return expected.SequenceEqual(memory.ToArray());
-            });
+            var assertMemory = new Func<ReadOnlyMemory<byte>, bool>(memory => serializedMessage.SequenceEqual(memory.ToArray()));
 
             publishingChannelMock
                 .Verify(model => model.BasicPublish(

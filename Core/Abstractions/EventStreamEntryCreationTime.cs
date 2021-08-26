@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace EventSourcing.Abstractions
 {
@@ -107,6 +106,6 @@ namespace EventSourcing.Abstractions
 
         /// <inheritdoc />
         public override string ToString() =>
-            Value.ToString(CultureInfo.InvariantCulture);
+            Value.ToString("u");
     }
 }

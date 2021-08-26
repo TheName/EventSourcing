@@ -38,8 +38,7 @@ namespace EventSourcing.Bus.RabbitMQ.Helpers
             properties.DeliveryMode = 2;
             properties.Headers = headers.ToDictionary(pair => pair.Key, pair => (object) pair.Value);
 
-            var serializedEntry = await _serializer.SerializeAsync(message, cancellationToken).ConfigureAwait(false);
-            var serializedEntryBytes = Encoding.UTF8.GetBytes(serializedEntry);
+            var serializedEntryBytes = _serializer.SerializeToUtf8Bytes(message);
 
             var taskCompletionSource = _publishAcknowledgmentTracker.WaitForAcknowledgment(_channelProvider.PublishingChannel.NextPublishSeqNo, cancellationToken);
 

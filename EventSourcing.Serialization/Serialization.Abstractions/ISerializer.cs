@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace EventSourcing.Serialization.Abstractions
+﻿namespace EventSourcing.Serialization.Abstractions
 {
     /// <summary>
     /// The serializer
@@ -14,12 +11,9 @@ namespace EventSourcing.Serialization.Abstractions
         /// <param name="object">
         /// The object to serialize
         /// </param>
-        /// <param name="cancellationToken">
-        /// The <see cref="CancellationToken"/>.
-        /// </param>
         /// <returns>
-        /// A serialized representation of <paramref name="@object"/> in the form of string.
+        /// A serialized representation of <paramref name="object"/> in the form of UTF-8 encoded string.
         /// </returns>
-        Task<string> SerializeAsync(object @object, CancellationToken cancellationToken);
+        byte[] SerializeToUtf8Bytes(object @object);
     }
 }
