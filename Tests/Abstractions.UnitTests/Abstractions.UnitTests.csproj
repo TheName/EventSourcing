@@ -21,7 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Abstractions\Abstractions.csproj" />
-      <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
+      <ProjectReference Include="..\..\Helpers\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>
 
 </Project>

@@ -21,7 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Bus.RabbitMQ\Bus.RabbitMQ.csproj" />
-      <ProjectReference Include="..\..\Tests\TestHelpers\TestHelpers.csproj" />
+      <ProjectReference Include="..\..\Helpers\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>
 
 </Project>

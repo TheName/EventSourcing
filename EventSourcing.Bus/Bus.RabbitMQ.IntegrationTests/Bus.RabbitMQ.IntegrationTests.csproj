@@ -24,7 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Extensions.DependencyInjection.Bus.RabbitMQ\Extensions.DependencyInjection.Bus.RabbitMQ.csproj" />
-      <ProjectReference Include="..\..\Tests\TestHelpers\TestHelpers.csproj" />
+      <ProjectReference Include="..\..\Helpers\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>
 
     <ItemGroup>
