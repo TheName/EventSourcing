@@ -4,22 +4,22 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RootNamespace>EventSourcing.Bus.RabbitMQ</RootNamespace>
-        <AssemblyName>EventSourcing.Bus.RabbitMQ</AssemblyName>
+        <RootNamespace>EventSourcing.Bus.Abstractions</RootNamespace>
+        <AssemblyName>EventSourcing.Bus.Abstractions</AssemblyName>
     </PropertyGroup>
 
     <!-- NuGet metadata -->
     <PropertyGroup>
-        <Title>EventSourcing.Bus.RabbitMQ</Title>
-        <Description>This package contains RabbitMQ implementation of EventSourcing.Bus.Abstractions package.</Description>
+        <Title>EventSourcing.Bus.Abstractions</Title>
+        <Description>This package contains abstractions over EventSourcing.Bus packages.</Description>
         <Authors>Dawid Szmidka</Authors>
-        <PackageId>EventSourcing.Bus.RabbitMQ</PackageId>
+        <PackageId>EventSourcing.Bus.Abstractions</PackageId>
         <Version>0.1.0-alpha</Version>
         <PackageReleaseNotes>
-            - Initial version of EventSourcing.Bus.RabbitMQ project
+            - Initial version of EventSourcing.Bus.Abstractions project
         </PackageReleaseNotes>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageTags>EventSourcing;EventSourcing.Bus;EventSourcing.Bus.RabbitMQ</PackageTags>
+        <PackageTags>EventSourcing;EventSourcing.Bus;EventSourcing.Bus.Abstractions</PackageTags>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <IncludeSource>true</IncludeSource>
@@ -27,12 +27,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Bus.Abstractions\Bus.Abstractions.csproj" />
-      <ProjectReference Include="..\Serialization.Abstractions\Serialization.Abstractions.csproj" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
+      <ProjectReference Include="..\..\Abstractions\Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

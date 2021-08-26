@@ -28,7 +28,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
-      <ProjectReference Include="..\Bus.Abstractions\Bus.Abstractions.csproj" />
+      <ProjectReference Include="..\EventSourcing.Bus\Bus.Abstractions\Bus.Abstractions.csproj" />
       <ProjectReference Include="..\Persistence.Abstractions\Persistence.Abstractions.csproj" />
     </ItemGroup>
 
