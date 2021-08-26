@@ -1,6 +1,6 @@
 ﻿using RabbitMQ.Client;
 
-namespace EventSourcing.Bus.RabbitMQ.Factories
+namespace EventSourcing.Bus.RabbitMQ.Abstractions.Factories
 {
     internal interface IRabbitMQConnectionFactory
     {

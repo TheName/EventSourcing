@@ -1,10 +1,11 @@
 ﻿using System;
-using EventSourcing.Bus.RabbitMQ.Factories;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Factories;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Providers;
 using RabbitMQ.Client;
 
 namespace EventSourcing.Bus.RabbitMQ.Providers
 {
-    internal class RabbitMQConnectionProvider : IRabbitMQConnectionProvider
+    internal class RabbitMQConnectionProvider : IRabbitMQConnectionProvider, IDisposable
     {
         private readonly Lazy<IConnection> _lazyConnection;
 
@@ -19,12 +20,12 @@ namespace EventSourcing.Bus.RabbitMQ.Providers
 
             _lazyConnection = new Lazy<IConnection>(factory.Create);
         }
-        
-        public void Disconnect()
+
+        public void Dispose()
         {
             if (_lazyConnection.IsValueCreated)
             {
-                _lazyConnection.Value.Close();
+                _lazyConnection.Value.Dispose();
             }
         }
     }

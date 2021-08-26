@@ -1,32 +1,29 @@
 ﻿using System;
-using EventSourcing.Abstractions.Configurations;
-using EventSourcing.Bus.RabbitMQ.Configurations;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Factories;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Providers;
+using EventSourcing.Bus.RabbitMQ.Providers;
 using RabbitMQ.Client;
 
 namespace EventSourcing.Bus.RabbitMQ.Factories
 {
     internal class RabbitMQConnectionFactory : IRabbitMQConnectionFactory
     {
-        private readonly IRabbitMQConfiguration _rabbitMQConfiguration;
-        private readonly IEventSourcingConfiguration _eventSourcingConfiguration;
+        private readonly IRabbitMQConfigurationProvider _rabbitMQConfigurationProvider;
+        private readonly IRabbitMQConnectionFactoryProvider _connectionFactoryProvider;
 
         public RabbitMQConnectionFactory(
-            IRabbitMQConfiguration rabbitMQConfiguration,
-            IEventSourcingConfiguration eventSourcingConfiguration)
+            IRabbitMQConfigurationProvider rabbitMQConfigurationProvider,
+            IRabbitMQConnectionFactoryProvider connectionFactoryProvider)
         {
-            _rabbitMQConfiguration = rabbitMQConfiguration ?? throw new ArgumentNullException(nameof(rabbitMQConfiguration));
-            _eventSourcingConfiguration = eventSourcingConfiguration ?? throw new ArgumentNullException(nameof(eventSourcingConfiguration));
+            _rabbitMQConfigurationProvider = rabbitMQConfigurationProvider ?? throw new ArgumentNullException(nameof(rabbitMQConfigurationProvider));
+            _connectionFactoryProvider = connectionFactoryProvider ?? throw new ArgumentNullException(nameof(connectionFactoryProvider));
         }
         
         public IConnection Create()
         {
-            var factory = new ConnectionFactory
-            {
-                Uri = new Uri(_rabbitMQConfiguration.ConnectionString),
-                ClientProvidedName = $"bounded-context: {_eventSourcingConfiguration.BoundedContext}",
-                AutomaticRecoveryEnabled = true,
-                TopologyRecoveryEnabled = true
-            };
+            var factory = _connectionFactoryProvider.Get();
+            factory.Uri = new Uri(_rabbitMQConfigurationProvider.ConnectionString);
+            factory.ClientProvidedName = _rabbitMQConfigurationProvider.ClientProvidedName;
 
             return factory.CreateConnection();
         }

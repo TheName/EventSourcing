@@ -1,11 +1,9 @@
 ﻿using RabbitMQ.Client;
 
-namespace EventSourcing.Bus.RabbitMQ.Providers
+namespace EventSourcing.Bus.RabbitMQ.Abstractions.Providers
 {
     internal interface IRabbitMQChannelProvider
     {
         IModel PublishingChannel { get; }
-
-        void Disconnect();
     }
 }

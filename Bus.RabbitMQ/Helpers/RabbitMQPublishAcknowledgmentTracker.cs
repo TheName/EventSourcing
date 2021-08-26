@@ -5,25 +5,34 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Helpers;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Providers;
+using RabbitMQ.Client.Events;
 
 namespace EventSourcing.Bus.RabbitMQ.Helpers
 {
-    internal class PublishingChannel : IPublishingChannel, IDisposable
+    internal class RabbitMQPublishAcknowledgmentTracker : IRabbitMQPublishAcknowledgmentTracker, IDisposable
     {
+        private readonly IRabbitMQConfigurationProvider _rabbitMQConfigurationProvider;
         private readonly Channel<ChannelMessage> _channel;
         private readonly ConcurrentDictionary<ulong, TaskCompletionSource<bool>> _completionSources;
         private readonly CancellationTokenSource _readerTaskCancellationTokenSource;
         private readonly Task _readerTask;
         
-        public PublishingChannel()
+        public RabbitMQPublishAcknowledgmentTracker(IRabbitMQConfigurationProvider rabbitMQConfigurationProvider)
         {
+            _rabbitMQConfigurationProvider = rabbitMQConfigurationProvider;
             _channel = Channel.CreateUnbounded<ChannelMessage>();
             _completionSources = new ConcurrentDictionary<ulong, TaskCompletionSource<bool>>();
             _readerTaskCancellationTokenSource = new CancellationTokenSource();
             _readerTask = ChannelReader(_readerTaskCancellationTokenSource.Token);
         }
+
+        public EventHandler<BasicAckEventArgs> AckEventHandler => (sender, args) => Ack(args.DeliveryTag, args.Multiple);
+
+        public EventHandler<BasicNackEventArgs> NackEventHandler => (sender, args) => Nack(args.DeliveryTag, args.Multiple);
         
-        public void Ack(ulong deliveryTag, bool multiple)
+        private void Ack(ulong deliveryTag, bool multiple)
         {
             _channel.Writer.WriteAsync(new ChannelMessage(true, deliveryTag, multiple))
                 .ConfigureAwait(false)
@@ -31,7 +40,7 @@ namespace EventSourcing.Bus.RabbitMQ.Helpers
                 .GetResult();
         }
 
-        public void Nack(ulong deliveryTag, bool multiple)
+        private void Nack(ulong deliveryTag, bool multiple)
         {
             _channel.Writer.WriteAsync(new ChannelMessage(false, deliveryTag, multiple))
                 .ConfigureAwait(false)
@@ -43,8 +52,8 @@ namespace EventSourcing.Bus.RabbitMQ.Helpers
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(9));
-            cancellationTokenSource.Token.Register(o => taskCompletionSource.SetCanceled(), null, false);
+            cancellationTokenSource.CancelAfter(_rabbitMQConfigurationProvider.PublishingTimeout);
+            cancellationTokenSource.Token.Register(o => taskCompletionSource.TrySetCanceled(), null, false);
 
             if (!_completionSources.TryAdd(deliveryTag, taskCompletionSource))
             {
@@ -54,11 +63,31 @@ namespace EventSourcing.Bus.RabbitMQ.Helpers
             return taskCompletionSource;
         }
 
+        public void Dispose()
+        {
+            _readerTaskCancellationTokenSource.Cancel();
+            _readerTask.ConfigureAwait(false).GetAwaiter().GetResult();
+            _readerTask?.Dispose();
+            foreach (var taskCompletionSource in _completionSources.Values)
+            {
+                taskCompletionSource?.TrySetCanceled();
+            }
+        }
+
         private async Task ChannelReader(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var message = await _channel.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
+                ChannelMessage message;
+                try
+                {
+                    message = await _channel.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+                
                 var applicableDeliveryTags = new List<ulong> {message.DeliveryTag};
                 if (message.Multiple)
                 {
@@ -96,17 +125,6 @@ namespace EventSourcing.Bus.RabbitMQ.Helpers
                 Ack = ack;
                 DeliveryTag = deliveryTag;
                 Multiple = multiple;
-            }
-        }
-
-        public void Dispose()
-        {
-            _readerTaskCancellationTokenSource.Cancel();
-            _readerTask.ConfigureAwait(false).GetAwaiter().GetResult();
-            _readerTask?.Dispose();
-            foreach (var taskCompletionSource in _completionSources.Values)
-            {
-                taskCompletionSource.SetCanceled();
             }
         }
     }

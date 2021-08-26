@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.Bus.RabbitMQ.Configurations
+﻿namespace EventSourcing.Bus.RabbitMQ.Abstractions.Configurations
 {
     internal interface IRabbitMQConfiguration
     {

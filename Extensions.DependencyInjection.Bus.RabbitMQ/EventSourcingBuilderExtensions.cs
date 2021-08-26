@@ -1,6 +1,10 @@
 ﻿using System;
 using EventSourcing.Bus.Abstractions;
 using EventSourcing.Bus.RabbitMQ;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Configurations;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Factories;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Helpers;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Providers;
 using EventSourcing.Bus.RabbitMQ.Configurations;
 using EventSourcing.Bus.RabbitMQ.Factories;
 using EventSourcing.Bus.RabbitMQ.Helpers;
@@ -47,11 +51,13 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
                     provider.GetRequiredService<IOptions<RabbitMQConfiguration>>().Value);
 
             eventSourcingBuilder.Services
-                .AddTransient<IRabbitMQConfigurationProvider, RabbitMQConfigurationProvider>()
                 .AddTransient<IRabbitMQConnectionFactory, RabbitMQConnectionFactory>()
-                .AddSingleton<IPublishingChannel, PublishingChannel>()
+                .AddTransient<IRabbitMQChannelFactory, RabbitMQChannelFactory>()
+                .AddTransient<IRabbitMQConnectionFactoryProvider, RabbitMQConnectionFactoryProvider>()
+                .AddTransient<IRabbitMQConfigurationProvider, RabbitMQConfigurationProvider>()
                 .AddSingleton<IRabbitMQChannelProvider, RabbitMQChannelProvider>()
                 .AddSingleton<IRabbitMQConnectionProvider, RabbitMQConnectionProvider>()
+                .AddSingleton<IRabbitMQPublishAcknowledgmentTracker, RabbitMQPublishAcknowledgmentTracker>()
                 .AddTransient<IEventSourcingBusPublisher, RabbitMQEventSourcingBusPublisher>();
 
             return eventSourcingBuilder;
