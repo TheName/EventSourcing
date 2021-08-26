@@ -24,10 +24,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.csproj" />
-      <ProjectReference Include="..\..\Extensions.DependencyInjection.Persistence.SqlServer\Extensions.DependencyInjection.Persistence.SqlServer.csproj" />
-      <ProjectReference Include="..\..\Persistence.SqlServer\Persistence.SqlServer.csproj" />
-      <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
+      <ProjectReference Include="..\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.csproj" />
+      <ProjectReference Include="..\Extensions.DependencyInjection.Persistence.SqlServer\Extensions.DependencyInjection.Persistence.SqlServer.csproj" />
+      <ProjectReference Include="..\Persistence.SqlServer\Persistence.SqlServer.csproj" />
+      <ProjectReference Include="..\..\Tests\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>
 
     <ItemGroup>
