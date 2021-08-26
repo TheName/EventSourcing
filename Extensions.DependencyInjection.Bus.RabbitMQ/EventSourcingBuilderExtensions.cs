@@ -58,6 +58,7 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
                 .AddSingleton<IRabbitMQChannelProvider, RabbitMQChannelProvider>()
                 .AddSingleton<IRabbitMQConnectionProvider, RabbitMQConnectionProvider>()
                 .AddSingleton<IRabbitMQPublishAcknowledgmentTracker, RabbitMQPublishAcknowledgmentTracker>()
+                .AddTransient<IRabbitMQPublisher, RabbitMQPublisher>()
                 .AddTransient<IEventSourcingBusPublisher, RabbitMQEventSourcingBusPublisher>();
 
             return eventSourcingBuilder;
