@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Abstractions\Abstractions.csproj" />
+      <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
       <ProjectReference Include="..\..\EventSourcing.Persistence\Persistence.Abstractions\Persistence.Abstractions.csproj" />
     </ItemGroup>
 
