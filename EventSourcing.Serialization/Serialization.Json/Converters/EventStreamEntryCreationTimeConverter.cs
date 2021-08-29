@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using EventSourcing.Abstractions;
@@ -9,7 +10,8 @@ namespace EventSourcing.Serialization.Json.Converters
     {
         public override EventStreamEntryCreationTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return reader.GetDateTime();
+            var value = reader.GetString();
+            return DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
         }
 
         public override void Write(Utf8JsonWriter writer, EventStreamEntryCreationTime value, JsonSerializerOptions options)

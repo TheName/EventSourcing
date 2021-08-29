@@ -31,28 +31,6 @@ namespace EventSourcing.Abstractions
         /// Initializes a new instance of the <see cref="EventStreamEntryMetadata"/> class.
         /// </summary>
         /// <param name="causationId">
-        /// The causation id. See <see cref="EventStreamEntryCausationId"/>.
-        /// </param>
-        /// <param name="correlationId">
-        /// The correlation id. See <see cref="EventStreamEntryCorrelationId"/>.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when any of provided parameters is null.
-        /// </exception>
-        public EventStreamEntryMetadata(
-            EventStreamEntryCausationId causationId,
-            EventStreamEntryCorrelationId correlationId)
-            : this(
-                causationId,
-                DateTime.UtcNow,
-                correlationId)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventStreamEntryMetadata"/> class.
-        /// </summary>
-        /// <param name="causationId">
         /// The <see cref="EventStreamEntryCausationId"/>.
         /// </param>
         /// <param name="creationTime">

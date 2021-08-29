@@ -18,7 +18,7 @@ namespace EventSourcing.Serialization.NewtonsoftJson.Converters
             bool hasExistingValue,
             JsonSerializer serializer)
         {
-            var uintValue = (uint) reader.Value;
+            var uintValue = Convert.ToUInt32(reader.Value);
             return uintValue;
         }
     }

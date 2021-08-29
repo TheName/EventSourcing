@@ -19,9 +19,7 @@ namespace EventSourcing.Serialization.NewtonsoftJson.Converters
             bool hasExistingValue, 
             JsonSerializer serializer)
         {
-            var stringValue = (string) reader.Value;
-            var dateTime = DateTime.ParseExact(stringValue, "u", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
-            return dateTime;
+            return (DateTime) reader.Value;
         }
     }
 }

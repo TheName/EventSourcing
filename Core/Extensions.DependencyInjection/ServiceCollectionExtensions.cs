@@ -1,7 +1,9 @@
 ﻿using System;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Configurations;
+using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Configurations;
+using EventSourcing.Conversion;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -33,7 +35,9 @@ namespace EventSourcing.Extensions.DependencyInjection
             }
 
             serviceCollection
-                .AddTransient<IEventStreamPublisher, EventStreamPublisher>();
+                .AddTransient<IEventStreamPublisher, EventStreamPublisher>()
+                .AddTransient<IEventStreamEventConverter, EventStreamEventConverter>()
+                .AddTransient<IEventStreamEventTypeIdentifierConverter, EventStreamEventTypeIdentifierConverter>();
             
             serviceCollection
                 .AddOptions<EventSourcingConfiguration>()

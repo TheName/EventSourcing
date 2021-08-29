@@ -21,16 +21,6 @@ namespace Abstractions.UnitTests
         
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CreatingWithNullCausationId_And_WithoutCreationTime(
-            EventStreamEntryCorrelationId correlationId)
-        {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
-                null,
-                correlationId));
-        }
-        
-        [Theory]
-        [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullCreationTime(
             EventStreamEntryCausationId causationId,
             EventStreamEntryCorrelationId correlationId)
@@ -52,16 +42,6 @@ namespace Abstractions.UnitTests
                 creationTime,
                 null));
         }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CreatingWithNullCorrelationId_And_WithoutCreationTime(
-            EventStreamEntryCausationId causationId)
-        {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryMetadata(
-                causationId,
-                null));
-        }
 
         [Theory]
         [AutoMoqData]
@@ -73,17 +53,6 @@ namespace Abstractions.UnitTests
             var _ = new EventStreamEntryMetadata(
                 causationId,
                 creationTime,
-                correlationId);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void NotThrow_When_CreatingWithNonNullValues_And_WithoutCreationTime(
-            EventStreamEntryCausationId causationId,
-            EventStreamEntryCorrelationId correlationId)
-        {
-            var _ = new EventStreamEntryMetadata(
-                causationId,
                 correlationId);
         }
 

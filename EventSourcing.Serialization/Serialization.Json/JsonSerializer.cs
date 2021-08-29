@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using EventSourcing.Serialization.Abstractions;
 using EventSourcing.Serialization.Json.Converters;
@@ -22,11 +23,20 @@ namespace EventSourcing.Serialization.Json
             JsonSerializerOptions.Converters.Add(new EventStreamEventTypeIdentifierConverter());
             JsonSerializerOptions.Converters.Add(new EventStreamIdConverter());
         }
-        
+
+        public string Serialize(object @object)
+        {
+            return System.Text.Json.JsonSerializer.Serialize(@object, JsonSerializerOptions);
+        }
+
         public byte[] SerializeToUtf8Bytes(object @object)
         {
-            var temp = System.Text.Json.JsonSerializer.Serialize(@object, JsonSerializerOptions);
             return System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(@object, JsonSerializerOptions);
+        }
+
+        public object Deserialize(string serializedObject, Type objectType)
+        {
+            return System.Text.Json.JsonSerializer.Deserialize(serializedObject, objectType, JsonSerializerOptions);
         }
     }
 }

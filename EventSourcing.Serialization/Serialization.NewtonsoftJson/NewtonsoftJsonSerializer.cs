@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using EventSourcing.Serialization.Abstractions;
 using EventSourcing.Serialization.NewtonsoftJson.Converters;
@@ -25,10 +26,20 @@ namespace EventSourcing.Serialization.NewtonsoftJson
             }
         };
 
+        public string Serialize(object @object)
+        {
+            return JsonConvert.SerializeObject(@object, DefaultSerializerSettings);
+        }
+
         public byte[] SerializeToUtf8Bytes(object @object)
         {
-            var serializedObject = JsonConvert.SerializeObject(@object, DefaultSerializerSettings);
+            var serializedObject = Serialize(@object);
             return Encoding.UTF8.GetBytes(serializedObject);
+        }
+
+        public object Deserialize(string serializedObject, Type objectType)
+        {
+            return JsonConvert.DeserializeObject(serializedObject, objectType, DefaultSerializerSettings);
         }
     }
 }

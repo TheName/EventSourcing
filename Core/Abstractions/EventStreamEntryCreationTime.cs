@@ -106,6 +106,6 @@ namespace EventSourcing.Abstractions
 
         /// <inheritdoc />
         public override string ToString() =>
-            Value.ToString("u");
+            Value.ToString("O");
     }
 }
