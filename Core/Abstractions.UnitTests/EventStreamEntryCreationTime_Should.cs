@@ -67,7 +67,7 @@ namespace Abstractions.UnitTests
         {
             var creationTimeAsDateTime = (DateTime) creationTime;
             
-            Assert.Equal(creationTimeAsDateTime.ToString(CultureInfo.InvariantCulture), creationTime.ToString());
+            Assert.Equal(creationTimeAsDateTime.ToString("O"), creationTime.ToString());
         }
     }
 }

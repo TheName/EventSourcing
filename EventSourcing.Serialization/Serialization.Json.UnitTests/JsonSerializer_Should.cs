@@ -86,7 +86,7 @@ namespace Serialization.Json.UnitTests
         private static string GetExpectedSerializedString(EventStreamEntry entry)
         {
             return
-                $"{{\"StreamId\":\"{entry.StreamId}\",\"EntryId\":\"{entry.EntryId}\",\"EntrySequence\":{entry.EntrySequence},\"EventDescriptor\":{{\"EventContent\":\"{entry.EventDescriptor.EventContent}\",\"EventTypeIdentifier\":\"{entry.EventDescriptor.EventTypeIdentifier}\"}},\"EntryMetadata\":{{\"CausationId\":\"{entry.EntryMetadata.CausationId}\",\"CreationTime\":\"{entry.EntryMetadata.CreationTime}\",\"CorrelationId\":\"{entry.EntryMetadata.CorrelationId}\"}}}}";
+                $"{{\"StreamId\":\"{entry.StreamId}\",\"EntryId\":\"{entry.EntryId}\",\"EntrySequence\":{entry.EntrySequence},\"EventDescriptor\":{{\"EventContent\":\"{entry.EventDescriptor.EventContent}\",\"EventTypeIdentifier\":\"{entry.EventDescriptor.EventTypeIdentifier}\"}},\"CausationId\":\"{entry.CausationId}\",\"CreationTime\":\"{entry.CreationTime}\",\"CorrelationId\":\"{entry.CorrelationId}\"}}";
         }
 
         private static string GetExpectedSerializedString(ClassWithEnums classWithEnums)

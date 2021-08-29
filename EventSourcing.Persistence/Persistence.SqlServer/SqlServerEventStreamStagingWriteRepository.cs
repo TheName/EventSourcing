@@ -85,9 +85,9 @@ namespace EventSourcing.Persistence.SqlServer
                     new SqlParameter($"@EntryId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.EntryId},
                     new SqlParameter($"@EventContent_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventContent},
                     new SqlParameter($"@EventTypeIdentifier_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventTypeIdentifier},
-                    new SqlParameter($"@CausationId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.EntryMetadata.CausationId},
-                    new SqlParameter($"@CreationTime_{i}", SqlDbType.DateTimeOffset) {Value = (DateTime) entry.EntryMetadata.CreationTime},
-                    new SqlParameter($"@CorrelationId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.EntryMetadata.CorrelationId}
+                    new SqlParameter($"@CausationId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.CausationId},
+                    new SqlParameter($"@CreationTime_{i}", SqlDbType.DateTimeOffset) {Value = (DateTime) entry.CreationTime},
+                    new SqlParameter($"@CorrelationId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.CorrelationId}
                 });
                 
                 separator = ", ";

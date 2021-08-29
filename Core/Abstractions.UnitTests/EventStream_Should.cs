@@ -86,7 +86,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     Convert.ToUInt32(i),
                     entry.EventDescriptor,
-                    entry.EntryMetadata)));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId)));
 
             _ = new EventStream(
                 streamId,
@@ -104,7 +106,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     Convert.ToUInt32(i),
                     entry.EventDescriptor,
-                    entry.EntryMetadata)));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId)));
 
             var stream = new EventStream(streamId, entries);
 
@@ -122,7 +126,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     Convert.ToUInt32(i),
                     entry.EventDescriptor,
-                    entry.EntryMetadata)));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId)));
             
             var stream = new EventStream(streamId, entries);
 
@@ -140,7 +146,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     Convert.ToUInt32(i),
                     entry.EventDescriptor,
-                    entry.EntryMetadata)));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId)));
             
             var stream = new EventStream(streamId, entries);
 
@@ -158,7 +166,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     Convert.ToUInt32(i),
                     entry.EventDescriptor,
-                    entry.EntryMetadata)));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId)));
             
             var stream = new EventStream(streamId, entries);
 
@@ -212,7 +222,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     entry.EntrySequence,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(entriesToAppend));
         }
@@ -230,7 +242,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     entry.EntrySequence,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(entriesToAppend));
         }
@@ -252,7 +266,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     nextSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(entriesToAppend));
         }
@@ -274,7 +290,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     nextSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(entriesToAppend));
         }
@@ -291,7 +309,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 entryToAppend.EntrySequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
             
             Assert.NotEqual<uint>(stream.CurrentSequence + 1, entryToAppend.EntrySequence);
             Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEntries(new[] {entryToAppend}));
@@ -309,7 +329,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 entryToAppend.EntrySequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
             
             Assert.NotEqual<uint>(stream.CurrentSequence + 1, entryToAppend.EntrySequence);
 
@@ -329,7 +351,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     entry.EntrySequence,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             Assert.NotEqual<uint>(stream.CurrentSequence + 1, entriesToAppend[0].EntrySequence);
@@ -350,7 +374,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     entry.EntrySequence,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             Assert.NotEqual<uint>(stream.CurrentSequence + 1, entriesToAppend[0].EntrySequence);
@@ -383,7 +409,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     getNextSequenceFunc(i, entry),
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEntries(entriesToAppend));
         }
@@ -413,7 +441,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     getNextSequenceFunc(i, entry),
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEntries(entriesToAppend));
         }
@@ -431,7 +461,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
         }
@@ -449,7 +481,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
         }
@@ -468,7 +502,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             stream.AppendEntries(entriesToAppend);
         }
@@ -487,7 +523,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             stream.AppendEntries(entriesToAppend);
         }
@@ -506,7 +544,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
             
@@ -527,7 +567,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
             
@@ -549,7 +591,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             stream.AppendEntries(entriesToAppend);
             
@@ -571,7 +615,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             stream.AppendEntries(entriesToAppend);
             
@@ -592,7 +638,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
             
@@ -613,7 +661,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
             
@@ -635,7 +685,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             stream.AppendEntries(entriesToAppend);
             
@@ -657,7 +709,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             stream.AppendEntries(entriesToAppend);
             
@@ -677,7 +731,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
             
@@ -697,7 +753,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
             
@@ -718,7 +776,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
 
             stream.AppendEntries(entriesToAppend);
@@ -740,7 +800,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
 
             stream.AppendEntries(entriesToAppend);
@@ -761,7 +823,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
 
@@ -782,7 +846,9 @@ namespace Abstractions.UnitTests
                 entryToAppend.EntryId,
                 validSequence,
                 entryToAppend.EventDescriptor,
-                entryToAppend.EntryMetadata);
+                entryToAppend.CausationId,
+                entryToAppend.CreationTime,
+                entryToAppend.CorrelationId);
 
             stream.AppendEntries(new[] {entryToAppend});
 
@@ -804,7 +870,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
 
             stream.AppendEntries(entriesToAppend);
@@ -826,7 +894,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
 
             stream.AppendEntries(entriesToAppend);
@@ -884,7 +954,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             var stream1 = new EventStream(
@@ -957,7 +1029,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             var stream1 = new EventStream(
@@ -989,7 +1063,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             var stream1 = new EventStream(
@@ -1024,7 +1100,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             entriesToAppend2 = entriesToAppend2
@@ -1033,7 +1111,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             var stream1 = new EventStream(
@@ -1089,7 +1169,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     validSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
 
             eventStream.AppendEntries(entriesToAppend);

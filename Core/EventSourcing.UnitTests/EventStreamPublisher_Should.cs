@@ -96,9 +96,11 @@ namespace EventSourcing.UnitTests
                     .Select((entry, i) => new EventStreamEntry(
                         entry.StreamId,
                         entry.EntryId,
-                        Convert.ToUInt32(i++),
+                        Convert.ToUInt32(i),
                         entry.EventDescriptor,
-                        entry.EntryMetadata)));
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);
@@ -122,12 +124,14 @@ namespace EventSourcing.UnitTests
         {
             entriesToAppend = new EventStreamEntries(
                 entriesToAppend
-                    .Select((@event, i) => new EventStreamEntry(
-                        @event.StreamId,
-                        @event.EntryId,
-                        Convert.ToUInt32(i++),
-                        @event.EventDescriptor,
-                        @event.EntryMetadata)));
+                    .Select((entry, i) => new EventStreamEntry(
+                        entry.StreamId,
+                        entry.EntryId,
+                        Convert.ToUInt32(i),
+                        entry.EventDescriptor,
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);
@@ -157,9 +161,11 @@ namespace EventSourcing.UnitTests
                     .Select((entry, i) => new EventStreamEntry(
                         entry.StreamId,
                         entry.EntryId,
-                        Convert.ToUInt32(i++),
+                        Convert.ToUInt32(i),
                         entry.EventDescriptor,
-                        entry.EntryMetadata)));
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);
@@ -205,9 +211,11 @@ namespace EventSourcing.UnitTests
                     .Select((entry, i) => new EventStreamEntry(
                         entry.StreamId,
                         entry.EntryId,
-                        Convert.ToUInt32(i++),
+                        Convert.ToUInt32(i),
                         entry.EventDescriptor,
-                        entry.EntryMetadata)));
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);
@@ -252,9 +260,11 @@ namespace EventSourcing.UnitTests
                     .Select((entry, i) => new EventStreamEntry(
                         entry.StreamId,
                         entry.EntryId,
-                        Convert.ToUInt32(i++),
+                        Convert.ToUInt32(i),
                         entry.EventDescriptor,
-                        entry.EntryMetadata)));
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);
@@ -293,9 +303,11 @@ namespace EventSourcing.UnitTests
                     .Select((entry, i) => new EventStreamEntry(
                         entry.StreamId,
                         entry.EntryId,
-                        Convert.ToUInt32(i++),
+                        Convert.ToUInt32(i),
                         entry.EventDescriptor,
-                        entry.EntryMetadata)));
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);
@@ -324,9 +336,11 @@ namespace EventSourcing.UnitTests
                     .Select((entry, i) => new EventStreamEntry(
                         entry.StreamId,
                         entry.EntryId,
-                        Convert.ToUInt32(i++),
+                        Convert.ToUInt32(i),
                         entry.EventDescriptor,
-                        entry.EntryMetadata)));
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);
@@ -363,9 +377,11 @@ namespace EventSourcing.UnitTests
                     .Select((entry, i) => new EventStreamEntry(
                         entry.StreamId,
                         entry.EntryId,
-                        Convert.ToUInt32(i++),
+                        Convert.ToUInt32(i),
                         entry.EventDescriptor,
-                        entry.EntryMetadata)));
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);
@@ -394,9 +410,11 @@ namespace EventSourcing.UnitTests
                     .Select((entry, i) => new EventStreamEntry(
                         entry.StreamId,
                         entry.EntryId,
-                        Convert.ToUInt32(i++),
+                        Convert.ToUInt32(i),
                         entry.EventDescriptor,
-                        entry.EntryMetadata)));
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);
@@ -437,9 +455,11 @@ namespace EventSourcing.UnitTests
                     .Select((entry, i) => new EventStreamEntry(
                         entry.StreamId,
                         entry.EntryId,
-                        Convert.ToUInt32(i++),
+                        Convert.ToUInt32(i),
                         entry.EventDescriptor,
-                        entry.EntryMetadata)));
+                        entry.CausationId,
+                        entry.CreationTime,
+                        entry.CorrelationId)));
             
             var stream = new EventStream(eventStreamId, EventStreamEntries.Empty);
             stream.AppendEntries(entriesToAppend);

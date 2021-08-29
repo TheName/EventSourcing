@@ -43,7 +43,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     startingSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             Assert.Throws<InvalidEventStreamIdException>(() => new EventStreamEntries(entries));
         }
@@ -84,7 +86,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     getNextSequenceFunc(i, entry),
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
 
             Assert.Throws<InvalidEventStreamEntrySequenceException>(() => new EventStreamEntries(entries));
         }
@@ -115,7 +119,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     startingSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId));
             
             _ = new EventStreamEntries(entries);
         }
@@ -144,7 +150,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     startingSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             var entries = new EventStreamEntries(entriesCollection);
@@ -175,7 +183,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     startingSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             var events = new EventStreamEntries(entriesCollection);
@@ -205,7 +215,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     startingSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             var entries = new EventStreamEntries(entriesCollection);
@@ -237,7 +249,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     startingSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             var entries1 = new EventStreamEntries(entriesCollection.Select(entry => entry));
@@ -262,7 +276,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     startingSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             entriesCollection2 = entriesCollection2
@@ -271,7 +287,9 @@ namespace Abstractions.UnitTests
                     entry.EntryId,
                     startingSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata))
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
                 .ToList();
             
             var entries1 = new EventStreamEntries(entriesCollection1.Select(entry => entry));

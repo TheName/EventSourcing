@@ -28,11 +28,21 @@ namespace EventSourcing.Abstractions
         /// The <see cref="EventStreamEventDescriptor"/> that describes event from this entry.
         /// </summary>
         public EventStreamEventDescriptor EventDescriptor { get; }
-
+        
         /// <summary>
-        /// The <see cref="EventStreamEntryMetadata"/> related to this entry.
+        /// The causation id. See <see cref="EventStreamEntryCausationId"/>.
         /// </summary>
-        public EventStreamEntryMetadata EntryMetadata { get; }
+        public EventStreamEntryCausationId CausationId { get; }
+        
+        /// <summary>
+        /// The creation time. See <see cref="EventStreamEntryCreationTime"/>.
+        /// </summary>
+        public EventStreamEntryCreationTime CreationTime { get; }
+        
+        /// <summary>
+        /// The correlation id. See <see cref="EventStreamEntryCorrelationId"/>.
+        /// </summary>
+        public EventStreamEntryCorrelationId CorrelationId { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStreamEntry"/> class.
@@ -49,8 +59,14 @@ namespace EventSourcing.Abstractions
         /// <param name="eventDescriptor">
         /// The <see cref="EventStreamEventDescriptor"/> that's describing this event.
         /// </param>
-        /// <param name="entryMetadata">
-        /// The <see cref="EventStreamEntryMetadata"/> related to this entry.
+        /// <param name="causationId">
+        /// The <see cref="EventStreamEntryCausationId"/>.
+        /// </param>
+        /// <param name="creationTime">
+        /// The <see cref="EventStreamEntryCreationTime"/>.
+        /// </param>
+        /// <param name="correlationId">
+        /// The <see cref="EventStreamEntryCorrelationId"/>.
         /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown when any of provided parameters is null.
@@ -60,13 +76,17 @@ namespace EventSourcing.Abstractions
             EventStreamEntryId entryId,
             EventStreamEntrySequence entrySequence,
             EventStreamEventDescriptor eventDescriptor,
-            EventStreamEntryMetadata entryMetadata)
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCreationTime creationTime,
+            EventStreamEntryCorrelationId correlationId)
         {
             StreamId = streamId ?? throw new ArgumentNullException(nameof(streamId));
             EntryId = entryId ?? throw new ArgumentNullException(nameof(entryId));
             EntrySequence = entrySequence ?? throw new ArgumentNullException(nameof(entrySequence));
             EventDescriptor = eventDescriptor ?? throw new ArgumentNullException(nameof(eventDescriptor));
-            EntryMetadata = entryMetadata ?? throw new ArgumentNullException(nameof(entryMetadata));
+            CausationId = causationId ?? throw new ArgumentNullException(nameof(causationId));
+            CreationTime = creationTime ?? throw new ArgumentNullException(nameof(creationTime));
+            CorrelationId = correlationId ?? throw new ArgumentNullException(nameof(correlationId));
         }
 
         #region Operators
@@ -122,7 +142,7 @@ namespace EventSourcing.Abstractions
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"Event Stream ID: {StreamId}, Entry ID: {EntryId}, Entry Sequence: {EntrySequence}, Event Descriptor: {EventDescriptor}, Entry Metadata: {EntryMetadata}";
+            $"Event Stream ID: {StreamId}, Entry ID: {EntryId}, Entry Sequence: {EntrySequence}, Event Descriptor: {EventDescriptor}, Causation ID: {CausationId}, Creation Time: {CreationTime}, Correlation ID: {CorrelationId}";
 
         private IEnumerable<object> GetPropertiesForHashCode()
         {
@@ -130,7 +150,9 @@ namespace EventSourcing.Abstractions
             yield return EntryId;
             yield return EntrySequence;
             yield return EventDescriptor;
-            yield return EntryMetadata;
+            yield return CausationId;
+            yield return CreationTime;
+            yield return CorrelationId;
         }
     }
 }

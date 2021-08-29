@@ -166,9 +166,9 @@ namespace Persistence.SqlServer.IntegrationTests
             Assert.Equal<EventStreamEntryId>(entry.EntryId, readModel.EntryId);
             Assert.Equal<EventStreamEventContent>(entry.EventDescriptor.EventContent, readModel.EventContent);
             Assert.Equal<EventStreamEventTypeIdentifier>(entry.EventDescriptor.EventTypeIdentifier, readModel.EventTypeIdentifier);
-            Assert.Equal<EventStreamEntryCausationId>(entry.EntryMetadata.CausationId, readModel.CausationId);
-            Assert.Equal<EventStreamEntryCreationTime>(entry.EntryMetadata.CreationTime, readModel.CreationTime);
-            Assert.Equal<EventStreamEntryCorrelationId>(entry.EntryMetadata.CorrelationId, readModel.CorrelationId);
+            Assert.Equal<EventStreamEntryCausationId>(entry.CausationId, readModel.CausationId);
+            Assert.Equal<EventStreamEntryCreationTime>(entry.CreationTime, readModel.CreationTime);
+            Assert.Equal<EventStreamEntryCorrelationId>(entry.CorrelationId, readModel.CorrelationId);
         }
     }
 }

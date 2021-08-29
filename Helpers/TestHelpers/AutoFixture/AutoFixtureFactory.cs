@@ -39,7 +39,9 @@ namespace TestHelpers.AutoFixture
                     entry.EntryId,
                     Convert.ToUInt32(i),
                     entry.EventDescriptor,
-                    entry.EntryMetadata)));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId)));
             
             var streamId = entries[0].StreamId;
             return new EventStream(streamId, entries);
@@ -56,7 +58,9 @@ namespace TestHelpers.AutoFixture
                     entry.EntryId,
                     initialSequence++,
                     entry.EventDescriptor,
-                    entry.EntryMetadata)));
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId)));
         }
     }
 }
