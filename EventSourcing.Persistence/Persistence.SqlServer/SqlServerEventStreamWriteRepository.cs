@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Persistence.Abstractions;
+using EventSourcing.Persistence.Abstractions.Enums;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.Persistence.SqlServer

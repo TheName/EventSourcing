@@ -2,6 +2,7 @@
 using System.Text;
 using AutoFixture;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Serialization.NewtonsoftJson;
 using TestHelpers.Attributes;
 using Xunit;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Persistence.Abstractions
+namespace EventSourcing.Persistence.Abstractions.ValueObjects
 {
     /// <summary>
     /// The event stream staging id value object.

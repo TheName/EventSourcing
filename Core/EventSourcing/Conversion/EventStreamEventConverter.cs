@@ -1,6 +1,7 @@
 ﻿using System;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Serialization.Abstractions;
 
 namespace EventSourcing.Conversion

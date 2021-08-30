@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Handling;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Bus.RabbitMQ;
 using EventSourcing.Bus.RabbitMQ.Abstractions.Helpers;
 using EventSourcing.Bus.RabbitMQ.Abstractions.Providers;

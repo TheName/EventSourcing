@@ -1,9 +1,10 @@
 ﻿using System;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Abstractions.UnitTests
+namespace Abstractions.UnitTests.ValueObjects
 {
     public class EventStreamEntry_Should
     {

@@ -7,6 +7,7 @@ using AutoFixture.Xunit2;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.Handling;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Handling;
 using Moq;
 using TestHelpers.Attributes;

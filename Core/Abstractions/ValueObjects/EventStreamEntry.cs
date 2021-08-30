@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EventSourcing.Abstractions
+namespace EventSourcing.Abstractions.ValueObjects
 {
     /// <summary>
-    /// Represents event's metadata.
+    /// Represents a single entry in an event stream.
     /// </summary>
-    public class EventStreamEventMetadata
+    public class EventStreamEntry
     {
         /// <summary>
         /// The <see cref="EventStreamId"/> that this event belongs to.
@@ -23,6 +23,11 @@ namespace EventSourcing.Abstractions
         /// The <see cref="EventStreamEntrySequence"/> this entry has in the event stream it belongs to.
         /// </summary>
         public EventStreamEntrySequence EntrySequence { get; }
+
+        /// <summary>
+        /// The <see cref="EventStreamEventDescriptor"/> that describes event from this entry.
+        /// </summary>
+        public EventStreamEventDescriptor EventDescriptor { get; }
         
         /// <summary>
         /// The causation id. See <see cref="EventStreamEntryCausationId"/>.
@@ -51,6 +56,9 @@ namespace EventSourcing.Abstractions
         /// <param name="entrySequence">
         /// The <see cref="EventStreamEntrySequence"/> this entry has in the event stream it belongs to.
         /// </param>
+        /// <param name="eventDescriptor">
+        /// The <see cref="EventStreamEventDescriptor"/> that's describing this event.
+        /// </param>
         /// <param name="causationId">
         /// The <see cref="EventStreamEntryCausationId"/>.
         /// </param>
@@ -63,10 +71,11 @@ namespace EventSourcing.Abstractions
         /// <exception cref="ArgumentNullException">
         /// Thrown when any of provided parameters is null.
         /// </exception>
-        public EventStreamEventMetadata(
+        public EventStreamEntry(
             EventStreamId streamId,
             EventStreamEntryId entryId,
             EventStreamEntrySequence entrySequence,
+            EventStreamEventDescriptor eventDescriptor,
             EventStreamEntryCausationId causationId,
             EventStreamEntryCreationTime creationTime,
             EventStreamEntryCorrelationId correlationId)
@@ -74,9 +83,21 @@ namespace EventSourcing.Abstractions
             StreamId = streamId ?? throw new ArgumentNullException(nameof(streamId));
             EntryId = entryId ?? throw new ArgumentNullException(nameof(entryId));
             EntrySequence = entrySequence ?? throw new ArgumentNullException(nameof(entrySequence));
+            EventDescriptor = eventDescriptor ?? throw new ArgumentNullException(nameof(eventDescriptor));
             CausationId = causationId ?? throw new ArgumentNullException(nameof(causationId));
             CreationTime = creationTime ?? throw new ArgumentNullException(nameof(creationTime));
             CorrelationId = correlationId ?? throw new ArgumentNullException(nameof(correlationId));
+        }
+
+        public EventStreamEventMetadata ToEventMetadata()
+        {
+            return new EventStreamEventMetadata(
+                StreamId,
+                EntryId,
+                EntrySequence,
+                CausationId,
+                CreationTime,
+                CorrelationId);
         }
 
         #region Operators
@@ -84,38 +105,38 @@ namespace EventSourcing.Abstractions
         /// <summary>
         /// The equality operator.
         /// </summary>
-        /// <param name="metadata">
-        /// The <see cref="EventStreamEventMetadata"/>.
+        /// <param name="event">
+        /// The <see cref="EventStreamEntry"/>.
         /// </param>
-        /// <param name="otherMetadata">
-        /// The <see cref="EventStreamEventMetadata"/>.
+        /// <param name="otherEvent">
+        /// The <see cref="EventStreamEntry"/>.
         /// </param>
         /// <returns>
-        /// True if <paramref name="metadata"/> and <paramref name="otherMetadata"/> are equal, false otherwise.
+        /// True if <paramref name="event"/> and <paramref name="otherEvent"/> are equal, false otherwise.
         /// </returns>
-        public static bool operator ==(EventStreamEventMetadata metadata, EventStreamEventMetadata otherMetadata) =>
-            Equals(metadata, otherMetadata);
+        public static bool operator ==(EventStreamEntry @event, EventStreamEntry otherEvent) =>
+            Equals(@event, otherEvent);
 
         /// <summary>
         /// The inequality operator.
         /// </summary>
-        /// <param name="metadata">
-        /// The <see cref="EventStreamEventMetadata"/>.
+        /// <param name="event">
+        /// The <see cref="EventStreamEntry"/>.
         /// </param>
-        /// <param name="otherMetadata">
-        /// The <see cref="EventStreamEventMetadata"/>.
+        /// <param name="otherEvent">
+        /// The <see cref="EventStreamEntry"/>.
         /// </param>
         /// <returns>
-        /// True if <paramref name="metadata"/> and <paramref name="otherMetadata"/> are not equal, false otherwise.
+        /// True if <paramref name="event"/> and <paramref name="otherEvent"/> are not equal, false otherwise.
         /// </returns>
-        public static bool operator !=(EventStreamEventMetadata metadata, EventStreamEventMetadata otherMetadata) =>
-            !(metadata == otherMetadata);
+        public static bool operator !=(EventStreamEntry @event, EventStreamEntry otherEvent) =>
+            !(@event == otherEvent);
 
         #endregion
 
         /// <inheritdoc />
         public override bool Equals(object obj) =>
-            obj is EventStreamEventMetadata other &&
+            obj is EventStreamEntry other &&
             other.GetPropertiesForHashCode().SequenceEqual(GetPropertiesForHashCode());
 
         /// <inheritdoc />
@@ -132,13 +153,14 @@ namespace EventSourcing.Abstractions
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"Event Stream ID: {StreamId}, Entry ID: {EntryId}, Entry Sequence: {EntrySequence}, Causation ID: {CausationId}, Creation Time: {CreationTime}, Correlation ID: {CorrelationId}";
+            $"Event Stream ID: {StreamId}, Entry ID: {EntryId}, Entry Sequence: {EntrySequence}, Event Descriptor: {EventDescriptor}, Causation ID: {CausationId}, Creation Time: {CreationTime}, Correlation ID: {CorrelationId}";
 
         private IEnumerable<object> GetPropertiesForHashCode()
         {
             yield return StreamId;
             yield return EntryId;
             yield return EntrySequence;
+            yield return EventDescriptor;
             yield return CausationId;
             yield return CreationTime;
             yield return CorrelationId;

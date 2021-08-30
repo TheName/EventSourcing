@@ -1,9 +1,9 @@
 ﻿using System;
-using EventSourcing.Persistence.Abstractions;
+using EventSourcing.Persistence.Abstractions.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Persistence.Abstractions.UnitTests
+namespace Persistence.Abstractions.UnitTests.ValueObjects
 {
     public class EventStreamStagingId_Should
     {

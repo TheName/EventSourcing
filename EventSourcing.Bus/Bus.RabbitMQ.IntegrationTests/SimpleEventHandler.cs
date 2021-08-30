@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Handling;
+using EventSourcing.Abstractions.ValueObjects;
 
 namespace Bus.RabbitMQ.IntegrationTests
 {

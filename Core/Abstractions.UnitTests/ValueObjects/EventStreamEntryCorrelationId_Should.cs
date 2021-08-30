@@ -1,48 +1,31 @@
 ﻿using System;
-using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Abstractions.UnitTests
+namespace Abstractions.UnitTests.ValueObjects
 {
-    public class EventStreamId_Should
+    public class EventStreamEntryCorrelationId_Should
     {
-        [Fact]
-        public void ReturnRandomEventStreamId_When_CallingNewEventStreamId()
-        {
-            var streamId = EventStreamId.NewEventStreamId();
-            
-            Assert.NotEqual<Guid>(Guid.Empty, streamId);
-        }
-        
-        [Fact]
-        public void ReturnDifferentEventStreamIdEachTime_When_CallingNewEventStreamId()
-        {
-            var streamId1 = EventStreamId.NewEventStreamId();
-            var streamId2 = EventStreamId.NewEventStreamId();
-            
-            Assert.NotEqual(streamId1, streamId2);
-        }
-        
         [Fact]
         public void Throw_ArgumentException_When_CreatingWithEmptyGuid()
         {
-            Assert.Throws<ArgumentException>(() => (EventStreamId) Guid.Empty);
+            Assert.Throws<ArgumentException>(() => (EventStreamEntryCorrelationId) Guid.Empty);
         }
 
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNonEmptyGuid(Guid id)
         {
-            EventStreamId _ = id;
+            EventStreamEntryCorrelationId _ = id;
         }
 
         [Theory]
         [AutoMoqData]
         public void ReturnTrue_When_ComparingDifferentObjectsWithSameValue(Guid value)
         {
-            EventStreamId id1 = value;
-            EventStreamId id2 = value;
+            EventStreamEntryCorrelationId id1 = value;
+            EventStreamEntryCorrelationId id2 = value;
             
             Assert.Equal(id1, id2);
             Assert.True(id1 == id2);
@@ -53,8 +36,8 @@ namespace Abstractions.UnitTests
         [AutoMoqData]
         public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentValue(Guid value, Guid otherValue)
         {
-            EventStreamId id1 = value;
-            EventStreamId id2 = otherValue;
+            EventStreamEntryCorrelationId id1 = value;
+            EventStreamEntryCorrelationId id2 = otherValue;
             
             Assert.NotEqual(id1, id2);
             Assert.False(id1 == id2);
@@ -63,7 +46,7 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnValueToString_When_CallingToString(EventStreamId id)
+        public void ReturnValueToString_When_CallingToString(EventStreamEntryCorrelationId id)
         {
             var idAsGuid = (Guid) id;
             

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.ValueObjects;
 
 namespace EventSourcing.Serialization.Json.Converters
 {

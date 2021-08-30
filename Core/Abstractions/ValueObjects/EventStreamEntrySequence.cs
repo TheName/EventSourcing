@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.Abstractions
+﻿namespace EventSourcing.Abstractions.ValueObjects
 {
     /// <summary>
     /// The event stream entry sequence value object.

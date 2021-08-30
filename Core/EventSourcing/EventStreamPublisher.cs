@@ -7,6 +7,7 @@ using EventSourcing.Abstractions.Exceptions;
 using EventSourcing.Bus.Abstractions;
 using EventSourcing.Extensions;
 using EventSourcing.Persistence.Abstractions;
+using EventSourcing.Persistence.Abstractions.Enums;
 
 namespace EventSourcing
 {

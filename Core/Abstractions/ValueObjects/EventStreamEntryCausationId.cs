@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Abstractions
+namespace EventSourcing.Abstractions.ValueObjects
 {
     /// <summary>
     /// The event stream entry causation id.

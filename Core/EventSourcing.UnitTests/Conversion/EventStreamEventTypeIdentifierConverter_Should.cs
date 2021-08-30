@@ -1,5 +1,6 @@
 ﻿using System;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Conversion;
 using TestHelpers.Attributes;
 using Xunit;

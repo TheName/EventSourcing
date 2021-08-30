@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.Persistence.Abstractions
+﻿namespace EventSourcing.Persistence.Abstractions.Enums
 {
     /// <summary>
     /// The enum representing event stream write operation result.

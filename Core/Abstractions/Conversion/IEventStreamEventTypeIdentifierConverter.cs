@@ -1,4 +1,5 @@
 ﻿using System;
+using EventSourcing.Abstractions.ValueObjects;
 
 namespace EventSourcing.Abstractions.Conversion
 {

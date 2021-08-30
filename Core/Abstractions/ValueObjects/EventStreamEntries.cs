@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using EventSourcing.Abstractions.Exceptions;
 
-namespace EventSourcing.Abstractions
+namespace EventSourcing.Abstractions.ValueObjects
 {
     /// <summary>
     /// Represents a read-only collection of consecutive entries assigned to the same stream. 

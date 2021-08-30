@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using EventSourcing.Abstractions.ValueObjects;
 
 namespace EventSourcing.Abstractions.Handling
 {

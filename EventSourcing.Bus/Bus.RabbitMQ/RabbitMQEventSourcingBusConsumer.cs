@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Handling;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Bus.Abstractions;
 using EventSourcing.Bus.RabbitMQ.Abstractions.Helpers;
 using EventSourcing.Bus.RabbitMQ.Abstractions.Providers;

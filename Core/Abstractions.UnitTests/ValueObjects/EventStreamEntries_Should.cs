@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Abstractions.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Abstractions.UnitTests
+namespace Abstractions.UnitTests.ValueObjects
 {
     public class EventStreamEntries_Should
     {

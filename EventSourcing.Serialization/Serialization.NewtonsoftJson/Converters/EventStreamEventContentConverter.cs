@@ -1,5 +1,6 @@
 ﻿using System;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.ValueObjects;
 using Newtonsoft.Json;
 
 namespace EventSourcing.Serialization.NewtonsoftJson.Converters

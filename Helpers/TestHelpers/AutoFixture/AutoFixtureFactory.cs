@@ -5,7 +5,9 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Persistence.Abstractions;
+using EventSourcing.Persistence.Abstractions.ValueObjects;
 
 namespace TestHelpers.AutoFixture
 {

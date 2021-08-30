@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.Handling;
+using EventSourcing.Abstractions.ValueObjects;
 
 namespace EventSourcing.Handling
 {

@@ -1,8 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Persistence;
 using EventSourcing.Persistence.Abstractions;
+using EventSourcing.Persistence.Abstractions.Enums;
 using TestHelpers.Attributes;
 using Xunit;
 using Xunit.Abstractions;

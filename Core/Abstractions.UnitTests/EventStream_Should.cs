@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Abstractions.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 

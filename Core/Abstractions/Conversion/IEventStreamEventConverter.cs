@@ -1,4 +1,6 @@
-﻿namespace EventSourcing.Abstractions.Conversion
+﻿using EventSourcing.Abstractions.ValueObjects;
+
+namespace EventSourcing.Abstractions.Conversion
 {
     /// <summary>
     /// Converts event object to <see cref="EventStreamEventDescriptor"/> and <see cref="EventStreamEventDescriptor"/> to event object.

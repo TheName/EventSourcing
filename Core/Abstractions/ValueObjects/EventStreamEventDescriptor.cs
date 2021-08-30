@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EventSourcing.Abstractions
+namespace EventSourcing.Abstractions.ValueObjects
 {
     /// <summary>
     /// Represents a serialized event with type information. 

@@ -2,6 +2,7 @@
 using AutoFixture.Xunit2;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Conversion;
 using EventSourcing.Serialization.Abstractions;
 using Moq;

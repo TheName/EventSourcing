@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Bus.Abstractions;
 using EventSourcing.Serialization.Abstractions;
 using TestHelpers.Attributes;
