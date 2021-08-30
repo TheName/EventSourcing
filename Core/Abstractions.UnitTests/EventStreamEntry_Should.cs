@@ -569,5 +569,19 @@ namespace Abstractions.UnitTests
             
             Assert.Equal(expectedValue, eventStreamEntry.ToString());
         }
+
+        [Theory]
+        [AutoMoqData]
+        public void ReturnMetadataWithSameValues(EventStreamEntry eventStreamEntry)
+        {
+            var result = eventStreamEntry.ToEventMetadata();
+            
+            Assert.Equal(eventStreamEntry.StreamId, result.StreamId);
+            Assert.Equal(eventStreamEntry.EntryId, result.EntryId);
+            Assert.Equal(eventStreamEntry.EntrySequence, result.EntrySequence);
+            Assert.Equal(eventStreamEntry.CausationId, result.CausationId);
+            Assert.Equal(eventStreamEntry.CreationTime, result.CreationTime);
+            Assert.Equal(eventStreamEntry.CorrelationId, result.CorrelationId);
+        }
     }
 }
