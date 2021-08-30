@@ -4,6 +4,8 @@ namespace EventSourcing.Bus.RabbitMQ.Abstractions.Factories
 {
     internal interface IRabbitMQChannelFactory
     {
-        IModel Create();
+        IModel CreatePublishingChannel();
+        
+        IModel CreateConsumingChannel();
     }
 }

@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
+using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Bus.Abstractions;
-using EventSourcing.Bus.RabbitMQ.Abstractions.Providers;
-using RabbitMQ.Client;
+using EventSourcing.Serialization.Abstractions;
 using TestHelpers.Attributes;
 using Xunit;
 using Xunit.Abstractions;
@@ -18,9 +18,11 @@ namespace Bus.RabbitMQ.IntegrationTests
 
         private IEventSourcingBusPublisher Publisher => _fixture.GetService<IEventSourcingBusPublisher>();
 
-        private IModel PublishingChannel => _fixture.GetService<IRabbitMQChannelProvider>().PublishingChannel;
+        private SimpleEventHandler SimpleEventHandler => _fixture.GetService<SimpleEventHandler>();
 
-        private IRabbitMQConfigurationProvider ConfigurationProvider => _fixture.GetService<IRabbitMQConfigurationProvider>();
+        private ISerializer Serializer => _fixture.GetService<ISerializer>();
+
+        private IEventStreamEventTypeIdentifierConverter TypeIdentifierConverter => _fixture.GetService<IEventStreamEventTypeIdentifierConverter>();
 
         public RabbitMQEventSourcingBusPublisher_Should(RabbitMQCollectionFixture fixture, ITestOutputHelper testOutputHelper)
         {
@@ -29,16 +31,22 @@ namespace Bus.RabbitMQ.IntegrationTests
 
         [Theory]
         [AutoMoqData]
-        public async Task PublishSuccessfully(EventStreamEntry entry)
+        public async Task PublishSuccessfully(SimpleEvent simpleEvent, EventStreamEventMetadata eventMetadata)
         {
-            PublishingChannel.QueuePurge(ConfigurationProvider.QueueName);
-            var messageCount = PublishingChannel.MessageCount(ConfigurationProvider.QueueName);
-            Assert.Equal((uint) 0, messageCount);
+            var entry = new EventStreamEntry(
+                eventMetadata.StreamId,
+                eventMetadata.EntryId,
+                eventMetadata.EntrySequence,
+                new EventStreamEventDescriptor(
+                    Serializer.Serialize(simpleEvent),
+                    TypeIdentifierConverter.ToTypeIdentifier(simpleEvent.GetType())),
+                eventMetadata.CausationId,
+                eventMetadata.CreationTime,
+                eventMetadata.CorrelationId);
             
             await Publisher.PublishAsync(entry, CancellationToken.None);
             
-            messageCount = PublishingChannel.MessageCount(ConfigurationProvider.QueueName);
-            Assert.Equal((uint) 1, messageCount);
+            Assert.Equal(1, SimpleEventHandler.GetNumberOfHandledEvents(simpleEvent.EventId));
         }
 
         [Theory]
@@ -47,16 +55,23 @@ namespace Bus.RabbitMQ.IntegrationTests
         [AutoMoqWithInlineData(100)]
         public async Task PublishSuccessfully_When_PublishingInParallel(
             int numberOfThreads,
-            EventStreamEntry entry)
+            SimpleEvent simpleEvent,
+            EventStreamEventMetadata eventMetadata)
         {
-            PublishingChannel.QueuePurge(ConfigurationProvider.QueueName);
-            var messageCount = PublishingChannel.MessageCount(ConfigurationProvider.QueueName);
-            Assert.Equal((uint) 0, messageCount);
+            var entry = new EventStreamEntry(
+                eventMetadata.StreamId,
+                eventMetadata.EntryId,
+                eventMetadata.EntrySequence,
+                new EventStreamEventDescriptor(
+                    Serializer.Serialize(simpleEvent),
+                    TypeIdentifierConverter.ToTypeIdentifier(simpleEvent.GetType())),
+                eventMetadata.CausationId,
+                eventMetadata.CreationTime,
+                eventMetadata.CorrelationId);
             
             await Task.WhenAll(Enumerable.Range(0, numberOfThreads).Select(i => Publisher.PublishAsync(entry, CancellationToken.None)));
             
-            messageCount = PublishingChannel.MessageCount(ConfigurationProvider.QueueName);
-            Assert.Equal((uint) numberOfThreads, messageCount);
+            Assert.Equal(numberOfThreads, SimpleEventHandler.GetNumberOfHandledEvents(simpleEvent.EventId));
         }
     }
 }

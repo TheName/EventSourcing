@@ -39,6 +39,8 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
                 throw new ArgumentNullException(nameof(eventSourcingBuilder));
             }
 
+            eventSourcingBuilder.WithBus();
+
             eventSourcingBuilder.Services
                 .AddOptions<RabbitMQConfiguration>()
                 .BindConfiguration(nameof(RabbitMQConfiguration))
@@ -59,7 +61,10 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
                 .AddSingleton<IRabbitMQConnectionProvider, RabbitMQConnectionProvider>()
                 .AddSingleton<IRabbitMQPublishAcknowledgmentTracker, RabbitMQPublishAcknowledgmentTracker>()
                 .AddTransient<IRabbitMQPublisher, RabbitMQPublisher>()
-                .AddTransient<IEventSourcingBusPublisher, RabbitMQEventSourcingBusPublisher>();
+                .AddTransient<IRabbitMQConsumerFactory, RabbitMQConsumerFactory>()
+                .AddTransient<IRabbitMQConsumer, RabbitMQConsumer>()
+                .AddTransient<IEventSourcingBusPublisher, RabbitMQEventSourcingBusPublisher>()
+                .AddTransient<IEventSourcingBusConsumer, RabbitMQEventSourcingBusConsumer>();
 
             return eventSourcingBuilder;
         }

@@ -22,7 +22,7 @@ namespace EventSourcing.Bus.RabbitMQ.Factories
             _rabbitMQPublishingChannel = rabbitMQPublishingChannel ?? throw new ArgumentNullException(nameof(rabbitMQPublishingChannel));
         }
         
-        public IModel Create()
+        public IModel CreatePublishingChannel()
         {
             var channel = _rabbitMQConnectionProvider.Connection.CreateModel();
             
@@ -32,6 +32,17 @@ namespace EventSourcing.Bus.RabbitMQ.Factories
             channel.ConfirmSelect();
             channel.BasicAcks += _rabbitMQPublishingChannel.AckEventHandler;
             channel.BasicNacks += _rabbitMQPublishingChannel.NackEventHandler;
+
+            return channel;
+        }
+
+        public IModel CreateConsumingChannel()
+        {
+            var channel = _rabbitMQConnectionProvider.Connection.CreateModel();
+            
+            channel.ExchangeDeclare(_rabbitMQConfigurationProvider.ExchangeName, _rabbitMQConfigurationProvider.ExchangeType, true);
+            channel.QueueDeclare(_rabbitMQConfigurationProvider.QueueName, true, false, false);
+            channel.QueueBind(_rabbitMQConfigurationProvider.QueueName, _rabbitMQConfigurationProvider.ExchangeName, _rabbitMQConfigurationProvider.RoutingKey);
 
             return channel;
         }

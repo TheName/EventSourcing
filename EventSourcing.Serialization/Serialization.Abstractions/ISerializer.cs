@@ -42,5 +42,19 @@ namespace EventSourcing.Serialization.Abstractions
         /// Provided <paramref name="serializedObject"/> deserialized to type <paramref name="objectType"/>.
         /// </returns>
         object Deserialize(string serializedObject, Type objectType);
+
+        /// <summary>
+        /// Deserializes provided <paramref name="serializedObject"/> to object of type <paramref name="objectType"/>
+        /// </summary>
+        /// <param name="serializedObject">
+        /// The serialized object.
+        /// </param>
+        /// <param name="objectType">
+        /// The <see cref="Type"/> that provided <paramref name="serializedObject"/> should be deserialized to.
+        /// </param>
+        /// <returns>
+        /// Provided <paramref name="serializedObject"/> deserialized to type <paramref name="objectType"/>.
+        /// </returns>
+        object DeserializeFromUtf8Bytes(byte[] serializedObject, Type objectType);
     }
 }

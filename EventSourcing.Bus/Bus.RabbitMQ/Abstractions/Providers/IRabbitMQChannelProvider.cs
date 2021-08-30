@@ -5,5 +5,6 @@ namespace EventSourcing.Bus.RabbitMQ.Abstractions.Providers
     internal interface IRabbitMQChannelProvider
     {
         IModel PublishingChannel { get; }
+        IModel ConsumingChannel { get; }
     }
 }

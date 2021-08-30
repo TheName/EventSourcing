@@ -17,12 +17,12 @@ namespace Bus.RabbitMQ.UnitTests.Providers
     {
         [Theory]
         [AutoMoqData]
-        internal void ReturnCreatedChannel(
+        internal void ReturnCreatedPublishingChannel(
             IModel channel,
             [Frozen] Mock<IRabbitMQChannelFactory> rabbitMQChannelFactoryMock)
         {
             rabbitMQChannelFactoryMock
-                .Setup(factory => factory.Create())
+                .Setup(factory => factory.CreatePublishingChannel())
                 .Returns(channel);
 
             var rabbitMQChannelProvider = new RabbitMQChannelProvider(rabbitMQChannelFactoryMock.Object);
@@ -34,12 +34,12 @@ namespace Bus.RabbitMQ.UnitTests.Providers
         
         [Theory]
         [AutoMoqData]
-        internal void DisposeChannel_When_DisposingProvider_And_ChannelWasCreated(
+        internal void DisposePublishingChannel_When_DisposingProvider_And_PublishingChannelWasCreated(
             [Frozen] Mock<IRabbitMQChannelFactory> rabbitMQChannelFactoryMock)
         {
             var channelMock = new Mock<IModel>();
             rabbitMQChannelFactoryMock
-                .Setup(factory => factory.Create())
+                .Setup(factory => factory.CreatePublishingChannel())
                 .Returns(channelMock.Object);
 
             var rabbitMQChannelProvider = new RabbitMQChannelProvider(rabbitMQChannelFactoryMock.Object);
@@ -52,12 +52,12 @@ namespace Bus.RabbitMQ.UnitTests.Providers
         
         [Theory]
         [AutoMoqData]
-        internal void NotDisposeChannel_When_DisposingProvider_And_ChannelWasNotCreated(
+        internal void NotDisposePublishingChannel_When_DisposingProvider_And_PublishingChannelWasNotCreated(
             [Frozen] Mock<IRabbitMQChannelFactory> rabbitMQChannelFactoryMock)
         {
             var channelMock = new Mock<IModel>();
             rabbitMQChannelFactoryMock
-                .Setup(factory => factory.Create())
+                .Setup(factory => factory.CreatePublishingChannel())
                 .Returns(channelMock.Object);
 
             var rabbitMQChannelProvider = new RabbitMQChannelProvider(rabbitMQChannelFactoryMock.Object);
@@ -69,7 +69,7 @@ namespace Bus.RabbitMQ.UnitTests.Providers
         
         [Theory]
         [AutoMoqData]
-        internal void ReturnSameChannels_When_GettingPublishingChannelTwiceInSameThread(RabbitMQChannelProvider rabbitMQChannelProvider)
+        internal void ReturnSamePublishingChannels_When_GettingPublishingChannelTwiceInSameThread(RabbitMQChannelProvider rabbitMQChannelProvider)
         {
             var firstResult = rabbitMQChannelProvider.PublishingChannel;
             var secondResult = rabbitMQChannelProvider.PublishingChannel;
@@ -79,7 +79,7 @@ namespace Bus.RabbitMQ.UnitTests.Providers
 
         [Theory]
         [AutoMoqData]
-        internal void ReturnDifferentChannels_When_GettingPublishingChannelTwiceInDifferentThreads(IRabbitMQChannelFactory rabbitMQChannelFactory)
+        internal void ReturnDifferentPublishingChannels_When_GettingPublishingChannelTwiceInDifferentThreads(IRabbitMQChannelFactory rabbitMQChannelFactory)
         {
             var rabbitMQChannelProvider = new RabbitMQChannelProvider(rabbitMQChannelFactory);
             
@@ -113,10 +113,10 @@ namespace Bus.RabbitMQ.UnitTests.Providers
         [InlineData(3)]
         [InlineData(10)]
         [InlineData(100)]
-        internal void DisposeAllChannels_When_DisposingProvider_And_MultipleChannelsWereCreated(int numberOfThreads)
+        internal void DisposeAllPublishingChannels_When_DisposingProvider_And_MultiplePublishingChannelsWereCreated(int numberOfThreads)
         {
             var rabbitMQChannelFactoryMock = new Mock<IRabbitMQChannelFactory>();
-            var setupSequence = rabbitMQChannelFactoryMock.SetupSequence(factory => factory.Create());
+            var setupSequence = rabbitMQChannelFactoryMock.SetupSequence(factory => factory.CreatePublishingChannel());
             var allChannels = new List<Mock<IModel>>();
 
             foreach (var i in Enumerable.Range(0, numberOfThreads))
@@ -153,10 +153,10 @@ namespace Bus.RabbitMQ.UnitTests.Providers
         [Theory]
         [InlineData(10)]
         [InlineData(100)]
-        internal void DisposeAllChannels_When_Finalizing_And_MultipleChannelsWereCreated(int numberOfThreads)
+        internal void DisposeAllPublishingChannels_When_Finalizing_And_MultiplePublishingChannelsWereCreated(int numberOfThreads)
         {
             var rabbitMQChannelFactoryMock = new Mock<IRabbitMQChannelFactory>();
-            var setupSequence = rabbitMQChannelFactoryMock.SetupSequence(factory => factory.Create());
+            var setupSequence = rabbitMQChannelFactoryMock.SetupSequence(factory => factory.CreatePublishingChannel());
             var allChannels = new List<Mock<IModel>>();
             var rabbitMQChannelProvider = new RabbitMQChannelProvider(rabbitMQChannelFactoryMock.Object);
             var cancellationTokenSource = new CancellationTokenSource();
@@ -185,6 +185,68 @@ namespace Bus.RabbitMQ.UnitTests.Providers
             Thread.Sleep(50);
             
             Assert.All(allChannels, mock => mock.Verify(model => model.Dispose(), Times.Once));
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        internal void ReturnCreatedConsumingChannel(
+            IModel channel,
+            [Frozen] Mock<IRabbitMQChannelFactory> rabbitMQChannelFactoryMock)
+        {
+            rabbitMQChannelFactoryMock
+                .Setup(factory => factory.CreateConsumingChannel())
+                .Returns(channel);
+
+            var rabbitMQChannelProvider = new RabbitMQChannelProvider(rabbitMQChannelFactoryMock.Object);
+
+            var result = rabbitMQChannelProvider.ConsumingChannel;
+
+            Assert.Equal(channel, result);
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        internal void DisposeConsumingChannel_When_DisposingProvider_And_ConsumingChannelWasCreated(
+            [Frozen] Mock<IRabbitMQChannelFactory> rabbitMQChannelFactoryMock)
+        {
+            var channelMock = new Mock<IModel>();
+            rabbitMQChannelFactoryMock
+                .Setup(factory => factory.CreateConsumingChannel())
+                .Returns(channelMock.Object);
+
+            var rabbitMQChannelProvider = new RabbitMQChannelProvider(rabbitMQChannelFactoryMock.Object);
+
+            _ = rabbitMQChannelProvider.ConsumingChannel;
+            rabbitMQChannelProvider.Dispose();
+
+            channelMock.Verify(model => model.Dispose());
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        internal void NotDisposeConsumingChannel_When_DisposingProvider_And_ConsumingChannelWasNotCreated(
+            [Frozen] Mock<IRabbitMQChannelFactory> rabbitMQChannelFactoryMock)
+        {
+            var channelMock = new Mock<IModel>();
+            rabbitMQChannelFactoryMock
+                .Setup(factory => factory.CreateConsumingChannel())
+                .Returns(channelMock.Object);
+
+            var rabbitMQChannelProvider = new RabbitMQChannelProvider(rabbitMQChannelFactoryMock.Object);
+
+            rabbitMQChannelProvider.Dispose();
+
+            channelMock.VerifyNoOtherCalls();
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        internal void ReturnSameConsumingChannels_When_GettingConsumingChannelTwice(RabbitMQChannelProvider rabbitMQChannelProvider)
+        {
+            var firstResult = rabbitMQChannelProvider.ConsumingChannel;
+            var secondResult = rabbitMQChannelProvider.ConsumingChannel;
+
+            Assert.Equal(firstResult, secondResult);
         }
     }
 }

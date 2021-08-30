@@ -41,5 +41,11 @@ namespace EventSourcing.Serialization.NewtonsoftJson
         {
             return JsonConvert.DeserializeObject(serializedObject, objectType, DefaultSerializerSettings);
         }
+
+        public object DeserializeFromUtf8Bytes(byte[] serializedObject, Type objectType)
+        {
+            var serializedString = Encoding.UTF8.GetString(serializedObject);
+            return Deserialize(serializedString, objectType);
+        }
     }
 }

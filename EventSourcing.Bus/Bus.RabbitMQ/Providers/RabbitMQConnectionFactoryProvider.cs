@@ -7,7 +7,10 @@ namespace EventSourcing.Bus.RabbitMQ.Providers
     {
         public IConnectionFactory Get()
         {
-            return new ConnectionFactory();
+            return new ConnectionFactory
+            {
+                DispatchConsumersAsync = true
+            };
         }
     }
 }

@@ -38,5 +38,10 @@ namespace EventSourcing.Serialization.Json
         {
             return System.Text.Json.JsonSerializer.Deserialize(serializedObject, objectType, JsonSerializerOptions);
         }
+
+        public object DeserializeFromUtf8Bytes(byte[] serializedObject, Type objectType)
+        {
+            return System.Text.Json.JsonSerializer.Deserialize(serializedObject, objectType, JsonSerializerOptions);
+        }
     }
 }

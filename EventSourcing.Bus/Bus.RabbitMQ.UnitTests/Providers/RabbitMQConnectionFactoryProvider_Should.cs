@@ -14,7 +14,10 @@ namespace Bus.RabbitMQ.UnitTests.Providers
             var result = provider.Get();
 
             Assert.NotNull(result);
-            Assert.IsType<ConnectionFactory>(result);
+            var connectionFactory = Assert.IsType<ConnectionFactory>(result);
+            Assert.True(connectionFactory.DispatchConsumersAsync);
+            Assert.True(connectionFactory.AutomaticRecoveryEnabled);
+            Assert.True(connectionFactory.TopologyRecoveryEnabled);
         }
     }
 }
