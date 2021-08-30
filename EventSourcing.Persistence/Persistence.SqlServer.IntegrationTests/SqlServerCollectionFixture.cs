@@ -6,6 +6,7 @@ using EventSourcing.Bus.Abstractions;
 using EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.Extensions;
 using EventSourcing.Extensions.DependencyInjection;
 using EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer;
+using EventSourcing.Extensions.DependencyInjection.Serialization.NewtonsoftJson;
 using EventSourcing.Persistence.SqlServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,7 +46,8 @@ namespace Persistence.SqlServer.IntegrationTests
 
             serviceCollection
                 .AddEventSourcing()
-                .WithSqlServerPersistence();
+                .WithSqlServerPersistence()
+                .WithNewtonsoftJsonSerialization();
 
             _serviceProvider = serviceCollection
                 .BuildServiceProvider(new ServiceProviderOptions

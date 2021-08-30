@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions;
@@ -45,8 +47,8 @@ namespace Bus.RabbitMQ.IntegrationTests
                 eventMetadata.CorrelationId);
             
             await Publisher.PublishAsync(entry, CancellationToken.None);
-            
-            Assert.Equal(1, SimpleEventHandler.GetNumberOfHandledEvents(simpleEvent.EventId));
+
+            Retry(TimeSpan.FromSeconds(1), () => Assert.Equal(1, SimpleEventHandler.GetNumberOfHandledEvents(simpleEvent.EventId)));
         }
 
         [Theory]
@@ -71,7 +73,26 @@ namespace Bus.RabbitMQ.IntegrationTests
             
             await Task.WhenAll(Enumerable.Range(0, numberOfThreads).Select(i => Publisher.PublishAsync(entry, CancellationToken.None)));
             
-            Assert.Equal(numberOfThreads, SimpleEventHandler.GetNumberOfHandledEvents(simpleEvent.EventId));
+            Retry(TimeSpan.FromSeconds(5), () => Assert.Equal(numberOfThreads, SimpleEventHandler.GetNumberOfHandledEvents(simpleEvent.EventId)));
+        }
+
+        private void Retry(TimeSpan timeSpan, Action action)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            while (stopwatch.Elapsed < timeSpan)
+            {
+                try
+                {
+                    action();
+                    return;
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            throw new TimeoutException();
         }
     }
 }
