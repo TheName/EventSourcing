@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +29,6 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// </summary>
         public EventStreamEntrySequence MaximumSequence { get; }
         
-        internal EventStreamId StreamId { get; }
-        
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStreamEntries"/> class.
         /// </summary>
@@ -58,7 +56,7 @@ namespace EventSourcing.Abstractions.ValueObjects
             }
 
             MinimumSequence = Value[0].EntrySequence;
-            StreamId = Value[0].StreamId;
+            var streamId = Value[0].StreamId;
             
             var previousSequence = MinimumSequence;
             for (var i = 1; i < Value.Count; i++)
@@ -72,10 +70,10 @@ namespace EventSourcing.Abstractions.ValueObjects
                         nameof(value));
                 }
 
-                if (Value[i].StreamId != StreamId)
+                if (Value[i].StreamId != streamId)
                 {
                     throw InvalidEventStreamIdException.New(
-                        StreamId,
+                        streamId,
                         Value[i].StreamId,
                         $"{nameof(EventStreamEntries)} have to have same stream id.",
                         nameof(value));

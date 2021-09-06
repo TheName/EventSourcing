@@ -12,16 +12,20 @@ namespace EventSourcing.Abstractions
     /// </summary>
     public class EventStream
     {
-        private readonly List<EventStreamEntry> _entriesToAppend;
-
+        private readonly List<EventStreamEventWithMetadata> _eventsWithMetadataToAppend;
+        private EventStreamEntrySequence _maxSequence;
+        
         /// <summary>
         /// Creates a new instance of <see cref="EventStream"/> initialized with a new <see cref="EventStreamId"/> and empty <see cref="EventStreamEntries"/>.
         /// </summary>
+        /// <param name="streamId">
+        /// Optional. The <see cref="EventStreamId"/> that should be used when creating this <see cref="EventStream"/>. If not provided, a new one will be created.
+        /// </param>
         /// <returns>
-        /// A new instance of <see cref="EventStream"/> with a new <see cref="EventStreamId"/> and an empty collection of entries.
+        /// A new instance of <see cref="EventStream"/> with the provided <paramref name="streamId"/> or a new <see cref="EventStreamId"/> and an empty collection of entries.
         /// </returns>
-        public static EventStream NewEventStream() =>
-            new EventStream(EventStreamId.NewEventStreamId(), EventStreamEntries.Empty);
+        public static EventStream NewEventStream(EventStreamId streamId = null) =>
+            new EventStream(streamId ?? EventStreamId.NewEventStreamId(), new List<EventStreamEventWithMetadata>());
         
         /// <summary>
         /// The <see cref="EventStreamId"/> that identifies given stream of events.
@@ -29,19 +33,30 @@ namespace EventSourcing.Abstractions
         public EventStreamId StreamId { get; }
         
         /// <summary>
-        /// The <see cref="EventStreamEntries"/> already persisted in the stream of events.
+        /// The <see cref="IReadOnlyList{EventStreamEventWithMetadata}"/> already persisted in the stream of events.
         /// </summary>
-        public EventStreamEntries Entries { get; }
-        
-        /// <summary>
-        /// The current highest <see cref="EventStreamEntrySequence"/> of both persisted events and events to store in the stream of events.  
-        /// </summary>
-        public EventStreamEntrySequence CurrentSequence { get; private set; }
+        public IReadOnlyList<EventStreamEventWithMetadata> EventsWithMetadata { get; }
 
         /// <summary>
-        /// Gets the collection of <see cref="EventStreamEntry"/> that is to be appended to the stream of events.
+        /// Gets the <see cref="IReadOnlyList{EventStreamEventWithMetadata}"/> that is to be appended to the stream of events.
         /// </summary>
-        public EventStreamEntries EntriesToAppend => new EventStreamEntries(_entriesToAppend);
+        public IReadOnlyCollection<EventStreamEventWithMetadata> EventsWithMetadataToAppend => _eventsWithMetadataToAppend.AsReadOnly();
+
+        /// <summary>
+        /// The value of <see cref="EventStreamEntrySequence"/> that should be provided in the next appended <see cref="EventsWithMetadata"/>.
+        /// </summary>
+        public EventStreamEntrySequence NextSequence
+        {
+            get
+            {
+                if (_maxSequence == 0 && EventsWithMetadata.Count == 0 && EventsWithMetadataToAppend.Count == 0)
+                {
+                    return 0;
+                }
+                
+                return _maxSequence + 1;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStream"/> class.
@@ -49,89 +64,104 @@ namespace EventSourcing.Abstractions
         /// <param name="streamId">
         /// The <see cref="EventStreamId"/> that identifies the stream of events.
         /// </param>
-        /// <param name="entries">
-        /// The collection of <see cref="EventStreamEntry"/> that are already stored in the stream of events.
+        /// <param name="eventsWithMetadata">
+        /// The <see cref="IReadOnlyList{EventStreamEventWithMetadata}"/> that is already stored in the stream of events.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown when provided <paramref name="streamId"/> or <paramref name="entries"/> is null.
+        /// Thrown when provided <paramref name="streamId"/> or <paramref name="eventsWithMetadata"/> is null.
         /// </exception>
         /// <exception cref="InvalidEventStreamIdException">
-        /// Thrown when provided <paramref name="streamId"/> does not match <see cref="EventStreamId"/> assigned to <paramref name="entries"/>.
+        /// Thrown when provided <paramref name="streamId"/> does not match <see cref="EventStreamId"/> assigned to <paramref name="eventsWithMetadata"/>.
         /// </exception>
         /// <exception cref="InvalidEventStreamEntrySequenceException">
-        /// Thrown when provided <paramref name="entries"/> has its `MinimumSequence` different than 0. 
+        /// Thrown when provided <paramref name="eventsWithMetadata"/> has minimum <see cref="EventStreamEntrySequence"/> different than 0. 
         /// </exception>
         public EventStream(
             EventStreamId streamId,
-            EventStreamEntries entries)
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             StreamId = streamId ?? throw new ArgumentNullException(nameof(streamId));
-            Entries = entries ?? throw new ArgumentNullException(nameof(entries));
-            CurrentSequence = Entries.MaximumSequence;
-            _entriesToAppend = new List<EventStreamEntry>();
+            EventsWithMetadata = eventsWithMetadata?.ToList().AsReadOnly() ?? throw new ArgumentNullException(nameof(eventsWithMetadata));
+            _eventsWithMetadataToAppend = new List<EventStreamEventWithMetadata>();
+            _maxSequence = 0;
             
-            if (Entries.Count == 0)
+            if (EventsWithMetadata.Count == 0)
             {
                 return;
             }
-            
-            if (Entries.StreamId != StreamId)
-            {
-                throw InvalidEventStreamIdException.New(Entries.StreamId, StreamId, nameof(streamId));
-            }
 
-            if (Entries.MinimumSequence != 0)
+            var minimumSequence = EventsWithMetadata[0].EventMetadata.EntrySequence;
+            if (minimumSequence != 0)
             {
-                throw InvalidEventStreamEntrySequenceException.New(0, Entries.MinimumSequence, nameof(entries));
+                throw InvalidEventStreamEntrySequenceException.New(0, minimumSequence, nameof(eventsWithMetadata));
+            }
+            
+            _maxSequence = minimumSequence;
+            
+            for (var i = 1; i < EventsWithMetadata.Count; i++)
+            {
+                if (EventsWithMetadata[i].EventMetadata.EntrySequence != _maxSequence + 1)
+                {
+                    throw InvalidEventStreamEntrySequenceException.New(
+                        _maxSequence + 1,
+                        EventsWithMetadata[i].EventMetadata.EntrySequence,
+                        $"{nameof(eventsWithMetadata)} have to be ordered increasingly by sequence and sequence has to increase by one.",
+                        nameof(eventsWithMetadata));
+                }
+
+                if (EventsWithMetadata[i].EventMetadata.StreamId != streamId)
+                {
+                    throw InvalidEventStreamIdException.New(
+                        streamId,
+                        EventsWithMetadata[i].EventMetadata.StreamId,
+                        $"All items of {nameof(eventsWithMetadata)} have to have same stream id.",
+                        nameof(eventsWithMetadata));
+                }
+
+                _maxSequence = EventsWithMetadata[i].EventMetadata.EntrySequence;
             }
         }
 
         /// <summary>
-        /// Appends provided <paramref name="entries"/> to this instance of the stream of entries.
+        /// Appends provided <paramref name="eventsWithMetadata"/> to this instance of the stream of entries.
         /// </summary>
-        /// <param name="entries">
-        /// The collection of <see cref="EventStreamEntry"/> that should be appended to the stream of entries.
+        /// <param name="eventsWithMetadata">
+        /// The <see cref="IReadOnlyList{EventStreamEventWithMetadata}"/> that should be appended to the stream of entries.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown when provided <paramref name="entries"/> is null.
+        /// Thrown when provided <paramref name="eventsWithMetadata"/> is null.
         /// </exception>
         /// <exception cref="InvalidEventStreamIdException">
-        /// Thrown when at least one of provided <paramref name="entries"/> has <see cref="EventStreamId"/> that does not match <see cref="StreamId"/>.
+        /// Thrown when at least one of provided <paramref name="eventsWithMetadata"/> has <see cref="EventStreamId"/> that does not match <see cref="StreamId"/>.
         /// </exception>
         /// <exception cref="InvalidEventStreamEntrySequenceException">
-        /// Thrown when at least one of provided <paramref name="entries"/> has <see cref="EventStreamEntrySequence"/> other than <see cref="CurrentSequence"/> + 1 (increased sequentially).
+        /// Thrown when at least one of provided <paramref name="eventsWithMetadata"/> has <see cref="EventStreamEntrySequence"/> other than the expected <see cref="NextSequence"/>.
         /// </exception>
-        public void AppendEntries(IEnumerable<EventStreamEntry> entries)
+        public void AppendEventsWithMetadata(IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            foreach (var eventStreamEvent in entries ?? throw new ArgumentNullException(nameof(entries)))
+            foreach (var eventStreamEvent in eventsWithMetadata ?? throw new ArgumentNullException(nameof(eventsWithMetadata)))
             {
-                AppendEntry(eventStreamEvent);
+                AppendEventWithMetadata(eventStreamEvent);
             }
         }
 
-        private void AppendEntry(EventStreamEntry entry)
+        private void AppendEventWithMetadata(EventStreamEventWithMetadata eventWithMetadata)
         {
-            if (entry.StreamId != StreamId)
+            if (eventWithMetadata.EventMetadata.StreamId != StreamId)
             {
-                throw InvalidEventStreamIdException.New(StreamId, entry.StreamId, nameof(entry));
-            }
-
-            EventStreamEntrySequence expectedSequence = CurrentSequence + 1;
-            if (CurrentSequence == 0 && Entries.Count == 0 && EntriesToAppend.Count == 0)
-            {
-                expectedSequence = CurrentSequence;
+                throw InvalidEventStreamIdException.New(StreamId, eventWithMetadata.EventMetadata.StreamId, nameof(eventWithMetadata));
             }
             
-            if (entry.EntrySequence != expectedSequence)
+            if (eventWithMetadata.EventMetadata.EntrySequence != NextSequence)
             {
                 throw InvalidEventStreamEntrySequenceException.New(
-                    expectedSequence,
-                    entry.EntrySequence,
-                    nameof(entry));
+                    NextSequence,
+                    eventWithMetadata.EventMetadata.EntrySequence,
+                    nameof(eventWithMetadata));
             }
             
-            _entriesToAppend.Add(entry);
-            CurrentSequence = entry.EntrySequence;
+            _eventsWithMetadataToAppend.Add(eventWithMetadata);
+            _maxSequence = eventWithMetadata.EventMetadata.EntrySequence;
         }
 
         #region Operators
@@ -187,15 +217,15 @@ namespace EventSourcing.Abstractions
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"Event Stream ID: {StreamId}, {Entries}, Current Sequence: {CurrentSequence}, {EntriesToAppendString()}";
+            $"Event Stream ID: {StreamId}, {EventsWithMetadata}, Next Sequence: {NextSequence}, {EventsWithMetadataToAppendString()}";
 
-        private string EntriesToAppendString()
+        private string EventsWithMetadataToAppendString()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append("Entries to append: ");
-            foreach (var eventStreamEntry in _entriesToAppend)
+            stringBuilder.Append("EventsWithMetadata to append: ");
+            foreach (var eventWithMetadata in _eventsWithMetadataToAppend)
             {
-                stringBuilder.Append($"\n\t{eventStreamEntry}");
+                stringBuilder.Append($"\n\t{eventWithMetadata}");
             }
 
             return stringBuilder.ToString();
@@ -204,11 +234,14 @@ namespace EventSourcing.Abstractions
         private IEnumerable<object> GetPropertiesForHashCode()
         {
             yield return StreamId;
-            yield return Entries;
-            yield return CurrentSequence;
-            foreach (var eventStreamEvent in _entriesToAppend)
+            yield return _maxSequence;
+            foreach (var eventStreamEventWithMetadata in EventsWithMetadata)
             {
-                yield return eventStreamEvent;
+                yield return eventStreamEventWithMetadata;
+            }
+            foreach (var eventWithMetadata in _eventsWithMetadataToAppend)
+            {
+                yield return eventWithMetadata;
             }
         }
     }

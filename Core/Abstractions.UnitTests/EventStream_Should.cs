@@ -17,24 +17,33 @@ namespace Abstractions.UnitTests
         {
             var stream = EventStream.NewEventStream();
             Assert.NotNull(stream.StreamId);
-            Assert.Empty(stream.Entries);
-            Assert.Equal<uint>(0, stream.CurrentSequence);
-            Assert.Empty(stream.EntriesToAppend);
+            Assert.Empty(stream.EventsWithMetadata);
+            Assert.Empty(stream.EventsWithMetadataToAppend);
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        public void CreateNewEventStreamWithProvidedStreamIdAndEmptyEntries_When_CallingNewEventStream(EventStreamId streamId)
+        {
+            var stream = EventStream.NewEventStream(streamId);
+            Assert.Equal(streamId, stream.StreamId);
+            Assert.Empty(stream.EventsWithMetadata);
+            Assert.Empty(stream.EventsWithMetadataToAppend);
         }
         
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullStreamId(
-            EventStreamEntries entries)
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStream(
                 null,
-                entries));
+                eventsWithMetadata));
         }
         
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CreatingWithNullEntries(
+        public void Throw_ArgumentNullException_When_CreatingWithNullEventsWithMetadata(
             EventStreamId streamId)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStream(
@@ -44,879 +53,440 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void Throw_InvalidEventStreamIdException_When_CreatingWithDifferentStreamIdThanAssignedToEntries(
+        public void Throw_InvalidEventStreamIdException_When_CreatingWithDifferentStreamIdThanAssignedToEventsWithMetadata(
             EventStreamId streamId,
-            EventStreamEntries entries)
+            EventStreamId streamIdAssignedToEventsWithMetadata,
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            Assert.Contains(entries, entry => entry.StreamId != streamId);
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        streamIdAssignedToEventsWithMetadata,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        Convert.ToUInt32(i),
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
+            
             Assert.Throws<InvalidEventStreamIdException>(() => new EventStream(
                 streamId, 
-                entries));
+                eventsWithMetadata));
         }
 
         [Theory]
         [AutoMoqData]
-        public void Throw_InvalidEventStreamEntrySequenceException_When_CreatingWithSameStreamIdAsAssignedToEntries_And_EntriesSequenceDoesNotStartWithZero(
-            EventStreamEntries entries)
+        public void Throw_InvalidEventStreamEntrySequenceException_When_CreatingWithSameStreamIdAsAssignedToEventsWithMetadata_And_EventsWithMetadataSequenceDoesNotStartWithZero(
+            EventStreamId streamId,
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            var streamId = entries[0].StreamId;
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        streamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        Convert.ToUInt32(i + 1),
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
+            
             Assert.Throws<InvalidEventStreamEntrySequenceException>(() => new EventStream(
                 streamId,
-                entries));
+                eventsWithMetadata));
         }
 
         [Theory]
         [AutoMoqData]
-        public void NotThrow_When_CreatingWithNonNullStreamIdAndEmptyEntriesCollection(
+        public void NotThrow_When_CreatingWithNonNullStreamIdAndEmptyEventsWithMetadata(
             EventStreamId streamId)
         {
-            _ = new EventStream(
-                streamId,
-                EventStreamEntries.Empty);
+            _ = new EventStream(streamId, new List<EventStreamEventWithMetadata>());
         }
 
         [Theory]
         [AutoMoqData]
-        public void NotThrow_When_CreatingWithSameStreamIdAsAssignedToEntries_And_EntriesSequenceStartsWithZero(
-            EventStreamEntries entries)
+        public void NotThrow_When_CreatingWithSameStreamIdAsAssignedToEventsWithMetadata_And_EventsWithMetadataSequenceStartsWithZero(
+            EventStreamId streamId,
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            var streamId = entries[0].StreamId;
-            entries = new EventStreamEntries(entries
-                .Select((entry, i) => new EventStreamEntry(
-                    entry.StreamId,
-                    entry.EntryId,
-                    Convert.ToUInt32(i),
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId)));
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        streamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        Convert.ToUInt32(i),
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
 
-            _ = new EventStream(
-                streamId,
-                entries);
+            _ = new EventStream(streamId, eventsWithMetadata);
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnStreamIdProvidedDuringCreation_When_GettingStreamId(EventStreamEntries entries)
+        public void ReturnStreamIdProvidedDuringCreation_When_GettingStreamId(EventStreamId streamId)
         {
-            var streamId = entries[0].StreamId;
-            entries = new EventStreamEntries(entries
-                .Select((entry, i) => new EventStreamEntry(
-                    entry.StreamId,
-                    entry.EntryId,
-                    Convert.ToUInt32(i),
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId)));
-
-            var stream = new EventStream(streamId, entries);
+            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>());
 
             Assert.Equal(streamId, stream.StreamId);
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnEntriesProvidedDuringCreation_When_GettingEntries(EventStreamEntries entries)
+        public void ReturnEventsWithMetadataProvidedDuringCreation_When_GettingEventsWithMetadata(
+            EventStreamId streamId,
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            var streamId = entries[0].StreamId;
-            entries = new EventStreamEntries(entries
-                .Select((entry, i) => new EventStreamEntry(
-                    entry.StreamId,
-                    entry.EntryId,
-                    Convert.ToUInt32(i),
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId)));
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        streamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        Convert.ToUInt32(i),
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
+                .ToList();
             
-            var stream = new EventStream(streamId, entries);
+            var stream = new EventStream(streamId, eventsWithMetadata);
 
-            Assert.Equal(new EventStreamEntries(entries.AsEnumerable()), stream.Entries);
+            Assert.NotSame(eventsWithMetadata, stream.EventsWithMetadata);
+            Assert.Null(stream.EventsWithMetadata as List<EventStreamEventWithMetadata>);
+            Assert.False(ReferenceEquals(eventsWithMetadata, stream.EventsWithMetadata));
+            Assert.Equal(eventsWithMetadata, stream.EventsWithMetadata);
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnEntriesMaximumSequenceProvidedDuringCreation_When_GettingCurrentSequence(EventStreamEntries entries)
+        public void ReturnEmptyCollection_When_GettingEntriesToAppend(
+            EventStreamId streamId,
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            var streamId = entries[0].StreamId;
-            entries = new EventStreamEntries(entries
-                .Select((entry, i) => new EventStreamEntry(
-                    entry.StreamId,
-                    entry.EntryId,
-                    Convert.ToUInt32(i),
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId)));
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        streamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        Convert.ToUInt32(i),
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
+                .ToList();
             
-            var stream = new EventStream(streamId, entries);
+            var stream = new EventStream(streamId, eventsWithMetadata);
 
-            Assert.Equal(new EventStreamEntries(entries.AsEnumerable()).MaximumSequence, stream.CurrentSequence);
+            Assert.Empty(stream.EventsWithMetadataToAppend);
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnEmptyCollection_When_GettingEntriesToAppend(EventStreamEntries entries)
+        public void ReturnLastEventSequenceIncreasedByOne_When_GettingNextSequence(
+            EventStreamId streamId,
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            var streamId = entries[0].StreamId;
-            entries = new EventStreamEntries(entries
-                .Select((entry, i) => new EventStreamEntry(
-                    entry.StreamId,
-                    entry.EntryId,
-                    Convert.ToUInt32(i),
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId)));
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        streamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        Convert.ToUInt32(i),
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
+                .ToList();
             
-            var stream = new EventStream(streamId, entries);
+            var stream = new EventStream(streamId, eventsWithMetadata);
 
-            Assert.Empty(stream.EntriesToAppend);
+            Assert.Equal<uint>(eventsWithMetadata.Last().EventMetadata.EntrySequence + 1, stream.NextSequence);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_AppendingEntries_And_ProvidedEntriesIsNull(
+        public void Throw_ArgumentNullException_When_AppendingEventsWithMetadata_And_ProvidedEventsWithMetadataIsNull(
             EventStream stream)
         {
-            Assert.Throws<ArgumentNullException>(() => stream.AppendEntries(null));
+            Assert.Throws<ArgumentNullException>(() => stream.AppendEventsWithMetadata(null));
         }
 
         [Fact]
-        public void Throw_ArgumentNullException_When_AppendingEntries_And_ProvidedEntriesIsNull_And_EventStreamIsEmpty()
+        public void Throw_ArgumentNullException_When_AppendingEventsWithMetadata_And_ProvidedEventsWithMetadataIsNull_And_EventStreamIsEmpty()
         {
             var stream = EventStream.NewEventStream();
-            Assert.Throws<ArgumentNullException>(() => stream.AppendEntries(null));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidEventStreamIdException_When_AppendingEntries_And_SingleEntryHasInvalidStreamId(
-            EventStream stream,
-            EventStreamEntry entryToAppend)
-        {
-            Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(new[] {entryToAppend}));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidEventStreamIdException_When_AppendingEntries_And_SingleEntryHasInvalidStreamId_And_EventStreamIsEmpty(
-            EventStreamEntry entryToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-
-            Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(new[] {entryToAppend}));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidEventStreamIdException_When_AppendingEntries_And_FirstEntryHasInvalidStreamId(
-            EventStream stream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
-        {
-            var validStreamId = stream.StreamId;
-            entriesToAppend = entriesToAppend
-                .Select((entry, i) => new EventStreamEntry(
-                    i == 0 ? entry.StreamId : validStreamId,
-                    entry.EntryId,
-                    entry.EntrySequence,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
-
-            Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(entriesToAppend));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidEventStreamIdException_When_AppendingEntries_And_FirstEntryHasInvalidStreamId_And_EventStreamIsEmpty(
-            IEnumerable<EventStreamEntry> entriesToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var validStreamId = stream.StreamId;
-            entriesToAppend = entriesToAppend
-                .Select((entry, i) => new EventStreamEntry(
-                    i == 0 ? entry.StreamId : validStreamId,
-                    entry.EntryId,
-                    entry.EntrySequence,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
-
-            Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(entriesToAppend));
+            Assert.Throws<ArgumentNullException>(() => stream.AppendEventsWithMetadata(null));
         }
 
         [Theory]
         [AutoMoqWithInlineData(0)]
         [AutoMoqWithInlineData(1)]
         [AutoMoqWithInlineData(2)]
-        public void Throw_InvalidEventStreamIdException_When_AppendingEntries_And_AtLeastOneOfEntriesHasInvalidStreamId_And_AllEntriesHaveCorrectSequence(
+        public void Throw_InvalidEventStreamIdException_When_AppendingEventsWithMetadata_And_AtLeastOneOfEventsWithMetadataHasInvalidStreamId_And_AllEventsWithMetadataHaveValidSequence(
             int invalidStreamIdIndex,
             EventStream stream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var validStreamId = stream.StreamId;
-            var nextSequence = stream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select((entry, i) => new EventStreamEntry(
-                    i == invalidStreamIdIndex ? entry.StreamId : validStreamId,
-                    entry.EntryId,
-                    nextSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
+            var nextSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        i == invalidStreamIdIndex ? eventWithMetadata.EventMetadata.StreamId : validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
 
-            Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(entriesToAppend));
+            Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEventsWithMetadata(eventsWithMetadata));
         }
 
         [Theory]
         [AutoMoqWithInlineData(0)]
         [AutoMoqWithInlineData(1)]
         [AutoMoqWithInlineData(2)]
-        public void Throw_InvalidEventStreamIdException_When_AppendingEntries_And_AtLeastOneOfEntriesHasInvalidStreamId_And_AllEntriesHaveCorrectSequence_And_EventStreamIsEmpty(
+        public void Throw_InvalidEventStreamIdException_When_AppendingEventsWithMetadata_And_AtLeastOneOfEventsWithMetadataHasInvalidStreamId_And_AllEventsWithMetadataHaveValidSequence_And_EventStreamIsEmpty(
             int invalidStreamIdIndex,
-            IEnumerable<EventStreamEntry> entriesToAppend)
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var stream = EventStream.NewEventStream();
             var validStreamId = stream.StreamId;
-            uint nextSequence = 0;
-            entriesToAppend = entriesToAppend
-                .Select((entry, i) => new EventStreamEntry(
-                    i == invalidStreamIdIndex ? entry.StreamId : validStreamId,
-                    entry.EntryId,
-                    nextSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
+            var nextSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        i == invalidStreamIdIndex ? eventWithMetadata.EventMetadata.StreamId : validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
 
-            Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEntries(entriesToAppend));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidEventStreamEntrySequenceException_When_AppendingEntries_And_SingleEntryHasValidStreamIdButInvalidSequence(
-            EventStream stream,
-            EventStreamEntry entryToAppend)
-        {
-            var validStreamId = stream.StreamId;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                entryToAppend.EntrySequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
-            
-            Assert.NotEqual<uint>(stream.CurrentSequence + 1, entryToAppend.EntrySequence);
-            Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEntries(new[] {entryToAppend}));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidEventStreamEntrySequenceException_When_AppendingEntries_And_SingleEntryHasValidStreamIdButInvalidSequence_And_EventStreamIsEmpty(
-            EventStreamEntry entryToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var validStreamId = stream.StreamId;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                entryToAppend.EntrySequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
-            
-            Assert.NotEqual<uint>(stream.CurrentSequence + 1, entryToAppend.EntrySequence);
-
-            Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEntries(new[] {entryToAppend}));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidEventStreamEntrySequenceException_When_AppendingEntries_And_FirstEntryHasValidStreamIdButInvalidSequence(
-            EventStream stream,
-            List<EventStreamEntry> entriesToAppend)
-        {
-            var validStreamId = stream.StreamId;
-            entriesToAppend = entriesToAppend
-                .Select((entry, i) => new EventStreamEntry(
-                    i == 0 ? validStreamId : entry.StreamId,
-                    entry.EntryId,
-                    entry.EntrySequence,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
-                .ToList();
-            
-            Assert.NotEqual<uint>(stream.CurrentSequence + 1, entriesToAppend[0].EntrySequence);
-
-            Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEntries(entriesToAppend));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidEventStreamEntrySequenceException_When_AppendingEntries_And_FirstEntryHasValidStreamIdButInvalidSequence_And_EventStreamIsEmpty(
-            List<EventStreamEntry> entriesToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var validStreamId = stream.StreamId;
-            entriesToAppend = entriesToAppend
-                .Select((entry, i) => new EventStreamEntry(
-                    i == 0 ? validStreamId : entry.StreamId,
-                    entry.EntryId,
-                    entry.EntrySequence,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
-                .ToList();
-            
-            Assert.NotEqual<uint>(stream.CurrentSequence + 1, entriesToAppend[0].EntrySequence);
-
-            Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEntries(entriesToAppend));
+            Assert.Throws<InvalidEventStreamIdException>(() => stream.AppendEventsWithMetadata(eventsWithMetadata));
         }
 
         [Theory]
         [AutoMoqWithInlineData(0)]
         [AutoMoqWithInlineData(1)]
         [AutoMoqWithInlineData(2)]
-        public void Throw_InvalidEventStreamEntrySequenceException_When_AppendingEntries_And_AllEntriesHaveValidStreamId_And_AtLeastOneEntryHasInvalidSequence(
+        public void Throw_InvalidEventStreamIdException_When_AppendingEventsWithMetadata_And_AllEventsWithMetadataHaveValidStreamId_And_AtLeastOneOfEventsWithMetadataHasInvalidSequence(
             int invalidSequenceIndex,
             EventStream stream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var validStreamId = stream.StreamId;
-            var nextSequence = stream.CurrentSequence + 1;
-            var getNextSequenceFunc = new Func<int, EventStreamEntry, EventStreamEntrySequence>(
-                (currentIndex, entry) =>
+            var nextSequence = stream.NextSequence;
+            var getNextSequenceFunc = new Func<int, EventStreamEventMetadata, EventStreamEntrySequence>(
+                (currentIndex, eventMetadata) =>
                 {
                     var currentValidSequence = nextSequence++;
-                    Assert.NotEqual<uint>(entry.EntrySequence, currentValidSequence);
-                    return currentIndex == invalidSequenceIndex ? entry.EntrySequence : currentValidSequence;
+                    Assert.NotEqual<uint>(eventMetadata.EntrySequence, currentValidSequence);
+                    return currentIndex == invalidSequenceIndex ? eventMetadata.EntrySequence : currentValidSequence;
                 });
             
-            entriesToAppend = entriesToAppend
-                .Select((entry, i) => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    getNextSequenceFunc(i, entry),
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        getNextSequenceFunc(i, eventWithMetadata.EventMetadata),
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
 
-            Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEntries(entriesToAppend));
+            Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEventsWithMetadata(eventsWithMetadata));
         }
 
         [Theory]
         [AutoMoqWithInlineData(0)]
         [AutoMoqWithInlineData(1)]
         [AutoMoqWithInlineData(2)]
-        public void Throw_InvalidEventStreamEntrySequenceException_When_AppendingEntries_And_AllEntriesHaveValidStreamId_And_AtLeastOneEntryHasInvalidSequence_And_EventStreamIsEmpty(
+        public void Throw_InvalidEventStreamIdException_When_AppendingEventsWithMetadata_And_AllEventsWithMetadataHaveValidStreamId_And_AtLeastOneOfEventsWithMetadataHasInvalidSequence_And_EventStreamIsEmpty(
             int invalidSequenceIndex,
-            IEnumerable<EventStreamEntry> entriesToAppend)
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var stream = EventStream.NewEventStream();
             var validStreamId = stream.StreamId;
-            var nextSequence = stream.CurrentSequence + 1;
-            var getNextSequenceFunc = new Func<int, EventStreamEntry, EventStreamEntrySequence>(
-                (currentIndex, entry) =>
+            var nextSequence = stream.NextSequence;
+            var getNextSequenceFunc = new Func<int, EventStreamEventMetadata, EventStreamEntrySequence>(
+                (currentIndex, eventMetadata) =>
                 {
                     var currentValidSequence = nextSequence++;
-                    Assert.NotEqual<uint>(entry.EntrySequence, currentValidSequence);
-                    return currentIndex == invalidSequenceIndex ? entry.EntrySequence : currentValidSequence;
+                    Assert.NotEqual<uint>(eventMetadata.EntrySequence, currentValidSequence);
+                    return currentIndex == invalidSequenceIndex ? eventMetadata.EntrySequence : currentValidSequence;
                 });
             
-            entriesToAppend = entriesToAppend
-                .Select((entry, i) => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    getNextSequenceFunc(i, entry),
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        getNextSequenceFunc(i, eventWithMetadata.EventMetadata),
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
 
-            Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEntries(entriesToAppend));
+            Assert.Throws<InvalidEventStreamEntrySequenceException>(() => stream.AppendEventsWithMetadata(eventsWithMetadata));
         }
 
         [Theory]
         [AutoMoqData]
-        public void NotThrow_When_AppendingEntries_And_SingleEntryHasValidStreamIdAndValidSequence(
+        public void NotThrow_When_AppendingEventsWithMetadata_And_AllEventsWithMetadataHaveValidStreamIdAndValidSequence(
             EventStream stream,
-            EventStreamEntry entryToAppend)
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
 
-            stream.AppendEntries(new[] {entryToAppend});
+            stream.AppendEventsWithMetadata(eventsWithMetadata);
         }
 
         [Theory]
         [AutoMoqData]
-        public void NotThrow_When_AppendingEntries_And_SingleEntryHasValidStreamIdAndValidSequence_And_EventStreamIsEmpty(
-            EventStreamEntry entryToAppend)
+        public void NotThrow_When_AppendingEventsWithMetadata_And_AllEventsWithMetadataHaveValidStreamIdAndValidSequence_And_EventStreamIsEmpty(
+            IEnumerable<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var stream = EventStream.NewEventStream();
             var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
 
-            stream.AppendEntries(new[] {entryToAppend});
+            stream.AppendEventsWithMetadata(eventsWithMetadata);
         }
 
         [Theory]
         [AutoMoqData]
-        public void NotThrow_When_AppendingEntries_And_AllEntriesHaveValidStreamIdAndValidSequence(
+        public void ReturnAppendedEventWithMetadataSequenceIncreasedByOneAsNextSequence_When_GettingNextSequenceAfterAppendingEventsWithMetadata(
             EventStream stream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
-
-            stream.AppendEntries(entriesToAppend);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void NotThrow_When_AppendingEntries_And_AllEntriesHaveValidStreamIdAndValidSequence_And_EventStreamIsEmpty(
-            IEnumerable<EventStreamEntry> entriesToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
-
-            stream.AppendEntries(entriesToAppend);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnOriginalStreamId_When_GettingStreamIdAfterAppendingSingleEntry(
-            EventStream stream,
-            EventStreamEntry entryToAppend)
-        {
-            var originalStreamId = stream.StreamId;
-            var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
-
-            stream.AppendEntries(new[] {entryToAppend});
-            
-            Assert.Equal(originalStreamId, stream.StreamId);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnOriginalStreamId_When_GettingStreamIdAfterAppendingSingleEntry_And_EventStreamWasEmpty(
-            EventStreamEntry entryToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var originalStreamId = stream.StreamId;
-            var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
-
-            stream.AppendEntries(new[] {entryToAppend});
-            
-            Assert.Equal(originalStreamId, stream.StreamId);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnOriginalStreamId_When_GettingStreamIdAfterAppendingEntries(
-            EventStream stream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
-        {
-            var originalStreamId = stream.StreamId;
-            var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
-
-            stream.AppendEntries(entriesToAppend);
-            
-            Assert.Equal(originalStreamId, stream.StreamId);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnOriginalStreamId_When_GettingStreamIdAfterAppendingEntries_And_EventStreamWasEmpty(
-            IEnumerable<EventStreamEntry> entriesToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var originalStreamId = stream.StreamId;
-            var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
-
-            stream.AppendEntries(entriesToAppend);
-            
-            Assert.Equal(originalStreamId, stream.StreamId);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnOriginalEvents_When_GettingEntriesAfterAppendingSingleEntry(
-            EventStream stream,
-            EventStreamEntry entryToAppend)
-        {
-            var originalEntries = stream.Entries;
-            var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
-
-            stream.AppendEntries(new[] {entryToAppend});
-            
-            Assert.Equal(originalEntries, stream.Entries);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnOriginalEvents_When_GettingEntriesAfterAppendingSingleEntry_And_EventStreamWasEmpty(
-            EventStreamEntry entryToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var originalEntries = stream.Entries;
-            var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
-
-            stream.AppendEntries(new[] {entryToAppend});
-            
-            Assert.Equal(originalEntries, stream.Entries);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnOriginalEntries_When_GettingEntriesAfterAppendingEntries(
-            EventStream stream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
-        {
-            var originalEntries= stream.Entries;
-            var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
-
-            stream.AppendEntries(entriesToAppend);
-            
-            Assert.Equal(originalEntries, stream.Entries);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnOriginalEntries_When_GettingEntriesAfterAppendingEntries_And_EventStreamWasEmpty(
-            IEnumerable<EventStreamEntry> entriesToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var originalEntries = stream.Entries;
-            var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId));
-
-            stream.AppendEntries(entriesToAppend);
-            
-            Assert.Equal(originalEntries, stream.Entries);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnAppendedEntrySequenceAsCurrentSequence_When_GettingCurrentSequenceAfterAppendingSingleEntry(
-            EventStream stream,
-            EventStreamEntry entryToAppend)
-        {
-            var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
-
-            stream.AppendEntries(new[] {entryToAppend});
-            
-            Assert.Equal<EventStreamEntrySequence>(validSequence, stream.CurrentSequence);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnAppendedEntrySequenceAsCurrentSequence_When_GettingCurrentSequenceAfterAppendingSingleEntry_And_EventStreamWasEmpty(
-            EventStreamEntry entryToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
-
-            stream.AppendEntries(new[] {entryToAppend});
-            
-            Assert.Equal<EventStreamEntrySequence>(validSequence, stream.CurrentSequence);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnLastAppendedEntrySequenceAsCurrentSequence_When_GettingCurrentSequenceAfterAppendingEntries(
-            EventStream stream,
-            List<EventStreamEntry> entriesToAppend)
-        {
-            var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
 
-            stream.AppendEntries(entriesToAppend);
+            stream.AppendEventsWithMetadata(eventsWithMetadata);
             
-            Assert.Equal(entriesToAppend.Last().EntrySequence, stream.CurrentSequence);
+            Assert.Equal<uint>(eventsWithMetadata.Last().EventMetadata.EntrySequence + 1, stream.NextSequence);
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnLastAppendedEntrySequenceAsCurrentSequence_When_GettingCurrentSequenceAfterAppendingEntries_And_EventStreamWasEmpty(
-            List<EventStreamEntry> entriesToAppend)
+        public void ReturnAppendedEventWithMetadataSequenceIncreasedByOneAsNextSequence_When_GettingNextSequenceAfterAppendingEventsWithMetadata_And_EventStreamWasEmpty(
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var stream = EventStream.NewEventStream();
             var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
 
-            stream.AppendEntries(entriesToAppend);
+            stream.AppendEventsWithMetadata(eventsWithMetadata);
             
-            Assert.Equal(entriesToAppend.Last().EntrySequence, stream.CurrentSequence);
+            Assert.Equal<uint>(eventsWithMetadata.Last().EventMetadata.EntrySequence + 1, stream.NextSequence);
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnAppendedEntryAsSingleEntryToAppend_When_GettingEntriesToAppendAfterAppendingSingleEntry(
+        public void ReturnAppendedEventsWithMetadataAsEventsWithMetadataToAppend_When_GettingEventsWithMetadataToAppendAfterAppendingEventsWithMetadata(
             EventStream stream,
-            EventStreamEntry entryToAppend)
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
+                .ToList();
 
-            stream.AppendEntries(new[] {entryToAppend});
-
-            var singleEntryToAppend = Assert.Single(stream.EntriesToAppend);
-            Assert.Equal(entryToAppend, singleEntryToAppend);
+            stream.AppendEventsWithMetadata(eventsWithMetadata);
+            
+            Assert.True(stream.EventsWithMetadataToAppend.SequenceEqual(eventsWithMetadata));
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnAppendedEntryAsSingleEntryToAppend_When_GettingEntriesToAppendAfterAppendingSingleEntry_And_EventStreamWasEmpty(
-            EventStreamEntry entryToAppend)
+        public void ReturnAppendedEventsWithMetadataAsEventsWithMetadataToAppend_When_GettingEventsWithMetadataToAppendAfterAppendingEventsWithMetadata_EventStreamWasEmpty(
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
             var stream = EventStream.NewEventStream();
             var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entryToAppend = new EventStreamEntry(
-                validStreamId,
-                entryToAppend.EntryId,
-                validSequence,
-                entryToAppend.EventDescriptor,
-                entryToAppend.CausationId,
-                entryToAppend.CreationTime,
-                entryToAppend.CorrelationId);
-
-            stream.AppendEntries(new[] {entryToAppend});
-
-            var singleEntryToAppend = Assert.Single(stream.EntriesToAppend);
-            Assert.Equal(entryToAppend, singleEntryToAppend);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnAppendedEntriesAsEntriesToAppend_When_GettingEntriesToAppendAfterAppendingEntries(
-            EventStream stream,
-            List<EventStreamEntry> entriesToAppend)
-        {
-            var validStreamId = stream.StreamId;
-            var validSequence = stream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
 
-            stream.AppendEntries(entriesToAppend);
+            stream.AppendEventsWithMetadata(eventsWithMetadata);
             
-            Assert.True(stream.EntriesToAppend.SequenceEqual(entriesToAppend));
+            Assert.True(stream.EventsWithMetadataToAppend.SequenceEqual(eventsWithMetadata));
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnAppendedEntriesAsEntriesToAppend_When_GettingEntriesToAppendAfterAppendingEntries_And_EventStreamWasEmpty(
-            List<EventStreamEntry> entriesToAppend)
-        {
-            var stream = EventStream.NewEventStream();
-            var validStreamId = stream.StreamId;
-            uint validSequence = 0;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
-                .ToList();
-
-            stream.AppendEntries(entriesToAppend);
-            
-            Assert.True(stream.EntriesToAppend.SequenceEqual(entriesToAppend));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnTrue_When_ComparingDifferentObjectsWithSameStreamIdAndEmptyCollectionOfEntries(
+        public void ReturnTrue_When_ComparingDifferentObjectsWithSameStreamIdAndEmptyCollectionOfEventsWithMetadata(
             EventStreamId streamId)
         {
-            var stream1 = new EventStream(
-                streamId,
-                EventStreamEntries.Empty);
-
-            var stream2 = new EventStream(
-                streamId,
-                EventStreamEntries.Empty);
+            var stream1 = new EventStream(streamId, new List<EventStreamEventWithMetadata>());
+            var stream2 = new EventStream(streamId, new List<EventStreamEventWithMetadata>());
             
             Assert.Equal(stream1, stream2);
             Assert.True(stream1 == stream2);
@@ -925,16 +495,11 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnTrue_When_ComparingDifferentObjectsWithSameStreamIdAndEntries(
+        public void ReturnTrue_When_ComparingDifferentObjectsWithSameStreamIdAndEventsWithMetadata(
             EventStream eventStream)
         {
-            var stream1 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
-
-            var stream2 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
+            var stream1 = new EventStream(eventStream.StreamId, eventStream.EventsWithMetadata);
+            var stream2 = new EventStream(eventStream.StreamId, eventStream.EventsWithMetadata);
             
             Assert.Equal(stream1, stream2);
             Assert.True(stream1 == stream2);
@@ -943,34 +508,29 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnTrue_When_ComparingDifferentObjectsWithSameStreamIdAndEntries_And_SameAppendedEntries(
-            EventStream eventStream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
+        public void ReturnTrue_When_ComparingDifferentObjectsWithSameStreamIdAndEventsWithMetadata_And_SameAppendedEventsWithMetadata(
+            EventStream stream,
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            var validStreamId = eventStream.StreamId;
-            var validSequence = eventStream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
+            var validStreamId = stream.StreamId;
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream1 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
+            var stream1 = new EventStream(stream.StreamId, stream.EventsWithMetadata);
+            stream1.AppendEventsWithMetadata(eventsWithMetadata);
 
-            stream1.AppendEntries(entriesToAppend);
-
-            var stream2 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
-            
-            stream2.AppendEntries(entriesToAppend);
+            var stream2 = new EventStream(stream.StreamId, stream.EventsWithMetadata);
+            stream2.AppendEventsWithMetadata(eventsWithMetadata);
             
             Assert.Equal(stream1, stream2);
             Assert.True(stream1 == stream2);
@@ -979,17 +539,12 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentStreamIdAndEmptyCollectionOfEntries(
+        public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentStreamIdAndEmptyCollectionOfEventsWithMetadata(
             EventStreamId streamId1,
             EventStreamId streamId2)
         {
-            var stream1 = new EventStream(
-                streamId1,
-                EventStreamEntries.Empty);
-
-            var stream2 = new EventStream(
-                streamId2,
-                EventStreamEntries.Empty);
+            var stream1 = new EventStream(streamId1, new List<EventStreamEventWithMetadata>());
+            var stream2 = new EventStream(streamId2, new List<EventStreamEventWithMetadata>());
             
             Assert.NotEqual(stream1.GetHashCode(), stream2.GetHashCode());
             Assert.NotEqual(stream1, stream2);
@@ -999,17 +554,12 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentStreamIdAndEntries(
+        public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentStreamIdAndEventsWithMetadata(
             EventStream eventStream1,
             EventStream eventStream2)
         {
-            var stream1 = new EventStream(
-                eventStream1.StreamId,
-                eventStream1.Entries);
-
-            var stream2 = new EventStream(
-                eventStream2.StreamId,
-                eventStream2.Entries);
+            var stream1 = new EventStream(eventStream1.StreamId, eventStream1.EventsWithMetadata);
+            var stream2 = new EventStream(eventStream2.StreamId, eventStream2.EventsWithMetadata);
             
             Assert.NotEqual(stream1, stream2);
             Assert.True(stream1 != stream2);
@@ -1018,32 +568,28 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnFalse_When_ComparingDifferentObjectsWithSameStreamIdAndEntries_And_OneHasAppendedEntriesWhileTheOtherDoesNot(
-            EventStream eventStream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
+        public void ReturnFalse_When_ComparingDifferentObjectsWithSameStreamIdAndEventsWithMetadata_And_OneHasAppendedEventsWithMetadataWhileTheOtherDoesNot(
+            EventStream stream,
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            var validStreamId = eventStream.StreamId;
-            var validSequence = eventStream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
+            var validStreamId = stream.StreamId;
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream1 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
+            var stream1 = new EventStream(stream.StreamId, stream.EventsWithMetadata);
+            stream1.AppendEventsWithMetadata(eventsWithMetadata);
 
-            stream1.AppendEntries(entriesToAppend);
-
-            var stream2 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
+            var stream2 = new EventStream(stream.StreamId, stream.EventsWithMetadata);
             
             Assert.NotEqual(stream1, stream2);
             Assert.True(stream1 != stream2);
@@ -1052,34 +598,29 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnFalse_When_ComparingDifferentObjectsWithSameStreamIdAndEntries_And_BothHaveDifferentNumberAppendedEntries(
-            EventStream eventStream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
+        public void ReturnFalse_When_ComparingDifferentObjectsWithSameStreamIdAndEventsWithMetadata_And_BothHaveDifferentNumberAppendedEventsWithMetadata(
+            EventStream stream,
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            var validStreamId = eventStream.StreamId;
-            var validSequence = eventStream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
+            var validStreamId = stream.StreamId;
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream1 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
+            var stream1 = new EventStream(stream.StreamId, stream.EventsWithMetadata);
+            stream1.AppendEventsWithMetadata(eventsWithMetadata);
 
-            stream1.AppendEntries(entriesToAppend);
-
-            var stream2 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
-
-            stream2.AppendEntries(entriesToAppend.Take(new Random().Next(0, entriesToAppend.Count())));
+            var stream2 = new EventStream(stream.StreamId, stream.EventsWithMetadata);
+            stream2.AppendEventsWithMetadata(eventsWithMetadata.Take(new Random().Next(0, eventsWithMetadata.Count)));
             
             Assert.NotEqual(stream1, stream2);
             Assert.True(stream1 != stream2);
@@ -1088,46 +629,43 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void ReturnFalse_When_ComparingDifferentObjectsWithSameStreamIdAndEntries_And_BothHaveDifferentAppendedEntries(
-            EventStream eventStream,
-            IEnumerable<EventStreamEntry> entriesToAppend1,
-            IEnumerable<EventStreamEntry> entriesToAppend2)
+        public void ReturnFalse_When_ComparingDifferentObjectsWithSameStreamIdAndEventsWithMetadata_And_BothHaveDifferentAppendedEventsWithMetadata(
+            EventStream stream,
+            List<EventStreamEventWithMetadata> eventsWithMetadata1,
+            List<EventStreamEventWithMetadata> eventsWithMetadata2)
         {
-            var validStreamId = eventStream.StreamId;
-            var validSequence = eventStream.CurrentSequence + 1;
-            entriesToAppend1 = entriesToAppend1
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
+            var validStreamId = stream.StreamId;
+            var validNextSequence = stream.NextSequence;
+            eventsWithMetadata1 = eventsWithMetadata1
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        validNextSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            entriesToAppend2 = entriesToAppend2
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
+            validNextSequence = stream.NextSequence;
+            eventsWithMetadata2 = eventsWithMetadata2
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        validNextSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream1 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
+            var stream1 = new EventStream(stream.StreamId, stream.EventsWithMetadata);
+            stream1.AppendEventsWithMetadata(eventsWithMetadata1);
 
-            stream1.AppendEntries(entriesToAppend1);
-
-            var stream2 = new EventStream(
-                eventStream.StreamId,
-                eventStream.Entries);
-
-            stream1.AppendEntries(entriesToAppend2);
+            var stream2 = new EventStream(stream.StreamId, stream.EventsWithMetadata);
+            stream2.AppendEventsWithMetadata(eventsWithMetadata2);
             
             Assert.NotEqual(stream1, stream2);
             Assert.True(stream1 != stream2);
@@ -1139,15 +677,15 @@ namespace Abstractions.UnitTests
         public void ReturnExpectedValue_When_CallingToString(EventStream eventStream)
         {
             var expectedValue =
-                $"Event Stream ID: {eventStream.StreamId}, {eventStream.Entries}, Current Sequence: {eventStream.CurrentSequence}, {EntriesToAppendString()}";
+                $"Event Stream ID: {eventStream.StreamId}, {eventStream.EventsWithMetadata}, Next Sequence: {eventStream.NextSequence}, {EventsWithMetadataToAppendString()}";
 
-            string EntriesToAppendString()
+            string EventsWithMetadataToAppendString()
             {
                 var stringBuilder = new StringBuilder();
-                stringBuilder.Append("Entries to append: ");
-                foreach (var eventStreamEntry in eventStream.EntriesToAppend)
+                stringBuilder.Append("EventsWithMetadata to append: ");
+                foreach (var eventWithMetadata in eventStream.EventsWithMetadataToAppend)
                 {
-                    stringBuilder.Append($"\n\t{eventStreamEntry}");
+                    stringBuilder.Append($"\n\t{eventWithMetadata}");
                 }
 
                 return stringBuilder.ToString();
@@ -1159,40 +697,41 @@ namespace Abstractions.UnitTests
         [Theory]
         [AutoMoqData]
         public void ReturnExpectedValue_When_CallingToStringWithAppendedEntries(
-            EventStream eventStream,
-            IEnumerable<EventStreamEntry> entriesToAppend)
+            EventStream stream,
+            List<EventStreamEventWithMetadata> eventsWithMetadata)
         {
-            var validStreamId = eventStream.StreamId;
-            var validSequence = eventStream.CurrentSequence + 1;
-            entriesToAppend = entriesToAppend
-                .Select(entry => new EventStreamEntry(
-                    validStreamId,
-                    entry.EntryId,
-                    validSequence++,
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId))
+            var validStreamId = stream.StreamId;
+            var nextValidSequence = stream.NextSequence;
+            eventsWithMetadata = eventsWithMetadata
+                .Select(eventWithMetadata => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        validStreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        nextValidSequence++,
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
 
-            eventStream.AppendEntries(entriesToAppend);
+            stream.AppendEventsWithMetadata(eventsWithMetadata);
             
             var expectedValue =
-                $"Event Stream ID: {eventStream.StreamId}, {eventStream.Entries}, Current Sequence: {eventStream.CurrentSequence}, {EntriesToAppendString()}";
+                $"Event Stream ID: {stream.StreamId}, {stream.EventsWithMetadata}, Next Sequence: {stream.NextSequence}, {EventsWithMetadataToAppendString()}";
 
-            string EntriesToAppendString()
+            string EventsWithMetadataToAppendString()
             {
                 var stringBuilder = new StringBuilder();
-                stringBuilder.Append("Entries to append: ");
-                foreach (var eventStreamEntry in eventStream.EntriesToAppend)
+                stringBuilder.Append("EventsWithMetadata to append: ");
+                foreach (var eventWithMetadata  in stream.EventsWithMetadataToAppend)
                 {
-                    stringBuilder.Append($"\n\t{eventStreamEntry}");
+                    stringBuilder.Append($"\n\t{eventWithMetadata}");
                 }
 
                 return stringBuilder.ToString();
             }
 
-            Assert.Equal(expectedValue, eventStream.ToString());
+            Assert.Equal(expectedValue, stream.ToString());
         }
     }
 }

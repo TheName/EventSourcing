@@ -10,6 +10,32 @@ namespace EventSourcing.Abstractions.ValueObjects
     public class EventStreamEntry
     {
         /// <summary>
+        /// Creates a new instance of the <see cref="EventStreamEntry"/> class from provided parameters.
+        /// </summary>
+        /// <param name="eventDescriptor">
+        /// The <see cref="EventStreamEventDescriptor"/>.
+        /// </param>
+        /// <param name="eventMetadata">
+        /// The <see cref="EventStreamEventMetadata"/>.
+        /// </param>
+        /// <returns>
+        /// The <see cref="EventStreamEntry"/>.
+        /// </returns>
+        public static EventStreamEntry Create(
+            EventStreamEventDescriptor eventDescriptor,
+            EventStreamEventMetadata eventMetadata)
+        {
+            return new EventStreamEntry(
+                eventMetadata.StreamId,
+                eventMetadata.EntryId,
+                eventMetadata.EntrySequence,
+                eventDescriptor,
+                eventMetadata.CausationId,
+                eventMetadata.CreationTime,
+                eventMetadata.CorrelationId);
+        }
+        
+        /// <summary>
         /// The <see cref="EventStreamId"/> that this event belongs to.
         /// </summary>
         public EventStreamId StreamId { get; }

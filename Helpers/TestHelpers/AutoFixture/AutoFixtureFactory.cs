@@ -6,7 +6,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions;
 using EventSourcing.Persistence.Abstractions.ValueObjects;
 
 namespace TestHelpers.AutoFixture
@@ -34,19 +33,20 @@ namespace TestHelpers.AutoFixture
 
         private static EventStream CreateEventStream(ISpecimenBuilder builder)
         {
-            var entries = builder.Create<EventStreamEntries>();
-            entries = new EventStreamEntries(entries
-                .Select((entry, i) => new EventStreamEntry(
-                    entry.StreamId,
-                    entry.EntryId,
-                    Convert.ToUInt32(i),
-                    entry.EventDescriptor,
-                    entry.CausationId,
-                    entry.CreationTime,
-                    entry.CorrelationId)));
+            var streamId = builder.Create<EventStreamId>();
+            var eventsWithMetadata = builder.Create<IEnumerable<EventStreamEventWithMetadata>>();
+            eventsWithMetadata = eventsWithMetadata
+                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
+                    eventWithMetadata.Event,
+                    new EventStreamEventMetadata(
+                        streamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        Convert.ToUInt32(i),
+                        eventWithMetadata.EventMetadata.CausationId,
+                        eventWithMetadata.EventMetadata.CreationTime,
+                        eventWithMetadata.EventMetadata.CorrelationId)));
             
-            var streamId = entries[0].StreamId;
-            return new EventStream(streamId, entries);
+            return new EventStream(streamId, eventsWithMetadata);
         }
 
         private static EventStreamEntries CreateEventStreamEntries(ISpecimenBuilder builder)
