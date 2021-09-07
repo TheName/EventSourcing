@@ -41,7 +41,8 @@ namespace EventSourcing.Extensions.DependencyInjection
                 .AddTransient<IEventStreamEventConverter, EventStreamEventConverter>()
                 .AddTransient<IEventStreamEventTypeIdentifierConverter, EventStreamEventTypeIdentifierConverter>()
                 .AddTransient<IEventHandlerProvider, EventHandlerProvider>()
-                .AddTransient<IEventStreamEntryDispatcher, EventStreamEntryDispatcher>();
+                .AddTransient<IEventStreamEntryDispatcher, EventStreamEntryDispatcher>()
+                .AddTransient<IEventStreamRetriever, EventStreamRetriever>();
             
             serviceCollection
                 .AddOptions<EventSourcingConfiguration>()

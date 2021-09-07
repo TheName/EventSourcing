@@ -57,7 +57,7 @@ namespace EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer
                     provider.GetRequiredService<IOptions<SqlServerEventStreamPersistenceConfiguration>>().Value);
 
             eventSourcingBuilder.Services
-                .AddTransient<IEventStreamWriteRepository, SqlServerEventStreamWriteRepository>()
+                .AddTransient<IEventStreamRepository, SqlServerEventStreamRepository>()
                 .AddTransient<IEventStreamStagingWriteRepository, SqlServerEventStreamStagingWriteRepository>();
 
             return eventSourcingBuilder;

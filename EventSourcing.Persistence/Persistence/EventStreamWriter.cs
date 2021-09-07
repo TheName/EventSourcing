@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Persistence.Abstractions;
 using EventSourcing.Persistence.Abstractions.Enums;
@@ -10,16 +9,16 @@ namespace EventSourcing.Persistence
 {
     internal class EventStreamWriter : IEventStreamWriter
     {
-        private readonly IEventStreamWriteRepository _writeRepository;
+        private readonly IEventStreamRepository _repository;
 
-        public EventStreamWriter(IEventStreamWriteRepository writeRepository)
+        public EventStreamWriter(IEventStreamRepository repository)
         {
-            _writeRepository = writeRepository ?? throw new ArgumentNullException(nameof(writeRepository));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
         
         public async Task<EventStreamWriteResult> WriteAsync(EventStreamEntries eventStreamEntries, CancellationToken cancellationToken)
         {
-            return await _writeRepository.WriteAsync(eventStreamEntries, cancellationToken).ConfigureAwait(false);
+            return await _repository.WriteAsync(eventStreamEntries, cancellationToken).ConfigureAwait(false);
         }
     }
 }

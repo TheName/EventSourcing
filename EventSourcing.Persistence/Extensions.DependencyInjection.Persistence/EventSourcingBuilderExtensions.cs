@@ -31,7 +31,8 @@ namespace EventSourcing.Extensions.DependencyInjection.Persistence
 
             eventSourcingBuilder.Services
                 .AddTransient<IEventStreamStagingWriter, EventStreamStagingWriter>()
-                .AddTransient<IEventStreamWriter, EventStreamWriter>();
+                .AddTransient<IEventStreamWriter, EventStreamWriter>()
+                .AddTransient<IEventStreamReader, EventStreamReader>();
 
             return eventSourcingBuilder;
         }
