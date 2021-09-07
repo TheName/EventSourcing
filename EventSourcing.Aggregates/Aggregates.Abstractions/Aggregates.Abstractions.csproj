@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.Aggregates.Abstractions</RootNamespace>
+        <AssemblyName>EventSourcing.Aggregates.Abstractions</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.Aggregates.Abstractions</Title>
+        <Description>This package contains abstractions over EventSourcing.Aggregates packages.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.Aggregates.Abstractions</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.Aggregates.Abstractions project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.Aggregates;EventSourcing.Aggregates.Abstractions</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
+    </ItemGroup>
+
+</Project>
