@@ -103,7 +103,9 @@ namespace EventSourcing.UnitTests
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             EventStreamPublisher publisher)
         {
-            await publisher.PublishAsync(EventStream.NewEventStream(), CancellationToken.None);
+            var stream = new PublishableEventStream(new AppendableEventStream(EventStream.NewEventStream()));
+
+            await publisher.PublishAsync(stream, CancellationToken.None);
             
             storeStagingWriterMock.VerifyNoOtherCalls();
             storeWriterMock.VerifyNoOtherCalls();
@@ -129,8 +131,13 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppend);
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             await PublishAndIgnoreExceptionsAsync(publisher, stream);
 
@@ -164,8 +171,13 @@ namespace EventSourcing.UnitTests
                     eventWithMetadataWithEventDescriptor.EventDescriptor))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppendWithEventDescriptors.Select(tuple => tuple.EventWithMetadata));
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppendWithEventDescriptors.Select(tuple => tuple.EventWithMetadata))
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             foreach (var (eventWithMetadata, eventDescriptor) in eventsToAppendWithEventDescriptors)
             {
@@ -224,8 +236,13 @@ namespace EventSourcing.UnitTests
                     eventWithMetadataWithEventDescriptor.EventDescriptor))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppendWithEventDescriptors.Select(tuple => tuple.EventWithMetadata));
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppendWithEventDescriptors.Select(tuple => tuple.EventWithMetadata))
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             foreach (var (eventWithMetadata, eventDescriptor) in eventsToAppendWithEventDescriptors)
             {
@@ -283,8 +300,13 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppend);
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             EventStreamEntries stagedEntries = null;
             EventStreamEntries storedEntries = null;
@@ -339,8 +361,13 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppend);
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
             
             EventStreamEntries stagedEntries = null;
 
@@ -392,8 +419,13 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppend);
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
@@ -434,8 +466,13 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppend);
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
@@ -468,8 +505,13 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppend);
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             storeStagingWriterMock
                 .Setup(writer => writer.WriteAsync(
@@ -510,8 +552,13 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppend);
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             storeWriterMock
                 .Setup(writer => writer.WriteAsync(
@@ -544,8 +591,13 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppend);
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             storeStagingWriterMock
                 .Setup(writer => writer.WriteAsync(
@@ -590,8 +642,13 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
             
-            var stream = EventStream.NewEventStream(eventStreamId);
-            stream.AppendEventsWithMetadata(eventsToAppend);
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
 
             storeStagingWriterMock
                 .Setup(writer => writer.WriteAsync(
@@ -613,7 +670,7 @@ namespace EventSourcing.UnitTests
             storeStagingWriterMock.VerifyNoOtherCalls();
         }
 
-        private static async Task PublishAndIgnoreExceptionsAsync(IEventStreamPublisher publisher, EventStream eventStream)
+        private static async Task PublishAndIgnoreExceptionsAsync(IEventStreamPublisher publisher, PublishableEventStream eventStream)
         {
             try
             {

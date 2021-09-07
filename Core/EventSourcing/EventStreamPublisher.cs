@@ -34,9 +34,9 @@ namespace EventSourcing
             _busPublisher = busPublisher ?? throw new ArgumentNullException(nameof(busPublisher));
         }
 
-        public async Task PublishAsync(EventStream stream, CancellationToken cancellationToken)
+        public async Task PublishAsync(PublishableEventStream stream, CancellationToken cancellationToken)
         {
-            var eventsToAppend = stream?.EventsWithMetadataToAppend ?? throw new ArgumentNullException(nameof(stream));
+            var eventsToAppend = stream?.EventsWithMetadataToPublish ?? throw new ArgumentNullException(nameof(stream));
             if (eventsToAppend.Count == 0)
             {
                 return;

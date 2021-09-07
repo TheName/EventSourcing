@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Abstractions.ValueObjects;
 
 namespace EventSourcing.Abstractions
 {
     /// <summary>
-    /// The event stream publisher used to store and publish (to event bus) appended entries from <see cref="EventStream"/>. 
+    /// The event stream publisher used to store and publish (to event bus) appended entries from <see cref="AppendableEventStream"/>. 
     /// </summary>
     public interface IEventStreamPublisher
     {
@@ -13,7 +14,7 @@ namespace EventSourcing.Abstractions
         /// Stores appended entries in the event source and publishes them to event bus.
         /// </summary>
         /// <param name="stream">
-        /// The <see cref="EventStream"/>.
+        /// The <see cref="PublishableEventStream"/>.
         /// </param>
         /// <param name="cancellationToken">
         /// The <see cref="CancellationToken"/>.
@@ -27,6 +28,6 @@ namespace EventSourcing.Abstractions
         /// <exception cref="EventStreamOptimisticConcurrencyException">
         /// Thrown when storing the entries in the event source is not possible due to the fact that other entries with same sequences are already stored.
         /// </exception>
-        Task PublishAsync(EventStream stream, CancellationToken cancellationToken);
+        Task PublishAsync(PublishableEventStream stream, CancellationToken cancellationToken);
     }
 }
