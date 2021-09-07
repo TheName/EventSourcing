@@ -6,10 +6,16 @@ using EventSourcing.Aggregates.Helpers;
 
 namespace EventSourcing.Aggregates
 {
+    /// <summary>
+    /// A basic implementation of <see cref="IEventStreamAggregate"/>.
+    /// </summary>
     public abstract class BaseEventStreamAggregate : IEventStreamAggregate
     {
         private AppendableEventStream _appendableEventStream = new AppendableEventStream(EventStream.NewEventStream());
         
+        /// <summary>
+        /// Defines if in case of missing handler methods for event types an exception should be thrown.
+        /// </summary>
         protected virtual bool ShouldIgnoreMissingHandlers { get; } = false;
 
         /// <inheritdoc />

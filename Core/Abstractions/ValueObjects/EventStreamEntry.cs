@@ -115,6 +115,12 @@ namespace EventSourcing.Abstractions.ValueObjects
             CorrelationId = correlationId ?? throw new ArgumentNullException(nameof(correlationId));
         }
 
+        /// <summary>
+        /// Creates an instance of <see cref="EventStreamEventMetadata"/> out of properties from this <see cref="EventStreamEntry"/>.
+        /// </summary>
+        /// <returns>
+        /// An instance of <see cref="EventStreamEventMetadata"/> instantiated with properties from this <see cref="EventStreamEntry"/>.
+        /// </returns>
         public EventStreamEventMetadata ToEventMetadata()
         {
             return new EventStreamEventMetadata(
