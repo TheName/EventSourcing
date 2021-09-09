@@ -4,31 +4,29 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RootNamespace>EventSourcing.Aggregates</RootNamespace>
-        <AssemblyName>EventSourcing.Aggregates</AssemblyName>
+        <RootNamespace>EventSourcing.Extensions.Abstractions</RootNamespace>
+        <AssemblyName>EventSourcing.Extensions.Abstractions</AssemblyName>
     </PropertyGroup>
 
     <!-- NuGet metadata -->
     <PropertyGroup>
-        <Title>EventSourcing.Aggregates</Title>
-        <Description>This package contains default implementation of EventSourcing.Aggregates.Abstractions package.</Description>
+        <Title>EventSourcing.Extensions.Abstractions</Title>
+        <Description>This package contains DependencyInjection extensions for EventSourcing.Abstractions package.</Description>
         <Authors>Dawid Szmidka</Authors>
-        <PackageId>EventSourcing.Aggregates</PackageId>
+        <PackageId>EventSourcing.Extensions.Abstractions</PackageId>
         <Version>0.1.0-alpha</Version>
         <PackageReleaseNotes>
-            - Initial version of EventSourcing.Aggregates project
+            - Initial version of EventSourcing.Extensions.Abstractions project
         </PackageReleaseNotes>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageTags>EventSourcing;EventSourcing.Aggregates</PackageTags>
+        <PackageTags>EventSourcing;EventSourcing.Extensions;EventSourcing.Extensions.Abstractions</PackageTags>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <IncludeSource>true</IncludeSource>
         <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
-      <ProjectReference Include="..\..\Core\Extensions.Abstractions\Extensions.Abstractions.csproj" />
-      <ProjectReference Include="..\Aggregates.Abstractions\Aggregates.Abstractions.csproj" />
+      <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

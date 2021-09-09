@@ -78,6 +78,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregates.Abstractions", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregates.UnitTests", "EventSourcing.Aggregates\Aggregates.UnitTests\Aggregates.UnitTests.csproj", "{918D9C34-9263-4774-907D-87F1C9C860E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.Abstractions", "Core\Extensions.Abstractions\Extensions.Abstractions.csproj", "{6D9A124A-5578-4AFA-9772-E5EAD7DCF4B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.Abstractions.UnitTests", "Core\Extensions.Abstractions.UnitTests\Extensions.Abstractions.UnitTests.csproj", "{B2A7541A-C8F5-4748-B407-B53DDC25B60B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -216,6 +220,14 @@ Global
 		{918D9C34-9263-4774-907D-87F1C9C860E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{918D9C34-9263-4774-907D-87F1C9C860E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{918D9C34-9263-4774-907D-87F1C9C860E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D9A124A-5578-4AFA-9772-E5EAD7DCF4B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D9A124A-5578-4AFA-9772-E5EAD7DCF4B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D9A124A-5578-4AFA-9772-E5EAD7DCF4B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D9A124A-5578-4AFA-9772-E5EAD7DCF4B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2A7541A-C8F5-4748-B407-B53DDC25B60B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2A7541A-C8F5-4748-B407-B53DDC25B60B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2A7541A-C8F5-4748-B407-B53DDC25B60B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2A7541A-C8F5-4748-B407-B53DDC25B60B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FED5B0D5-163B-404E-9CD3-69C7B0A246B4} = {3829A2ED-C973-4C40-89B2-276296AC020A}
@@ -251,5 +263,7 @@ Global
 		{925C0B87-F4FF-4A2D-95EA-8EAB4B9D10E8} = {554639EC-1D6A-41B9-8B71-07DE055A27EB}
 		{6278C690-7A1C-469A-ABB2-C1782E577BC2} = {554639EC-1D6A-41B9-8B71-07DE055A27EB}
 		{918D9C34-9263-4774-907D-87F1C9C860E9} = {554639EC-1D6A-41B9-8B71-07DE055A27EB}
+		{6D9A124A-5578-4AFA-9772-E5EAD7DCF4B2} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
+		{B2A7541A-C8F5-4748-B407-B53DDC25B60B} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
 	EndGlobalSection
 EndGlobal

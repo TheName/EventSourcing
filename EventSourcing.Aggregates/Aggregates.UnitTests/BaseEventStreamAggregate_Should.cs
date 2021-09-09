@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutoFixture;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Aggregates;
@@ -231,38 +230,13 @@ namespace Aggregates.UnitTests
                 eventMetadata.CreationTime,
                 eventMetadata.CorrelationId);
 
-            aggregate.AppendEventWithMetadata(@event, eventMetadata);
+            aggregate.Append(@event, eventMetadata.EntryId, eventMetadata.CausationId, eventMetadata.CreationTime, eventMetadata.CorrelationId);
 
             var publishableEventStream = aggregate.PublishableEventStream;
             var singleEventWithMetadataToPublish = Assert.Single(publishableEventStream.EventsWithMetadataToPublish);
             Assert.NotNull(singleEventWithMetadataToPublish);
             Assert.Equal(@event, singleEventWithMetadataToPublish.Event);
             Assert.Equal(eventMetadata, singleEventWithMetadataToPublish.EventMetadata);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnAppendedEventWithMetadataInEventsToPublish_When_GettingPublishableEventStream_After_AppendingAnEventWithCausationIdAndCorrelationId(
-            object @event,
-            EventStreamEntryCausationId causationId,
-            EventStreamEntryCorrelationId correlationId)
-        {
-            var now = DateTime.UtcNow;
-            var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
-
-            aggregate.AppendEventWithCausationIdAndCorrelationId(@event, causationId, correlationId);
-
-            var publishableEventStream = aggregate.PublishableEventStream;
-            var singleEventWithMetadataToPublish = Assert.Single(publishableEventStream.EventsWithMetadataToPublish);
-            Assert.NotNull(singleEventWithMetadataToPublish);
-            Assert.Equal(@event, singleEventWithMetadataToPublish.Event);
-            Assert.Equal(aggregate.PublishableEventStream.StreamId, singleEventWithMetadataToPublish.EventMetadata.StreamId);
-            Assert.NotNull(singleEventWithMetadataToPublish.EventMetadata.EntryId);
-            Assert.NotEqual<Guid>(Guid.Empty, singleEventWithMetadataToPublish.EventMetadata.EntryId);
-            Assert.Equal<uint>(0, singleEventWithMetadataToPublish.EventMetadata.EntrySequence);
-            Assert.Equal(causationId, singleEventWithMetadataToPublish.EventMetadata.CausationId);
-            Assert.True(singleEventWithMetadataToPublish.EventMetadata.CreationTime - now < TimeSpan.FromMilliseconds(10));
-            Assert.Equal(correlationId, singleEventWithMetadataToPublish.EventMetadata.CorrelationId);
         }
 
         private class TestAggregateWithoutHandlers : BaseEventStreamAggregate
@@ -273,17 +247,19 @@ namespace Aggregates.UnitTests
         {
             protected override bool ShouldIgnoreMissingHandlers => true;
 
-            public void AppendEventWithMetadata(object @event, EventStreamEventMetadata eventMetadata)
-            {
-                Append(@event, eventMetadata);
-            }
-
-            public void AppendEventWithCausationIdAndCorrelationId(
+            public new void Append(
                 object @event,
-                EventStreamEntryCausationId causationId,
-                EventStreamEntryCorrelationId correlationId)
+                EventStreamEntryId entryId = null,
+                EventStreamEntryCausationId causationId = null,
+                EventStreamEntryCreationTime creationTime = null,
+                EventStreamEntryCorrelationId correlationId = null)
             {
-                Append(@event, causationId, correlationId);
+                base.Append(
+                    @event,
+                    entryId,
+                    causationId,
+                    creationTime,
+                    correlationId);
             }
         }
 

@@ -35,6 +35,7 @@ namespace Bus.RabbitMQ.IntegrationTests
                 .AddLogging(builder => builder.AddProvider(new XUnitLoggerProvider(TestOutputHelperFunc)))
                 .AddSingleton(new Mock<IEventStreamStagingWriter>().Object)
                 .AddSingleton(new Mock<IEventStreamWriter>().Object)
+                .AddSingleton(new Mock<IEventStreamReader>().Object)
                 .AddSingleton<SimpleEventHandler>()
                 .AddTransient<IEventHandler<SimpleEvent>>(provider => provider.GetRequiredService<SimpleEventHandler>())
                 .AddSingleton(provider => Host.CreateDefaultBuilder()

@@ -3,6 +3,7 @@ using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Aggregates.Abstractions;
 using EventSourcing.Aggregates.Helpers;
+using EventSourcing.Extensions.Abstractions;
 
 namespace EventSourcing.Aggregates
 {
@@ -40,40 +41,34 @@ namespace EventSourcing.Aggregates
         /// <param name="event">
         /// The <see cref="object"/> representing an event.
         /// </param>
+        /// <param name="entryId">
+        /// The <see cref="EventStreamEntryId"/>. If not provided, a new <see cref="Guid"/> is generated and used as <see cref="EventStreamEntryId"/>.
+        /// </param>
         /// <param name="causationId">
-        /// The <see cref="EventStreamEntryCausationId"/>.
+        /// The <see cref="EventStreamEntryCausationId"/>. If not provided, a new <see cref="Guid"/> is generated and used as <see cref="EventStreamEntryCausationId"/>.
+        /// </param>
+        /// <param name="creationTime">
+        /// The <see cref="EventStreamEntryCreationTime"/>. If not provided, a new <see cref="DateTime"/> with current time (UTC) is generated and used as <see cref="EventStreamEntryCreationTime"/>.
         /// </param>
         /// <param name="correlationId">
-        /// The <see cref="EventStreamEntryCorrelationId"/>.
+        /// The <see cref="EventStreamEntryCorrelationId"/>. If not provided, a new <see cref="Guid"/> is generated and used as <see cref="EventStreamEntryCorrelationId"/>.
         /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="event"/> is null.
+        /// </exception>
         protected void Append(
             object @event,
-            EventStreamEntryCausationId causationId,
-            EventStreamEntryCorrelationId correlationId)
+            EventStreamEntryId entryId = null,
+            EventStreamEntryCausationId causationId = null,
+            EventStreamEntryCreationTime creationTime = null,
+            EventStreamEntryCorrelationId correlationId = null)
         {
-            var metadata = new EventStreamEventMetadata(
-                StreamId,
-                EventStreamEntryId.NewEventStreamEntryId(),
-                _appendableEventStream.NextSequence,
+            _appendableEventStream.AppendEventWithMetadata(
+                @event,
+                entryId,
                 causationId,
-                DateTime.UtcNow,
+                creationTime,
                 correlationId);
-
-            Append(@event, metadata);
-        }
-
-        /// <summary>
-        /// Appends an event with provided metadata to the in-memory stream.
-        /// </summary>
-        /// <param name="event">
-        /// The <see cref="object"/> representing an event.
-        /// </param>
-        /// <param name="eventMetadata">
-        /// The <see cref="EventStreamEventMetadata"/>.
-        /// </param>
-        protected void Append(object @event, EventStreamEventMetadata eventMetadata)
-        {
-            _appendableEventStream.AppendEventWithMetadata(new EventStreamEventWithMetadata(@event, eventMetadata));
         }
 
         private void ApplyEvent(EventStreamEventWithMetadata eventWithMetadata)
