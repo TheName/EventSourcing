@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoFixture;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Aggregates;
@@ -215,6 +216,55 @@ namespace Aggregates.UnitTests
             Assert.Throws<InvalidOperationException>(() => testAggregate.Replay(stream));
         }
 
+        [Theory]
+        [AutoMoqData]
+        public void ReturnAppendedEventWithMetadataInEventsToPublish_When_GettingPublishableEventStream_After_AppendingAnEventWithMetadata(
+            object @event,
+            EventStreamEventMetadata eventMetadata)
+        {
+            var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
+            eventMetadata = new EventStreamEventMetadata(
+                aggregate.PublishableEventStream.StreamId,
+                eventMetadata.EntryId,
+                0,
+                eventMetadata.CausationId,
+                eventMetadata.CreationTime,
+                eventMetadata.CorrelationId);
+
+            aggregate.AppendEventWithMetadata(@event, eventMetadata);
+
+            var publishableEventStream = aggregate.PublishableEventStream;
+            var singleEventWithMetadataToPublish = Assert.Single(publishableEventStream.EventsWithMetadataToPublish);
+            Assert.NotNull(singleEventWithMetadataToPublish);
+            Assert.Equal(@event, singleEventWithMetadataToPublish.Event);
+            Assert.Equal(eventMetadata, singleEventWithMetadataToPublish.EventMetadata);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void ReturnAppendedEventWithMetadataInEventsToPublish_When_GettingPublishableEventStream_After_AppendingAnEventWithCausationIdAndCorrelationId(
+            object @event,
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCorrelationId correlationId)
+        {
+            var now = DateTime.UtcNow;
+            var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
+
+            aggregate.AppendEventWithCausationIdAndCorrelationId(@event, causationId, correlationId);
+
+            var publishableEventStream = aggregate.PublishableEventStream;
+            var singleEventWithMetadataToPublish = Assert.Single(publishableEventStream.EventsWithMetadataToPublish);
+            Assert.NotNull(singleEventWithMetadataToPublish);
+            Assert.Equal(@event, singleEventWithMetadataToPublish.Event);
+            Assert.Equal(aggregate.PublishableEventStream.StreamId, singleEventWithMetadataToPublish.EventMetadata.StreamId);
+            Assert.NotNull(singleEventWithMetadataToPublish.EventMetadata.EntryId);
+            Assert.NotEqual<Guid>(Guid.Empty, singleEventWithMetadataToPublish.EventMetadata.EntryId);
+            Assert.Equal<uint>(0, singleEventWithMetadataToPublish.EventMetadata.EntrySequence);
+            Assert.Equal(causationId, singleEventWithMetadataToPublish.EventMetadata.CausationId);
+            Assert.True(singleEventWithMetadataToPublish.EventMetadata.CreationTime - now < TimeSpan.FromMilliseconds(10));
+            Assert.Equal(correlationId, singleEventWithMetadataToPublish.EventMetadata.CorrelationId);
+        }
+
         private class TestAggregateWithoutHandlers : BaseEventStreamAggregate
         {
         }
@@ -222,6 +272,19 @@ namespace Aggregates.UnitTests
         private class TestAggregateWithoutHandlersAndIgnoringMissingHandlers : BaseEventStreamAggregate
         {
             protected override bool ShouldIgnoreMissingHandlers => true;
+
+            public void AppendEventWithMetadata(object @event, EventStreamEventMetadata eventMetadata)
+            {
+                Append(@event, eventMetadata);
+            }
+
+            public void AppendEventWithCausationIdAndCorrelationId(
+                object @event,
+                EventStreamEntryCausationId causationId,
+                EventStreamEntryCorrelationId correlationId)
+            {
+                Append(@event, causationId, correlationId);
+            }
         }
 
         private class TestAggregateWithBothTypesOfHandlers : BaseEventStreamAggregate

@@ -8,6 +8,23 @@ namespace Abstractions.UnitTests.ValueObjects
     public class EventStreamEntryId_Should
     {
         [Fact]
+        public void ReturnRandomEventStreamEntryId_When_CallingNewEventStreamEntryId()
+        {
+            var streamId = EventStreamEntryId.NewEventStreamEntryId();
+            
+            Assert.NotEqual<Guid>(Guid.Empty, streamId);
+        }
+        
+        [Fact]
+        public void ReturnDifferentEventStreamEntryIdEachTime_When_CallingNewEventStreamEntryId()
+        {
+            var streamId1 = EventStreamEntryId.NewEventStreamEntryId();
+            var streamId2 = EventStreamEntryId.NewEventStreamEntryId();
+            
+            Assert.NotEqual(streamId1, streamId2);
+        }
+        
+        [Fact]
         public void Throw_ArgumentException_When_CreatingWithEmptyGuid()
         {
             Assert.Throws<ArgumentException>(() => (EventStreamEntryId) Guid.Empty);

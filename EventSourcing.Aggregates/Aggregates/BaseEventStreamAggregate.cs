@@ -12,7 +12,7 @@ namespace EventSourcing.Aggregates
     public abstract class BaseEventStreamAggregate : IEventStreamAggregate
     {
         private AppendableEventStream _appendableEventStream = new AppendableEventStream(EventStream.NewEventStream());
-        
+
         /// <summary>
         /// Defines if in case of missing handler methods for event types an exception should be thrown.
         /// </summary>
@@ -20,6 +20,8 @@ namespace EventSourcing.Aggregates
 
         /// <inheritdoc />
         public PublishableEventStream PublishableEventStream => new PublishableEventStream(_appendableEventStream);
+
+        private EventStreamId StreamId => _appendableEventStream.StreamId;
 
         /// <inheritdoc />
         public void Replay(EventStream eventStream)
@@ -30,6 +32,48 @@ namespace EventSourcing.Aggregates
             }
             
             _appendableEventStream = new AppendableEventStream(eventStream);
+        }
+
+        /// <summary>
+        /// Appends an event with provided <see cref="EventStreamEntryCausationId"/> and <see cref="EventStreamEntryCorrelationId"/> to the in-memory stream.
+        /// </summary>
+        /// <param name="event">
+        /// The <see cref="object"/> representing an event.
+        /// </param>
+        /// <param name="causationId">
+        /// The <see cref="EventStreamEntryCausationId"/>.
+        /// </param>
+        /// <param name="correlationId">
+        /// The <see cref="EventStreamEntryCorrelationId"/>.
+        /// </param>
+        protected void Append(
+            object @event,
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCorrelationId correlationId)
+        {
+            var metadata = new EventStreamEventMetadata(
+                StreamId,
+                EventStreamEntryId.NewEventStreamEntryId(),
+                _appendableEventStream.NextSequence,
+                causationId,
+                DateTime.UtcNow,
+                correlationId);
+
+            Append(@event, metadata);
+        }
+
+        /// <summary>
+        /// Appends an event with provided metadata to the in-memory stream.
+        /// </summary>
+        /// <param name="event">
+        /// The <see cref="object"/> representing an event.
+        /// </param>
+        /// <param name="eventMetadata">
+        /// The <see cref="EventStreamEventMetadata"/>.
+        /// </param>
+        protected void Append(object @event, EventStreamEventMetadata eventMetadata)
+        {
+            _appendableEventStream.AppendEventWithMetadata(new EventStreamEventWithMetadata(@event, eventMetadata));
         }
 
         private void ApplyEvent(EventStreamEventWithMetadata eventWithMetadata)

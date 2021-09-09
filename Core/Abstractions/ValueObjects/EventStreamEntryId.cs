@@ -10,6 +10,11 @@ namespace EventSourcing.Abstractions.ValueObjects
     /// </summary>
     public class EventStreamEntryId
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="EventStreamEntryId"/> initialized with a random <see cref="Guid"/>.
+        /// </summary>
+        public static EventStreamEntryId NewEventStreamEntryId() => new EventStreamEntryId(Guid.NewGuid());
+        
         private Guid Value { get; }
 
         private EventStreamEntryId(Guid value)
