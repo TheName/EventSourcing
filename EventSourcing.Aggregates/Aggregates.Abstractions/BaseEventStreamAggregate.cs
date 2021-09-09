@@ -1,11 +1,10 @@
 ﻿using System;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions;
-using EventSourcing.Aggregates.Helpers;
+using EventSourcing.Aggregates.Abstractions.Helpers;
 using EventSourcing.Extensions.Abstractions;
 
-namespace EventSourcing.Aggregates
+namespace EventSourcing.Aggregates.Abstractions
 {
     /// <summary>
     /// A basic implementation of <see cref="IEventStreamAggregate"/>.

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using AutoFixture;
 using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates;
+using EventSourcing.Aggregates.Abstractions;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Aggregates.UnitTests
+namespace Aggregates.Abstractions.UnitTests
 {
     public class BaseEventStreamAggregate_Should
     {

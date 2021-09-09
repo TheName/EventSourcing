@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using EventSourcing.Abstractions.ValueObjects;
 
-namespace EventSourcing.Aggregates.Helpers
+namespace EventSourcing.Aggregates.Abstractions.Helpers
 {
     internal static class EventStreamAggregateMethodInfoRepository
     {
