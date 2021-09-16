@@ -27,6 +27,9 @@ namespace EventSourcing.Handling
             var @event = _eventConverter.FromEventDescriptor(entry.EventDescriptor);
             var eventMetadata = entry.ToEventMetadata();
 
+            EventStreamEntryCorrelationId.Current = eventMetadata.CorrelationId;
+            EventStreamEntryCausationId.Current = eventMetadata.EntryId;
+
             var eventHandlers = _eventHandlerProvider.GetHandlersForType(@event.GetType());
             await Task.WhenAll(
                     eventHandlers

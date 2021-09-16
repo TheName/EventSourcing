@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace EventSourcing.Abstractions.ValueObjects
 {
@@ -11,6 +12,41 @@ namespace EventSourcing.Abstractions.ValueObjects
     /// </summary>
     public class EventStreamEntryCausationId
     {
+        private static readonly AsyncLocal<EventStreamEntryCausationId> AsyncLocalCausationId = new AsyncLocal<EventStreamEntryCausationId>();
+
+        /// <summary>
+        /// Gets or sets the current async local value of <see cref="EventStreamEntryCausationId"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// When trying to set a new value of <see cref="Current"/> without clearing the previous one.
+        /// </exception>
+        public static EventStreamEntryCausationId Current
+        {
+            get
+            {
+                if (AsyncLocalCausationId.Value == null)
+                {
+                    AsyncLocalCausationId.Value = (Guid) EventStreamEntryCorrelationId.Current;
+                }
+                
+                return AsyncLocalCausationId.Value;
+            }
+            set
+            {
+                if (AsyncLocalCausationId.Value != null && AsyncLocalCausationId.Value != value)
+                {
+                    throw new InvalidOperationException("CorrelationId is already set for this execution context.");
+                }
+
+                if (AsyncLocalCausationId.Value == value)
+                {
+                    return;
+                }
+            
+                AsyncLocalCausationId.Value = value;
+            }
+        }
+        
         private Guid Value { get; }
 
         private EventStreamEntryCausationId(Guid value)
@@ -46,6 +82,17 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The <see cref="EventStreamEntryCausationId"/>.
         /// </returns>
         public static implicit operator EventStreamEntryCausationId(Guid id) => new EventStreamEntryCausationId(id);
+        
+        /// <summary>
+        /// Implicit operator that converts the <see cref="EventStreamEntryId"/> to <see cref="EventStreamEntryCausationId"/>.
+        /// </summary>
+        /// <param name="entryId">
+        /// The <see cref="EventStreamEntryId"/>.
+        /// </param>
+        /// <returns>
+        /// The <see cref="EventStreamEntryCausationId"/>.
+        /// </returns>
+        public static implicit operator EventStreamEntryCausationId(EventStreamEntryId entryId) => new EventStreamEntryCausationId(entryId);
 
         /// <summary>
         /// The equality operator.

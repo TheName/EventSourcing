@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AutoFixture;
+using System.Linq;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Aggregates.Abstractions;
 using TestHelpers.Attributes;
@@ -10,320 +10,232 @@ namespace Aggregates.Abstractions.UnitTests
 {
     public class BaseEventStreamAggregate_Should
     {
-        [Theory]
-        [AutoMoqData]
-        public void InvokeMethodHandlingSampleEventOnTestAggregate(
-            EventStreamId streamId,
-            IFixture fixture)
-        {
-            var sampleEvent = fixture.Create<SampleEvent>();
-            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>
-            {
-                new EventStreamEventWithMetadata(sampleEvent, new EventStreamEventMetadata(
-                    streamId,
-                    Guid.NewGuid(),
-                    0,
-                    Guid.NewGuid(),
-                    DateTime.UtcNow,
-                    Guid.NewGuid()))
-            });
-
-            var testAggregate = new TestAggregate();
-            testAggregate.Replay(stream);
-            
-            Assert.Equal(sampleEvent.Id, testAggregate.HandledSampleEventId);
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void InvokeMethodHandlingSampleEventWithoutIdAndEventMetadataOnTestAggregate(
-            EventStreamId streamId,
-            EventStreamEntryId entryId,
-            IFixture fixture)
-        {
-            var sampleEvent = fixture.Create<SampleEventWithoutId>();
-            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>
-            {
-                new EventStreamEventWithMetadata(sampleEvent, new EventStreamEventMetadata(
-                    streamId,
-                    entryId,
-                    0,
-                    Guid.NewGuid(),
-                    DateTime.UtcNow,
-                    Guid.NewGuid()))
-            });
-
-            var testAggregate = new TestAggregate();
-            testAggregate.Replay(stream);
-            
-            Assert.Equal<Guid>(entryId, testAggregate.HandledSampleEventWithoutIdEntryId);
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_When_HandlingSampleEventOnTestAggregateWithoutHandlers(
-            EventStreamId streamId,
-            IFixture fixture)
-        {
-            var sampleEvent = fixture.Create<SampleEvent>();
-            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>
-            {
-                new EventStreamEventWithMetadata(sampleEvent, new EventStreamEventMetadata(
-                    streamId,
-                    Guid.NewGuid(),
-                    0,
-                    Guid.NewGuid(),
-                    DateTime.UtcNow,
-                    Guid.NewGuid()))
-            });
-
-            var testAggregate = new TestAggregateWithoutHandlers();
-            Assert.Throws<MissingMethodException>(() => testAggregate.Replay(stream));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_When_HandlingSampleEventWithoutIdAndEventMetadataOnTestAggregateWithoutHandlers(
-            EventStreamId streamId,
-            EventStreamEntryId entryId,
-            IFixture fixture)
-        {
-            var sampleEvent = fixture.Create<SampleEventWithoutId>();
-            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>
-            {
-                new EventStreamEventWithMetadata(sampleEvent, new EventStreamEventMetadata(
-                    streamId,
-                    entryId,
-                    0,
-                    Guid.NewGuid(),
-                    DateTime.UtcNow,
-                    Guid.NewGuid()))
-            });
-
-            var testAggregate = new TestAggregateWithoutHandlers();
-            Assert.Throws<MissingMethodException>(() => testAggregate.Replay(stream));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void NotThrow_When_HandlingSampleEventOnTestAggregateWithoutHandlersAndIgnoringMissingHandlers(
-            EventStreamId streamId,
-            IFixture fixture)
-        {
-            var sampleEvent = fixture.Create<SampleEvent>();
-            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>
-            {
-                new EventStreamEventWithMetadata(sampleEvent, new EventStreamEventMetadata(
-                    streamId,
-                    Guid.NewGuid(),
-                    0,
-                    Guid.NewGuid(),
-                    DateTime.UtcNow,
-                    Guid.NewGuid()))
-            });
-
-            var testAggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
-            testAggregate.Replay(stream);
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void NotThrow_When_HandlingSampleEventWithoutIdAndEventMetadataOnTestAggregateWithoutHandlersAndIgnoringMissingHandlers(
-            EventStreamId streamId,
-            EventStreamEntryId entryId,
-            IFixture fixture)
-        {
-            var sampleEvent = fixture.Create<SampleEventWithoutId>();
-            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>
-            {
-                new EventStreamEventWithMetadata(sampleEvent, new EventStreamEventMetadata(
-                    streamId,
-                    entryId,
-                    0,
-                    Guid.NewGuid(),
-                    DateTime.UtcNow,
-                    Guid.NewGuid()))
-            });
-
-            var testAggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
-            testAggregate.Replay(stream);
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_When_HandlingSampleEventOnTestAggregateWithBothTypesOfHandlers(
-            EventStreamId streamId,
-            IFixture fixture)
-        {
-            var sampleEvent = fixture.Create<SampleEvent>();
-            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>
-            {
-                new EventStreamEventWithMetadata(sampleEvent, new EventStreamEventMetadata(
-                    streamId,
-                    Guid.NewGuid(),
-                    0,
-                    Guid.NewGuid(),
-                    DateTime.UtcNow,
-                    Guid.NewGuid()))
-            });
-
-            var testAggregate = new TestAggregateWithBothTypesOfHandlers();
-            Assert.Throws<InvalidOperationException>(() => testAggregate.Replay(stream));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_When_HandlingSampleEventOnTestAggregateWithMoreHandlersOfSameTypeWithDifferentName(
-            EventStreamId streamId,
-            IFixture fixture)
-        {
-            var sampleEvent = fixture.Create<SampleEvent>();
-            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>
-            {
-                new EventStreamEventWithMetadata(sampleEvent, new EventStreamEventMetadata(
-                    streamId,
-                    Guid.NewGuid(),
-                    0,
-                    Guid.NewGuid(),
-                    DateTime.UtcNow,
-                    Guid.NewGuid()))
-            });
-
-            var testAggregate = new TestAggregateWithMoreHandlersOfSameTypeWithDifferentName();
-            Assert.Throws<InvalidOperationException>(() => testAggregate.Replay(stream));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void Throw_When_HandlingSampleEventOnTestAggregateWithMoreHandlersOfSameTypeAndEventMetadataWithDifferentName(
-            EventStreamId streamId,
-            IFixture fixture)
-        {
-            var sampleEvent = fixture.Create<SampleEvent>();
-            var stream = new EventStream(streamId, new List<EventStreamEventWithMetadata>
-            {
-                new EventStreamEventWithMetadata(sampleEvent, new EventStreamEventMetadata(
-                    streamId,
-                    Guid.NewGuid(),
-                    0,
-                    Guid.NewGuid(),
-                    DateTime.UtcNow,
-                    Guid.NewGuid()))
-            });
-
-            var testAggregate = new TestAggregateWithMoreHandlersOfSameTypeAndEventMetadataWithDifferentName();
-            Assert.Throws<InvalidOperationException>(() => testAggregate.Replay(stream));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void ReturnAppendedEventWithMetadataInEventsToPublish_When_GettingPublishableEventStream_After_AppendingAnEventWithMetadata(
-            object @event,
-            EventStreamEventMetadata eventMetadata)
+        [Fact]
+        public void CreateEmptyEventStream_When_CreatingNewAggregate()
         {
             var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
-            eventMetadata = new EventStreamEventMetadata(
-                aggregate.PublishableEventStream.StreamId,
-                eventMetadata.EntryId,
-                0,
-                eventMetadata.CausationId,
-                eventMetadata.CreationTime,
-                eventMetadata.CorrelationId);
-
-            aggregate.Append(@event, eventMetadata.EntryId, eventMetadata.CausationId, eventMetadata.CreationTime, eventMetadata.CorrelationId);
-
-            var publishableEventStream = aggregate.PublishableEventStream;
-            var singleEventWithMetadataToPublish = Assert.Single(publishableEventStream.EventsWithMetadataToPublish);
-            Assert.NotNull(singleEventWithMetadataToPublish);
-            Assert.Equal(@event, singleEventWithMetadataToPublish.Event);
-            Assert.Equal(eventMetadata, singleEventWithMetadataToPublish.EventMetadata);
+            
+            Assert.Empty(aggregate.AppendableEventStream.EventsWithMetadata);
+            Assert.Empty(aggregate.AppendableEventStream.EventsWithMetadataToAppend);
+            Assert.Empty(aggregate.PublishableEventStream.EventsWithMetadata);
+            Assert.Empty(aggregate.PublishableEventStream.EventsWithMetadataToPublish);
         }
 
-        private class TestAggregateWithoutHandlers : BaseEventStreamAggregate
+        [Theory]
+        [AutoMoqData]
+        public void UseProvidedEventStreamToCreateAppendableAndPublishableEventStream_When_ReplayingEventStream(EventStream eventStream)
         {
+            var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
+
+            aggregate.Replay(eventStream);
+            
+            Assert.Equal(eventStream.StreamId, aggregate.AppendableEventStream.StreamId);
+            Assert.Equal(eventStream.EventsWithMetadata, aggregate.AppendableEventStream.EventsWithMetadata);
+            Assert.Equal<EventStreamEntrySequence>(eventStream.MaxSequence + 1, aggregate.AppendableEventStream.NextSequence);
+            Assert.Empty(aggregate.AppendableEventStream.EventsWithMetadataToAppend);
+            Assert.Equal(eventStream.StreamId, aggregate.PublishableEventStream.StreamId);
+            Assert.Equal(eventStream.EventsWithMetadata, aggregate.PublishableEventStream.EventsWithMetadata);
+            Assert.Empty(aggregate.PublishableEventStream.EventsWithMetadataToPublish);
         }
 
+        [Theory]
+        [AutoMoqData]
+        public void InvokeEventHandlerForEveryEventFromEventStream_When_ReplayingEventStream(EventStream eventStream)
+        {
+            var aggregate = new TestAggregateWithEventHandlers();
+
+            aggregate.Replay(eventStream);
+            
+            Assert.True(eventStream.EventsWithMetadata.Select(eventWithMetadata => eventWithMetadata.Event).SequenceEqual(aggregate.HandledEvents));
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void InvokeEventHandlerForEveryEventWithMetadataFromEventStream_When_ReplayingEventStream(EventStream eventStream)
+        {
+            var aggregate = new TestAggregateWithEventWithEventMetadataHandlers();
+
+            aggregate.Replay(eventStream);
+            
+            Assert.Equal(eventStream.EventsWithMetadata.Count, aggregate.HandledEventsWithMetadata.Count);
+            for (var i = 0; i < eventStream.EventsWithMetadata.Count; i++)
+            {
+                Assert.Equal(eventStream.EventsWithMetadata[i].Event, aggregate.HandledEventsWithMetadata[i].Item1);
+                Assert.Equal(eventStream.EventsWithMetadata[i].EventMetadata, aggregate.HandledEventsWithMetadata[i].Item2);
+            }
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void DoNothing_When_ReplayingEventStream_And_AggregateHasMissingHandlers_And_ShouldIgnoreMissingHandlers(EventStream eventStream)
+        {
+            var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
+
+            aggregate.Replay(eventStream);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void Throw_MissingMethodException_When_ReplayingEventStream_And_AggregateHasMissingHandlers_And_ShouldNotIgnoreMissingHandlers(EventStream eventStream)
+        {
+            var aggregate = new TestAggregateWithoutHandlersAndNotIgnoringMissingHandlers();
+
+            Assert.Throws<MissingMethodException>(() => aggregate.Replay(eventStream));
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void AppendProvidedEventWithDefaultMetadata_When_AppendingEvent(object eventToAppend, EventStream eventStream)
+        {
+            var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
+            aggregate.Replay(eventStream);
+
+            aggregate.Append(eventToAppend);
+
+            var singleEventToAppend = Assert.Single(aggregate.AppendableEventStream.EventsWithMetadataToAppend);
+            Assert.NotNull(singleEventToAppend);
+            Assert.Equal(eventToAppend, singleEventToAppend.Event);
+            Assert.Equal(eventStream.StreamId, singleEventToAppend.EventMetadata.StreamId);
+            Assert.NotNull(singleEventToAppend.EventMetadata.EntryId);
+            Assert.Equal<EventStreamEntrySequence>(eventStream.MaxSequence + 1, singleEventToAppend.EventMetadata.EntrySequence);
+            Assert.Equal(EventStreamEntryCausationId.Current, singleEventToAppend.EventMetadata.CausationId);
+            Assert.True(DateTime.UtcNow - singleEventToAppend.EventMetadata.CreationTime < TimeSpan.FromMilliseconds(10));
+            Assert.Equal(EventStreamEntryCorrelationId.Current, singleEventToAppend.EventMetadata.CorrelationId);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void ContainAppendedEventAsEventToPublish_When_AppendingEvent(object eventToAppend, EventStream eventStream)
+        {
+            var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
+            aggregate.Replay(eventStream);
+
+            aggregate.Append(eventToAppend);
+
+            var singleEventToAppend = Assert.Single(aggregate.AppendableEventStream.EventsWithMetadataToAppend);
+            var singleEventToPublish = Assert.Single(aggregate.PublishableEventStream.EventsWithMetadataToPublish);
+            Assert.Equal(singleEventToAppend, singleEventToPublish);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void InvokeEventHandlerForAppendedEvent_When_AppendingEvent(object eventToAppend)
+        {
+            var aggregate = new TestAggregateWithEventHandlers();
+
+            aggregate.Append(eventToAppend);
+
+            var singleHandledEvent = Assert.Single(aggregate.HandledEvents);
+            Assert.NotNull(singleHandledEvent);
+            Assert.Equal(eventToAppend, singleHandledEvent);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void InvokeEventWithMetadataHandlerForAppendedEvent_When_AppendingEvent(object eventToAppend)
+        {
+            var aggregate = new TestAggregateWithEventWithEventMetadataHandlers();
+
+            aggregate.Append(eventToAppend);
+
+            var singleEventWithMetadataToAppend = Assert.Single(aggregate.AppendableEventStream.EventsWithMetadataToAppend);
+            Assert.NotNull(singleEventWithMetadataToAppend);
+            var (handledEvent, handledEventMetadata) = Assert.Single(aggregate.HandledEventsWithMetadata);
+            Assert.Equal(singleEventWithMetadataToAppend.Event, handledEvent);
+            Assert.Equal(singleEventWithMetadataToAppend.EventMetadata, handledEventMetadata);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void DoNothing_When_AppendingEvent_And_AggregateHasMissingHandlers_And_ShouldIgnoreMissingHandlers(object eventToAppend)
+        {
+            var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
+
+            aggregate.Append(eventToAppend);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void Throw_MissingMethodException_When_AppendingEvent_And_AggregateHasMissingHandlers_And_ShouldNotIgnoreMissingHandlers(object eventToAppend)
+        {
+            var aggregate = new TestAggregateWithoutHandlersAndNotIgnoringMissingHandlers();
+
+            Assert.Throws<MissingMethodException>(() => aggregate.Append(eventToAppend));
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void InvokeEventHandlerForAppendedEvent_When_ReplayingEventWithMetadata(EventStreamEventWithMetadata eventWithMetadata)
+        {
+            var aggregate = new TestAggregateWithEventHandlers();
+
+            aggregate.ReplayEvent(eventWithMetadata);
+
+            var singleHandledEvent = Assert.Single(aggregate.HandledEvents);
+            Assert.NotNull(singleHandledEvent);
+            Assert.Equal(eventWithMetadata.Event, singleHandledEvent);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void InvokeEventWithMetadataHandlerForAppendedEvent_When_ReplayingEventWithMetadata(EventStreamEventWithMetadata eventWithMetadata)
+        {
+            var aggregate = new TestAggregateWithEventWithEventMetadataHandlers();
+
+            aggregate.ReplayEvent(eventWithMetadata);
+
+            var (handledEvent, handledEventMetadata) = Assert.Single(aggregate.HandledEventsWithMetadata);
+            Assert.Equal(eventWithMetadata.Event, handledEvent);
+            Assert.Equal(eventWithMetadata.EventMetadata, handledEventMetadata);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void DoNothing_When_ReplayingEventWithMetadata_And_AggregateHasMissingHandlers_And_ShouldIgnoreMissingHandlers(EventStreamEventWithMetadata eventWithMetadata)
+        {
+            var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
+
+            aggregate.ReplayEvent(eventWithMetadata);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void Throw_MissingMethodException_When_ReplayingEventWithMetadata_And_AggregateHasMissingHandlers_And_ShouldNotIgnoreMissingHandlers(EventStreamEventWithMetadata eventWithMetadata)
+        {
+            var aggregate = new TestAggregateWithoutHandlersAndNotIgnoringMissingHandlers();
+
+            Assert.Throws<MissingMethodException>(() => aggregate.ReplayEvent(eventWithMetadata));
+        }
+        
         private class TestAggregateWithoutHandlersAndIgnoringMissingHandlers : BaseEventStreamAggregate
         {
-            protected override bool ShouldIgnoreMissingHandlers => true;
-
-            public new void Append(
-                object @event,
-                EventStreamEntryId entryId = null,
-                EventStreamEntryCausationId causationId = null,
-                EventStreamEntryCreationTime creationTime = null,
-                EventStreamEntryCorrelationId correlationId = null)
-            {
-                base.Append(
-                    @event,
-                    entryId,
-                    causationId,
-                    creationTime,
-                    correlationId);
-            }
-        }
-
-        private class TestAggregateWithBothTypesOfHandlers : BaseEventStreamAggregate
-        {
-            private void FirstType(SampleEvent sampleEvent)
-            {
-            }
-
-            private void SecondType(SampleEvent sampleEvent, EventStreamEventMetadata eventMetadata)
-            {
-            }
-        }
-
-        private class TestAggregateWithMoreHandlersOfSameTypeWithDifferentName : BaseEventStreamAggregate
-        {
-            private void FirstName(SampleEvent sampleEvent)
-            {
-            }
-
-            private void SecondName(SampleEvent sampleEvent)
-            {
-            }
+            protected internal override bool ShouldIgnoreMissingHandlers => true;
         }
         
-        private class TestAggregateWithMoreHandlersOfSameTypeAndEventMetadataWithDifferentName : BaseEventStreamAggregate
+        private class TestAggregateWithoutHandlersAndNotIgnoringMissingHandlers : BaseEventStreamAggregate
         {
-            private void FirstName(SampleEvent sampleEvent, EventStreamEventMetadata eventMetadata)
-            {
-            }
-
-            private void SecondName(SampleEvent sampleEvent, EventStreamEventMetadata eventMetadata)
-            {
-            }
+            protected internal override bool ShouldIgnoreMissingHandlers => false;
         }
-
-        private class TestAggregate : BaseEventStreamAggregate
+        
+        private class TestAggregateWithEventHandlers : BaseEventStreamAggregate
         {
-            public Guid HandledSampleEventId { get; private set; }
-            public Guid HandledSampleEventWithoutIdEntryId { get; private set; }
+            public List<object> HandledEvents { get; set; } = new List<object>();
             
-            private void Handle(SampleEvent @event)
+            private void Handle(object @event)
             {
-                HandledSampleEventId = @event.Id;
-            }
-
-            private void Handle(SampleEventWithoutId eventWithoutId, EventStreamEventMetadata eventMetadata)
-            {
-                HandledSampleEventWithoutIdEntryId = eventMetadata.EntryId;
+                HandledEvents.Add(@event);
             }
         }
         
-        private class SampleEvent
+        private class TestAggregateWithEventWithEventMetadataHandlers : BaseEventStreamAggregate
         {
-            public Guid Id { get; }
-
-            public SampleEvent(Guid id)
+            public List<(object, EventStreamEventMetadata)> HandledEventsWithMetadata { get; set; } =
+                new List<(object, EventStreamEventMetadata)>();
+            
+            private void Handle(object @event, EventStreamEventMetadata eventMetadata)
             {
-                Id = id;
+                HandledEventsWithMetadata.Add((@event, eventMetadata));
             }
-        }
-        
-        private class SampleEventWithoutId
-        {
         }
     }
 }

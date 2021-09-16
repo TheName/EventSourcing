@@ -31,9 +31,17 @@ namespace Abstractions.UnitTests.ValueObjects
 
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentException_When_CreatingWithUtcDateTimeKind(uint ticks)
+        public void NotThrow_When_CreatingWithUtcDateTimeKind(uint ticks)
         {
             EventStreamEntryCreationTime _ = new DateTime(ticks, DateTimeKind.Utc);
+        }
+
+        [Fact]
+        public void ReturnUtcNow_When_CallingNow()
+        {
+            var result = EventStreamEntryCreationTime.Now();
+
+            Assert.True((DateTime.UtcNow - result).TotalMilliseconds <= 1);
         }
 
         [Theory]

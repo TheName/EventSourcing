@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EventSourcing.Abstractions.Exceptions;
 using EventSourcing.Abstractions.ValueObjects;
 
 namespace EventSourcing.Abstractions
@@ -69,42 +68,46 @@ namespace EventSourcing.Abstractions
         }
 
         /// <summary>
-        /// Appends provided <paramref name="eventWithMetadata"/> to this instance of the stream of entries.
+        /// Appends <see cref="EventStreamEventWithMetadata"/> to the stream.
         /// </summary>
-        /// <param name="eventWithMetadata">
-        /// The <see cref="EventStreamEventWithMetadata"/> that should be appended to the stream of entries.
+        /// <param name="event">
+        /// The event itself.
+        /// </param>
+        /// <param name="entryId">
+        /// The <see cref="EventStreamEntryId"/>. In case null is provided, a new entry is generated.
+        /// </param>
+        /// <param name="causationId">
+        /// The <see cref="EventStreamEntryCausationId"/>. In case null is provided, current CausationId is used.
+        /// </param>
+        /// <param name="creationTime">
+        /// The <see cref="EventStreamEntryCreationTime"/>. In case null is provided, current time is used.
+        /// </param>
+        /// <param name="correlationId">
+        /// The <see cref="EventStreamEntryCorrelationId"/>. In case null is provided, current CorrelationId is used.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown when provided <paramref name="eventWithMetadata"/> is null.
+        /// Thrown when any of provided arguments is null.
         /// </exception>
-        /// <exception cref="InvalidEventStreamIdException">
-        /// Thrown when provided <paramref name="eventWithMetadata"/> has <see cref="EventStreamId"/> that does not match <see cref="StreamId"/>.
-        /// </exception>
-        /// <exception cref="InvalidEventStreamEntrySequenceException">
-        /// Thrown when provided <paramref name="eventWithMetadata"/> has <see cref="EventStreamEntrySequence"/> other than the expected <see cref="NextSequence"/>.
-        /// </exception>
-        public void AppendEventWithMetadata(EventStreamEventWithMetadata eventWithMetadata)
+        public EventStreamEventWithMetadata AppendEventWithMetadata(
+            object @event,
+            EventStreamEntryId entryId = null,
+            EventStreamEntryCausationId causationId = null,
+            EventStreamEntryCreationTime creationTime = null,
+            EventStreamEntryCorrelationId correlationId = null)
         {
-            if (eventWithMetadata == null)
-            {
-                throw new ArgumentNullException(nameof(eventWithMetadata));
-            }
-            
-            if (eventWithMetadata.EventMetadata.StreamId != StreamId)
-            {
-                throw InvalidEventStreamIdException.New(StreamId, eventWithMetadata.EventMetadata.StreamId, nameof(eventWithMetadata));
-            }
-            
-            if (eventWithMetadata.EventMetadata.EntrySequence != NextSequence)
-            {
-                throw InvalidEventStreamEntrySequenceException.New(
+            var eventWithMetadataToAppend = new EventStreamEventWithMetadata(
+                @event,
+                new EventStreamEventMetadata(
+                    StreamId,
+                    entryId ?? EventStreamEntryId.NewEventStreamEntryId(),
                     NextSequence,
-                    eventWithMetadata.EventMetadata.EntrySequence,
-                    nameof(eventWithMetadata));
-            }
+                    causationId ?? EventStreamEntryCausationId.Current,
+                    creationTime ?? EventStreamEntryCreationTime.Now(),
+                    correlationId ?? EventStreamEntryCorrelationId.Current));
             
-            _eventsWithMetadataToAppend.Add(eventWithMetadata);
-            _maxSequence = eventWithMetadata.EventMetadata.EntrySequence;
+            _eventsWithMetadataToAppend.Add(eventWithMetadataToAppend);
+            _maxSequence = NextSequence;
+            return eventWithMetadataToAppend;
         }
 
         #region Operators

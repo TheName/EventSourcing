@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using AutoFixture.Xunit2;
 using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.Exceptions;
 using EventSourcing.Abstractions.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
@@ -66,95 +65,129 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_AppendingEventWithMetadata_And_PassingNull(AppendableEventStream appendableEventStream)
+        public void Throw_ArgumentNullException_When_AppendingEventWithMetadata_And_PassingNullAsEvent(AppendableEventStream appendableEventStream)
         {
             Assert.Throws<ArgumentNullException>(() => appendableEventStream.AppendEventWithMetadata(null));
         }
 
         [Theory]
         [AutoMoqData]
-        public void Throw_InvalidEventStreamIdException_When_AppendingEventWithMetadata_And_PassedEventStreamIdDoesNotMatch(
+        public void NotThrow_When_AppendingEventWithMetadata_And_PassingNotNullEvent(
             AppendableEventStream appendableEventStream,
-            EventStreamEventWithMetadata eventWithMetadata)
+            object @event)
         {
-            Assert.NotEqual(appendableEventStream.StreamId, eventWithMetadata.EventMetadata.StreamId);
-            Assert.Throws<InvalidEventStreamIdException>(() => appendableEventStream.AppendEventWithMetadata(eventWithMetadata));
+            appendableEventStream.AppendEventWithMetadata(@event);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Throw_InvalidEventStreamEntrySequenceException_When_AppendingEventWithMetadata_And_PassedEventStreamIdDoesMatch_And_PassedSequenceDoesNotMatchNextSequence(
-            [Frozen(Matching.ExactType)] EventStreamId streamId,
+        public void ReturnAppendedEventWithMetadata_When_AppendingEventWithMetadata(
             AppendableEventStream appendableEventStream,
-            EventStreamEventWithMetadata eventWithMetadata)
+            object @event)
         {
-            Assert.Equal(streamId, appendableEventStream.StreamId);
-            Assert.Equal(streamId, eventWithMetadata.EventMetadata.StreamId);
-            Assert.NotEqual(appendableEventStream.NextSequence, eventWithMetadata.EventMetadata.EntrySequence);
+            var result = appendableEventStream.AppendEventWithMetadata(@event);
             
-            Assert.Throws<InvalidEventStreamEntrySequenceException>(() => appendableEventStream.AppendEventWithMetadata(eventWithMetadata));
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void NotThrow_When_AppendingEventWithMetadata_And_PassedEventStreamIdDoesMatch_And_PassedSequenceDoesMatchNextSequence(
-            AppendableEventStream appendableEventStream,
-            EventStreamEventWithMetadata eventWithMetadata)
-        {
-            eventWithMetadata = new EventStreamEventWithMetadata(
-                eventWithMetadata.Event,
-                new EventStreamEventMetadata(
-                    appendableEventStream.StreamId,
-                    eventWithMetadata.EventMetadata.EntryId,
-                    appendableEventStream.NextSequence,
-                    eventWithMetadata.EventMetadata.CausationId,
-                    eventWithMetadata.EventMetadata.CreationTime,
-                    eventWithMetadata.EventMetadata.CorrelationId));
-
-            appendableEventStream.AppendEventWithMetadata(eventWithMetadata);
+            Assert.Equal(appendableEventStream.EventsWithMetadataToAppend.Last(), result);
         }
 
         [Theory]
         [AutoMoqData]
         public void ReturnAppendedEvent_When_GettingEventsToAppend_After_AppendingEventWithMetadata(
             AppendableEventStream appendableEventStream,
-            EventStreamEventWithMetadata eventWithMetadata)
+            object @event,
+            EventStreamEntryId entryId,
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCreationTime creationTime,
+            EventStreamEntryCorrelationId correlationId)
         {
-            eventWithMetadata = new EventStreamEventWithMetadata(
-                eventWithMetadata.Event,
-                new EventStreamEventMetadata(
-                    appendableEventStream.StreamId,
-                    eventWithMetadata.EventMetadata.EntryId,
-                    appendableEventStream.NextSequence,
-                    eventWithMetadata.EventMetadata.CausationId,
-                    eventWithMetadata.EventMetadata.CreationTime,
-                    eventWithMetadata.EventMetadata.CorrelationId));
-
-            appendableEventStream.AppendEventWithMetadata(eventWithMetadata);
+            appendableEventStream.AppendEventWithMetadata(@event, entryId, causationId, creationTime, correlationId);
 
             var eventToAppend = Assert.Single(appendableEventStream.EventsWithMetadataToAppend);
-            Assert.Equal(eventWithMetadata, eventToAppend);
+            Assert.NotNull(eventToAppend);
+            Assert.Equal(@event, eventToAppend.Event);
+            Assert.Equal(appendableEventStream.StreamId, eventToAppend.EventMetadata.StreamId);
+            Assert.Equal(entryId, eventToAppend.EventMetadata.EntryId);
+            Assert.Equal<EventStreamEntrySequence>(appendableEventStream.NextSequence - 1, eventToAppend.EventMetadata.EntrySequence);
+            Assert.Equal(causationId, eventToAppend.EventMetadata.CausationId);
+            Assert.Equal(creationTime, eventToAppend.EventMetadata.CreationTime);
+            Assert.Equal(correlationId, eventToAppend.EventMetadata.CorrelationId);
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnAppendedEventsSequenceIncreasedByOne_When_GettingNextSequence_After_AppendingEventWithMetadata(
+        public void UseRandomEntryId_When_Appending_And_PassingNullAsEntryId(
             AppendableEventStream appendableEventStream,
-            EventStreamEventWithMetadata eventWithMetadata)
+            object @event,
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCreationTime creationTime,
+            EventStreamEntryCorrelationId correlationId)
         {
-            eventWithMetadata = new EventStreamEventWithMetadata(
-                eventWithMetadata.Event,
-                new EventStreamEventMetadata(
-                    appendableEventStream.StreamId,
-                    eventWithMetadata.EventMetadata.EntryId,
-                    appendableEventStream.NextSequence,
-                    eventWithMetadata.EventMetadata.CausationId,
-                    eventWithMetadata.EventMetadata.CreationTime,
-                    eventWithMetadata.EventMetadata.CorrelationId));
+            appendableEventStream.AppendEventWithMetadata(@event, null, causationId, creationTime, correlationId);
 
-            appendableEventStream.AppendEventWithMetadata(eventWithMetadata);
+            var eventToAppend = Assert.Single(appendableEventStream.EventsWithMetadataToAppend);
+            Assert.NotNull(eventToAppend);
+            Assert.NotNull(eventToAppend.EventMetadata.EntryId);
+        }
 
-            Assert.Equal<uint>(eventWithMetadata.EventMetadata.EntrySequence + 1, appendableEventStream.NextSequence);
+        [Theory]
+        [AutoMoqData]
+        public void UseCurrentCausationId_When_Appending_And_PassingNullAsCausationId(
+            AppendableEventStream appendableEventStream,
+            object @event,
+            EventStreamEntryId entryId,
+            EventStreamEntryCreationTime creationTime,
+            EventStreamEntryCorrelationId correlationId)
+        {
+            appendableEventStream.AppendEventWithMetadata(@event, entryId, null, creationTime, correlationId);
+
+            var eventToAppend = Assert.Single(appendableEventStream.EventsWithMetadataToAppend);
+            Assert.NotNull(eventToAppend);
+            Assert.Equal(EventStreamEntryCausationId.Current, eventToAppend.EventMetadata.CausationId);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void UseNow_When_Appending_And_PassingNullAsCreationTime(
+            AppendableEventStream appendableEventStream,
+            object @event,
+            EventStreamEntryId entryId,
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCorrelationId correlationId)
+        {
+            appendableEventStream.AppendEventWithMetadata(@event, entryId, causationId, null, correlationId);
+
+            var eventToAppend = Assert.Single(appendableEventStream.EventsWithMetadataToAppend);
+            Assert.NotNull(eventToAppend);
+            Assert.True((DateTime.UtcNow - eventToAppend.EventMetadata.CreationTime).TotalMilliseconds <= 1);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void UseCurrentCorrelationId_When_Appending_And_PassingNullAsCorrelationId(
+            AppendableEventStream appendableEventStream,
+            object @event,
+            EventStreamEntryId entryId,
+            EventStreamEntryCausationId causationId,
+            EventStreamEntryCreationTime creationTime)
+        {
+            appendableEventStream.AppendEventWithMetadata(@event, entryId, causationId, creationTime, null);
+
+            var eventToAppend = Assert.Single(appendableEventStream.EventsWithMetadataToAppend);
+            Assert.NotNull(eventToAppend);
+            Assert.Equal(EventStreamEntryCorrelationId.Current, eventToAppend.EventMetadata.CorrelationId);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void IncreaseNextSequenceByOne_After_AppendingEventWithMetadata(
+            AppendableEventStream appendableEventStream,
+            object @event)
+        {
+            var previousNextSequence = appendableEventStream.NextSequence;
+            
+            appendableEventStream.AppendEventWithMetadata(@event);
+
+            Assert.Equal<EventStreamEntrySequence>(previousNextSequence + 1, appendableEventStream.NextSequence);
         }
 
         [Theory]

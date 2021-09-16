@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace EventSourcing.Abstractions.ValueObjects
 {
@@ -10,6 +11,46 @@ namespace EventSourcing.Abstractions.ValueObjects
     /// </summary>
     public class EventStreamEntryCorrelationId
     {
+        private static readonly AsyncLocal<EventStreamEntryCorrelationId> AsyncLocalCorrelationId = new AsyncLocal<EventStreamEntryCorrelationId>();
+        
+        /// <summary>
+        /// Creates a new instance of <see cref="EventStreamEntryCorrelationId"/> initialized with a random <see cref="Guid"/>.
+        /// </summary>
+        public static EventStreamEntryCorrelationId NewEventStreamEntryCorrelationId() => new EventStreamEntryCorrelationId(Guid.NewGuid());
+
+        /// <summary>
+        /// Gets or sets the current async local value of <see cref="EventStreamEntryCorrelationId"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// When trying to set a new value of <see cref="Current"/> without clearing the previous one.
+        /// </exception>
+        public static EventStreamEntryCorrelationId Current
+        {
+            get
+            {
+                if (AsyncLocalCorrelationId.Value == null)
+                {
+                    AsyncLocalCorrelationId.Value = NewEventStreamEntryCorrelationId();
+                }
+                
+                return AsyncLocalCorrelationId.Value;
+            }
+            set
+            {
+                if (AsyncLocalCorrelationId.Value != null && AsyncLocalCorrelationId.Value != value)
+                {
+                    throw new InvalidOperationException("CorrelationId is already set for this execution context.");
+                }
+
+                if (AsyncLocalCorrelationId.Value == value)
+                {
+                    return;
+                }
+            
+                AsyncLocalCorrelationId.Value = value;
+            }
+        }
+
         private Guid Value { get; }
 
         private EventStreamEntryCorrelationId(Guid value)

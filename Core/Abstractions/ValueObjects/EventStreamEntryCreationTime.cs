@@ -12,6 +12,14 @@ namespace EventSourcing.Abstractions.ValueObjects
     {
         private DateTime Value { get; }
 
+        /// <summary>
+        /// Returns a new instance of <see cref="EventStreamEntryCreationTime"/> representing current moment in time.
+        /// </summary>
+        /// <returns>
+        /// A new instance of <see cref="EventStreamEntryCreationTime"/> representing current moment in time.
+        /// </returns>
+        public static EventStreamEntryCreationTime Now() => DateTime.UtcNow;
+
         private EventStreamEntryCreationTime(DateTime value)
         {
             if (value == DateTime.MinValue)
