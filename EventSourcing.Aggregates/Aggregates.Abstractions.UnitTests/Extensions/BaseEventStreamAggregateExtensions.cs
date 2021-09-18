@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Aggregates.Abstractions;
@@ -10,7 +9,17 @@ namespace Aggregates.Abstractions.UnitTests.Extensions
     public static class BaseEventStreamAggregateExtensions
     {
         private const BindingFlags NonPublicPropertyGetterBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.GetProperty;
-        private const BindingFlags NonPublicMethodBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic; 
+        private const BindingFlags NonPublicMethodBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
+
+        public static bool GetShouldIgnoreMissingHandlers<T>(this T aggregate)
+            where T : BaseEventStreamAggregate
+        {
+            var shouldIgnoreMissingHandlersGetter = typeof(T).GetMethod($"get_ShouldIgnoreMissingHandlers", NonPublicPropertyGetterBindingFlags);
+            Assert.NotNull(shouldIgnoreMissingHandlersGetter);
+            var result = shouldIgnoreMissingHandlersGetter.Invoke(aggregate, new object[0]);
+            Assert.NotNull(result);
+            return (bool) result;
+        }
         
         public static AppendableEventStream GetAppendableEventStream<T>(this T aggregate)
             where T : BaseEventStreamAggregate

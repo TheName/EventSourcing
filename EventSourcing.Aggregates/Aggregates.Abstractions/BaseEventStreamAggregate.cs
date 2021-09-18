@@ -18,7 +18,7 @@ namespace EventSourcing.Aggregates.Abstractions
         /// <summary>
         /// Defines if in case of missing handler methods for event types an exception should be thrown.
         /// </summary>
-        protected virtual bool ShouldIgnoreMissingHandlers { get; } = false;
+        protected virtual bool ShouldIgnoreMissingHandlers { get; } = true;
 
         PublishableEventStream IEventStreamAggregate.PublishableEventStream => new PublishableEventStream(AppendableEventStream);
 

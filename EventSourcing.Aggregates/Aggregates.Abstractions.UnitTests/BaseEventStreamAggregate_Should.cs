@@ -35,6 +35,15 @@ namespace Aggregates.Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
+        public void HaveDefaultValueOfShouldIgnoreMissingHandlersSetToTrue(EventStreamId streamId)
+        {
+            var aggregate = new TestAggregate(streamId);
+            
+            Assert.True(aggregate.GetShouldIgnoreMissingHandlers());
+        }
+
+        [Theory]
+        [AutoMoqData]
         public void UseProvidedEventStreamToCreateAppendableAndPublishableEventStream_When_ReplayingEventStream(EventStream eventStream)
         {
             var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
