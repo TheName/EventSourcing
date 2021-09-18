@@ -8,13 +8,13 @@ using Xunit;
 
 namespace Aggregates.UnitTests.Conversion
 {
-    public class EventSourcingAggregateConverter_Should
+    public class EventStreamAggregateConverter_Should
     {
         [Theory]
         [AutoMoqData]
         internal void Throw_NotSupportedException_When_TryingToConvertObjectNotAssignableToIEventStreamAggregateToPublishableEventStream(
             object aggregate,
-            EventSourcingAggregateConverter converter)
+            EventStreamAggregateConverter converter)
         {
             Assert.Throws<NotSupportedException>(() => converter.ToPublishableEventStream(aggregate));
         }
@@ -22,7 +22,7 @@ namespace Aggregates.UnitTests.Conversion
         [Theory]
         [AutoMoqData]
         internal void Throw_NotSupportedException_When_TryingToConvertClassNotImplementingIEventStreamAggregateToPublishableEventStream(
-            EventSourcingAggregateConverter converter)
+            EventStreamAggregateConverter converter)
         {
             var aggregate = new NotImplementingIEventStreamAggregate();
             Assert.Throws<NotSupportedException>(() => converter.ToPublishableEventStream(aggregate));
@@ -33,7 +33,7 @@ namespace Aggregates.UnitTests.Conversion
         internal void ReturnPublishableEventStream_When_TryingToConvertObjectImplementingIEventStreamAggregateToPublishableEventStream(
             PublishableEventStream publishableEventStream,
             Mock<IEventStreamAggregate> eventStreamAggregateMock,
-            EventSourcingAggregateConverter converter)
+            EventStreamAggregateConverter converter)
         {
             eventStreamAggregateMock
                 .SetupGet(aggregate => aggregate.PublishableEventStream)
@@ -48,7 +48,7 @@ namespace Aggregates.UnitTests.Conversion
         [AutoMoqData]
         internal void ReturnPublishableEventStream_When_TryingToConvertClassImplementingIEventStreamAggregateToPublishableEventStream(
             PublishableEventStream publishableEventStream,
-            EventSourcingAggregateConverter converter)
+            EventStreamAggregateConverter converter)
         {
             var aggregate = new ImplementingIEventStreamAggregate(publishableEventStream);
             var result = converter.ToPublishableEventStream(aggregate);

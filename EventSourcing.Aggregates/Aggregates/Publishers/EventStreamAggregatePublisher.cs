@@ -9,11 +9,11 @@ namespace EventSourcing.Aggregates.Publishers
 {
     internal class EventStreamAggregatePublisher : IEventStreamAggregatePublisher
     {
-        private readonly IEventSourcingAggregateConverter _aggregateConverter;
+        private readonly IEventStreamAggregateConverter _aggregateConverter;
         private readonly IEventStreamPublisher _eventStreamPublisher;
 
         public EventStreamAggregatePublisher(
-            IEventSourcingAggregateConverter aggregateConverter,
+            IEventStreamAggregateConverter aggregateConverter,
             IEventStreamPublisher eventStreamPublisher)
         {
             _aggregateConverter = aggregateConverter ?? throw new ArgumentNullException(nameof(aggregateConverter));

@@ -5,7 +5,7 @@ namespace EventSourcing.Aggregates.Abstractions.Conversion
     /// <summary>
     /// Converts aggregates to <see cref="PublishableEventStream"/>.
     /// </summary>
-    public interface IEventSourcingAggregateConverter
+    public interface IEventStreamAggregateConverter
     {
         /// <summary>
         /// Converts <paramref name="aggregate"/> to <see cref="PublishableEventStream"/>.
