@@ -1,7 +1,13 @@
 ﻿namespace EventSourcing.Persistence.SqlServer
 {
-    internal interface ISqlServerEventStreamPersistenceConfiguration
+    /// <summary>
+    /// SQL Server EventStream persistence configuration
+    /// </summary>
+    public interface ISqlServerEventStreamPersistenceConfiguration
     {
+        /// <summary>
+        /// SQL Server connection string
+        /// </summary>
         string ConnectionString { get; }
     }
 }
