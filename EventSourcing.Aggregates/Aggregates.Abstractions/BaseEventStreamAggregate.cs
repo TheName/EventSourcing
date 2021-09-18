@@ -42,12 +42,11 @@ namespace EventSourcing.Aggregates.Abstractions
 
         void IEventStreamAggregate.Replay(EventStream eventStream)
         {
+            AppendableEventStream = new AppendableEventStream(eventStream);
             foreach (var eventWithMetadata in eventStream.EventsWithMetadata)
             {
                 ReplayEvent(eventWithMetadata);
             }
-            
-            AppendableEventStream = new AppendableEventStream(eventStream);
         }
 
         /// <summary>
