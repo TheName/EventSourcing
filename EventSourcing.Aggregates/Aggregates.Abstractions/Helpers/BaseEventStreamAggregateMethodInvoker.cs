@@ -75,16 +75,8 @@ namespace EventSourcing.Aggregates.Abstractions.Helpers
 
                 _eventHandlingMethodInfosByEventType = aggregateType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)
                     .Where(info => !info.IsSpecialName && !info.IsAbstract)
-                    .Where(info =>
-                    {
-                        if (info.GetParameters().Length == 1)
-                        {
-                            return info.GetParameters()[0].ParameterType != typeof(object) || !info.Name.StartsWith("Append");
-                        }
-
-                        return info.GetParameters().Length == 2 &&
-                               info.GetParameters()[1].ParameterType == typeof(EventStreamEventMetadata);
-                    })
+                    .Where(info => info.GetParameters().Length == 1 || 
+                                   (info.GetParameters().Length == 2 && info.GetParameters()[1].ParameterType == typeof(EventStreamEventMetadata)))
                     .GroupBy(info => info.GetParameters()[0].ParameterType)
                     .ToDictionary(infos => infos.Key, infos => infos.ToList());
             }

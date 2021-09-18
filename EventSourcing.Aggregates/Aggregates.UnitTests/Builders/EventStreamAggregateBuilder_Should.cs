@@ -88,7 +88,7 @@ namespace Aggregates.UnitTests.Builders
             var result = aggregateBuilder.Build(aggregateType, eventStream);
             
             Assert.Equal(aggregateMockReturnedByFactory.Object, result);
-            aggregateMockReturnedByFactory.Verify(aggregate => aggregate.Replay(eventStream));
+            aggregateMockReturnedByFactory.Verify(aggregate => aggregate.ReplayEventStream(eventStream));
             aggregateMockReturnedByFactory.VerifyNoOtherCalls();
         }
     }

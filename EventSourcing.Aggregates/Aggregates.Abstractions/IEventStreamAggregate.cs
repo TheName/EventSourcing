@@ -22,6 +22,6 @@ namespace EventSourcing.Aggregates.Abstractions
         /// <param name="eventStream">
         /// An instance of <see cref="EventStream"/> that encapsulates already stored events.
         /// </param>
-        void Replay(EventStream eventStream);
+        void ReplayEventStream(EventStream eventStream);
     }
 }

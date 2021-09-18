@@ -40,12 +40,12 @@ namespace EventSourcing.Aggregates.Abstractions
             AppendableEventStream = new AppendableEventStream(EventStream.NewEventStream(streamId));
         }
 
-        void IEventStreamAggregate.Replay(EventStream eventStream)
+        void IEventStreamAggregate.ReplayEventStream(EventStream eventStream)
         {
             AppendableEventStream = new AppendableEventStream(eventStream);
             foreach (var eventWithMetadata in eventStream.EventsWithMetadata)
             {
-                ReplayEvent(eventWithMetadata);
+                ReplaySingleEvent(eventWithMetadata);
             }
         }
 
@@ -58,16 +58,16 @@ namespace EventSourcing.Aggregates.Abstractions
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="event"/> is null.
         /// </exception>
-        protected void Append(object @event)
+        protected void AppendEvent(object @event)
         {
             var appendedEvent = AppendableEventStream.AppendEventWithMetadata(@event);
-            ReplayEvent(appendedEvent);
+            ReplaySingleEvent(appendedEvent);
         }
 
         /// <summary>
         /// Replays provided event with metadata by invoking method that accepts event type or event type and event metadata.
         /// </summary>
-        protected void ReplayEvent(EventStreamEventWithMetadata eventWithMetadata)
+        protected void ReplaySingleEvent(EventStreamEventWithMetadata eventWithMetadata)
         {
             BaseEventStreamAggregateMethodInvoker.Invoke(this, eventWithMetadata, ShouldIgnoreMissingHandlers);
         }

@@ -28,7 +28,7 @@ namespace EventSourcing.Aggregates.Builders
                 throw new NotSupportedException($"This implementation does not support building aggregates of type {aggregateType}. Please implement your own {typeof(IEventStreamAggregateBuilder)} or make {aggregate.GetType()} implement {typeof(IEventStreamAggregate)}.");
             }
             
-            eventStreamAggregate.Replay(eventStream);
+            eventStreamAggregate.ReplayEventStream(eventStream);
             return eventStreamAggregate;
         }
     }

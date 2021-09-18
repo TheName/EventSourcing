@@ -69,7 +69,7 @@ namespace Aggregates.UnitTests.Conversion
                 PublishableEventStream = publishableEventStream;
             }
             
-            public void Replay(EventStream eventStream)
+            public void ReplayEventStream(EventStream eventStream)
             {
                 throw new NotImplementedException();
             }
