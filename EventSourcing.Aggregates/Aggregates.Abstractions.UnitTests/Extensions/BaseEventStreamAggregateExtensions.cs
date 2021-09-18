@@ -29,6 +29,14 @@ namespace Aggregates.Abstractions.UnitTests.Extensions
             return (AppendableEventStream) appendableEventStreamGetter.Invoke(aggregate, new object[0]);
         }
         
+        public static EventStreamId GetEventStreamId<T>(this T aggregate)
+            where T : BaseEventStreamAggregate
+        {
+            var eventStreamIdGetter = typeof(T).GetMethod($"get_{nameof(EventStreamId)}", NonPublicPropertyGetterBindingFlags);
+            Assert.NotNull(eventStreamIdGetter);
+            return (EventStreamId) eventStreamIdGetter.Invoke(aggregate, new object[0]);
+        }
+        
         public static PublishableEventStream GetPublishableEventStream<T>(this T aggregate)
             where T : BaseEventStreamAggregate
         {

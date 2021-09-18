@@ -16,6 +16,11 @@ namespace EventSourcing.Aggregates.Abstractions
         protected AppendableEventStream AppendableEventStream { get; private set; }
 
         /// <summary>
+        /// Gets aggregate's event stream's id.
+        /// </summary>
+        protected EventStreamId EventStreamId => AppendableEventStream.StreamId;
+
+        /// <summary>
         /// Defines if in case of missing handler methods for event types an exception should be thrown.
         /// </summary>
         protected virtual bool ShouldIgnoreMissingHandlers { get; } = true;

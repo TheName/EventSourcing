@@ -35,6 +35,15 @@ namespace Aggregates.Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
+        public void ReturnEventStreamId_When_GettingStreamId(EventStreamId streamId)
+        {
+            var aggregate = new TestAggregate(streamId);
+            
+            Assert.Equal(streamId, aggregate.GetEventStreamId());
+        }
+
+        [Theory]
+        [AutoMoqData]
         public void HaveDefaultValueOfShouldIgnoreMissingHandlersSetToTrue(EventStreamId streamId)
         {
             var aggregate = new TestAggregate(streamId);
