@@ -22,7 +22,10 @@ namespace EventSourcing.Aggregates.Abstractions.Helpers
                 type => new BaseEventStreamAggregateMethodTracker(type));
         }
 
-        public static void Invoke(BaseEventStreamAggregate aggregate, EventStreamEventWithMetadata eventWithMetadata)
+        public static void Invoke(
+            BaseEventStreamAggregate aggregate,
+            EventStreamEventWithMetadata eventWithMetadata,
+            bool shouldIgnoreMissingHandlers)
         {
             if (aggregate == null)
             {
@@ -42,7 +45,7 @@ namespace EventSourcing.Aggregates.Abstractions.Helpers
             var methodInfo = tracker.GetHandlerMethodInfoForEventType(eventWithMetadata.Event.GetType());
             if (methodInfo == null)
             {
-                if (aggregate.ShouldIgnoreMissingHandlers)
+                if (shouldIgnoreMissingHandlers)
                 {
                     return;
                 }
@@ -76,7 +79,7 @@ namespace EventSourcing.Aggregates.Abstractions.Helpers
                     {
                         if (info.GetParameters().Length == 1)
                         {
-                            return info.GetParameters()[0].ParameterType != typeof(object) || info.Name != "Append";
+                            return info.GetParameters()[0].ParameterType != typeof(object) || !info.Name.StartsWith("Append");
                         }
 
                         return info.GetParameters().Length == 2 &&

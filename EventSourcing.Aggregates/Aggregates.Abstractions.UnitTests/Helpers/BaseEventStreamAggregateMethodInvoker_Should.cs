@@ -10,17 +10,22 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
     public class BaseEventStreamAggregateMethodInvoker_Should
     {
         [Theory]
-        [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CallingInvoke_And_PassingNullAsAggregate(EventStreamEventWithMetadata eventWithMetadata)
+        [AutoMoqWithInlineData(true)]
+        [AutoMoqWithInlineData(false)]
+        public void Throw_ArgumentNullException_When_CallingInvoke_And_PassingNullAsAggregate(
+            bool shouldIgnoreMissingHandlers,
+            EventStreamEventWithMetadata eventWithMetadata)
         {
-            Assert.Throws<ArgumentNullException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(null, eventWithMetadata));
+            Assert.Throws<ArgumentNullException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(null, eventWithMetadata, shouldIgnoreMissingHandlers));
         }
         
-        [Fact]
-        public void Throw_ArgumentNullException_When_CallingInvoke_And_PassingNullAsEventWithMetadata()
+        [Theory]
+        [AutoMoqWithInlineData(true)]
+        [AutoMoqWithInlineData(false)]
+        public void Throw_ArgumentNullException_When_CallingInvoke_And_PassingNullAsEventWithMetadata(bool shouldIgnoreMissingHandlers)
         {
-            var aggregate = new TestAggregate();
-            Assert.Throws<ArgumentNullException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, null));
+            var aggregate = new TestAggregateWithoutHandlingMethods();
+            Assert.Throws<ArgumentNullException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, null, shouldIgnoreMissingHandlers));
         }
 
         [Theory]
@@ -28,9 +33,9 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
         public void DoNothing_When_CallingInvoke_And_AggregateDoesNotHaveHandlingMethodsForProvidedEventType_And_ShouldIgnoreMissingHandlersOnAggregate(EventStreamEventWithMetadata eventWithMetadata)
         {
             eventWithMetadata = new EventStreamEventWithMetadata(new TestEvent(), eventWithMetadata.EventMetadata);
-            var aggregate = new TestAggregate(true);
+            var aggregate = new TestAggregateWithoutHandlingMethods();
 
-            BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata);
+            BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, true);
         }
 
         [Theory]
@@ -38,87 +43,96 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
         public void Throw_MissingMethodException_When_CallingInvoke_And_AggregateDoesNotHaveHandlingMethodsForProvidedEventType_And_ShouldNotIgnoreMissingHandlersOnAggregate(EventStreamEventWithMetadata eventWithMetadata)
         {
             eventWithMetadata = new EventStreamEventWithMetadata(new TestEvent(), eventWithMetadata.EventMetadata);
-            var aggregate = new TestAggregate();
+            var aggregate = new TestAggregateWithoutHandlingMethods();
 
-            Assert.Throws<MissingMethodException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata));
+            Assert.Throws<MissingMethodException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, false));
         }
 
         [Theory]
         [AutoMoqData]
-        public void Throw_MissingMethodException_When_CallingInvoke_And_AggregateHasStaticHandlingMethodForProvidedEventType(EventStreamEventWithMetadata eventWithMetadata)
+        public void Throw_MissingMethodException_When_CallingInvoke_And_AggregateHasStaticHandlingMethodForProvidedEventType_And_ShouldNotIgnoreMissingHandlersOnAggregate(EventStreamEventWithMetadata eventWithMetadata)
         {
             eventWithMetadata = new EventStreamEventWithMetadata(new TestEvent(), eventWithMetadata.EventMetadata);
             var aggregate = new TestAggregateWithStaticHandlingMethod();
 
-            Assert.Throws<MissingMethodException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata));
+            Assert.Throws<MissingMethodException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, false));
         }
 
         [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidOperationException_When_CallingInvoke_And_AggregateHasMultipleHandlingMethodsForProvidedEventType(EventStreamEventWithMetadata eventWithMetadata)
+        [AutoMoqWithInlineData(true)]
+        [AutoMoqWithInlineData(false)]
+        public void Throw_InvalidOperationException_When_CallingInvoke_And_AggregateHasMultipleHandlingMethodsForProvidedEventType(
+            bool shouldIgnoreMissingHandlers,
+            EventStreamEventWithMetadata eventWithMetadata)
         {
             eventWithMetadata = new EventStreamEventWithMetadata(new TestEvent(), eventWithMetadata.EventMetadata);
             var aggregate = new TestAggregateWithMultipleHandlingMethodsForSameEventType();
 
-            Assert.Throws<InvalidOperationException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata));
+            Assert.Throws<InvalidOperationException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, shouldIgnoreMissingHandlers));
         }
 
         [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidOperationException_When_CallingInvoke_And_AggregateHasBothHandlingMethodsForProvidedEventTypeAndForProvidedEventTypeAndMetadata(EventStreamEventWithMetadata eventWithMetadata)
+        [AutoMoqWithInlineData(true)]
+        [AutoMoqWithInlineData(false)]
+        public void Throw_InvalidOperationException_When_CallingInvoke_And_AggregateHasBothHandlingMethodsForProvidedEventTypeAndForProvidedEventTypeAndMetadata(
+            bool shouldIgnoreMissingHandlers,
+            EventStreamEventWithMetadata eventWithMetadata)
         {
             eventWithMetadata = new EventStreamEventWithMetadata(new TestEvent(), eventWithMetadata.EventMetadata);
             var aggregate = new TestAggregateWithHandlingMethodsForSameEventTypeAndEventTypeWithMetadata();
 
-            Assert.Throws<InvalidOperationException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata));
+            Assert.Throws<InvalidOperationException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, shouldIgnoreMissingHandlers));
         }
 
         [Theory]
-        [AutoMoqData]
-        public void Throw_InvalidOperationException_When_CallingInvoke_And_AggregateHasMultipleHandlingMethodsForProvidedEventTypeWithMetadata(EventStreamEventWithMetadata eventWithMetadata)
+        [AutoMoqWithInlineData(true)]
+        [AutoMoqWithInlineData(false)]
+        public void Throw_InvalidOperationException_When_CallingInvoke_And_AggregateHasMultipleHandlingMethodsForProvidedEventTypeWithMetadata(
+            bool shouldIgnoreMissingHandlers,
+            EventStreamEventWithMetadata eventWithMetadata)
         {
             eventWithMetadata = new EventStreamEventWithMetadata(new TestEvent(), eventWithMetadata.EventMetadata);
             var aggregate = new TestAggregateWithMultipleHandlingMethodsForSameEventTypeWithMetadata();
 
-            Assert.Throws<InvalidOperationException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata));
+            Assert.Throws<InvalidOperationException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, shouldIgnoreMissingHandlers));
         }
 
         [Theory]
-        [AutoMoqData]
-        public void InvokeMethod_When_CallingInvoke_And_AggregateHasHandlingMethodForProvidedEventType(EventStreamEventWithMetadata eventWithMetadata)
+        [AutoMoqWithInlineData(true)]
+        [AutoMoqWithInlineData(false)]
+        public void InvokeMethod_When_CallingInvoke_And_AggregateHasHandlingMethodForProvidedEventType(
+            bool shouldIgnoreMissingHandlers,
+            EventStreamEventWithMetadata eventWithMetadata)
         {
             eventWithMetadata = new EventStreamEventWithMetadata(new TestEvent(), eventWithMetadata.EventMetadata);
             var aggregate = new TestAggregateWithHandlingMethodForEventType();
             Assert.Null(aggregate.HandledTestEvent);
 
-            BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata);
+            BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, shouldIgnoreMissingHandlers);
             
             Assert.Equal(eventWithMetadata.Event, aggregate.HandledTestEvent);
         }
 
         [Theory]
-        [AutoMoqData]
-        public void InvokeMethod_When_CallingInvoke_And_AggregateHasHandlingMethodForProvidedEventTypeWithMetadata(EventStreamEventWithMetadata eventWithMetadata)
+        [AutoMoqWithInlineData(true)]
+        [AutoMoqWithInlineData(false)]
+        public void InvokeMethod_When_CallingInvoke_And_AggregateHasHandlingMethodForProvidedEventTypeWithMetadata(
+            bool shouldIgnoreMissingHandlers,
+            EventStreamEventWithMetadata eventWithMetadata)
         {
             eventWithMetadata = new EventStreamEventWithMetadata(new TestEvent(), eventWithMetadata.EventMetadata);
             var aggregate = new TestAggregateWithHandlingMethodForEventTypeWithMetadata();
             Assert.Null(aggregate.HandledTestEvent);
             Assert.Null(aggregate.HandledEventMetadata);
 
-            BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata);
+            BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, shouldIgnoreMissingHandlers);
             
             Assert.Equal(eventWithMetadata.Event, aggregate.HandledTestEvent);
             Assert.Equal(eventWithMetadata.EventMetadata, aggregate.HandledEventMetadata);
         }
         
-        private class TestAggregate : BaseEventStreamAggregate
+        private class TestAggregateWithoutHandlingMethods : BaseEventStreamAggregate
         {
-            protected internal override bool ShouldIgnoreMissingHandlers { get; }
-
-            public TestAggregate(bool shouldIgnoreMissingHandlers = false)
-            {
-                ShouldIgnoreMissingHandlers = shouldIgnoreMissingHandlers;
-            }
         }
 
         private class TestAggregateWithStaticHandlingMethod : BaseEventStreamAggregate
