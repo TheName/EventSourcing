@@ -21,11 +21,9 @@ namespace EventSourcing.Aggregates.Abstractions
         /// </summary>
         protected internal virtual bool ShouldIgnoreMissingHandlers { get; } = false;
 
-        /// <inheritdoc />
-        public PublishableEventStream PublishableEventStream => new PublishableEventStream(AppendableEventStream);
+        PublishableEventStream IEventStreamAggregate.PublishableEventStream => new PublishableEventStream(AppendableEventStream);
 
-        /// <inheritdoc />
-        public void Replay(EventStream eventStream)
+        void IEventStreamAggregate.Replay(EventStream eventStream)
         {
             foreach (var eventWithMetadata in eventStream.EventsWithMetadata)
             {
