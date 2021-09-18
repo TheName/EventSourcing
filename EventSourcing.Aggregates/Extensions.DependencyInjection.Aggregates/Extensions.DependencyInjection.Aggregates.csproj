@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.Extensions.DependencyInjection.Aggregates</RootNamespace>
+        <AssemblyName>EventSourcing.Extensions.DependencyInjection.Aggregates</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.Extensions.DependencyInjection.Aggregates</Title>
+        <Description>This package contains DependencyInjection extensions for default implementation of EventSourcing.Aggregates.Abstractions package.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.Extensions.DependencyInjection.Aggregates</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.Extensions.DependencyInjection.Aggregates project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.Extensions;EventSourcing.Extensions.DependencyInjection;EventSourcing.Aggregates</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Core\Extensions.DependencyInjection\Extensions.DependencyInjection.csproj" />
+      <ProjectReference Include="..\Aggregates\Aggregates.csproj" />
+    </ItemGroup>
+
+</Project>

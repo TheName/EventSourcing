@@ -20,7 +20,7 @@ namespace Aggregates.UnitTests.Builders
         
         [Theory]
         [AutoMoqData]
-        public void NotThrow_When_CreatingWithNotNullArguments(IEventSourcingAggregateFactory aggregateFactory)
+        public void NotThrow_When_CreatingWithNotNullArguments(IEventStreamAggregateFactory aggregateFactory)
         {
             _ = new EventStreamAggregateBuilder(aggregateFactory);
         }
@@ -30,7 +30,7 @@ namespace Aggregates.UnitTests.Builders
         internal void Throw_NotSupportedException_When_FactoryReturnsNull(
             Type aggregateType,
             EventStream eventStream,
-            [Frozen] Mock<IEventSourcingAggregateFactory> eventSourcingAggregateFactoryMock,
+            [Frozen] Mock<IEventStreamAggregateFactory> eventSourcingAggregateFactoryMock,
             EventStreamAggregateBuilder aggregateBuilder)
         {
             eventSourcingAggregateFactoryMock
@@ -46,7 +46,7 @@ namespace Aggregates.UnitTests.Builders
             Type aggregateType,
             EventStream eventStream,
             object aggregateReturnedByFactory,
-            [Frozen] Mock<IEventSourcingAggregateFactory> eventSourcingAggregateFactoryMock,
+            [Frozen] Mock<IEventStreamAggregateFactory> eventSourcingAggregateFactoryMock,
             EventStreamAggregateBuilder aggregateBuilder)
         {
             eventSourcingAggregateFactoryMock
@@ -62,7 +62,7 @@ namespace Aggregates.UnitTests.Builders
             Type aggregateType,
             EventStream eventStream,
             IEventStreamAggregate aggregateReturnedByFactory,
-            [Frozen] Mock<IEventSourcingAggregateFactory> eventSourcingAggregateFactoryMock,
+            [Frozen] Mock<IEventStreamAggregateFactory> eventSourcingAggregateFactoryMock,
             EventStreamAggregateBuilder aggregateBuilder)
         {
             eventSourcingAggregateFactoryMock
@@ -78,7 +78,7 @@ namespace Aggregates.UnitTests.Builders
             Type aggregateType,
             EventStream eventStream,
             Mock<IEventStreamAggregate> aggregateMockReturnedByFactory,
-            [Frozen] Mock<IEventSourcingAggregateFactory> eventSourcingAggregateFactoryMock,
+            [Frozen] Mock<IEventStreamAggregateFactory> eventSourcingAggregateFactoryMock,
             EventStreamAggregateBuilder aggregateBuilder)
         {
             eventSourcingAggregateFactoryMock

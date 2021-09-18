@@ -8,9 +8,9 @@ namespace EventSourcing.Aggregates.Builders
 {
     internal class EventStreamAggregateBuilder : IEventStreamAggregateBuilder
     {
-        private readonly IEventSourcingAggregateFactory _aggregateFactory;
+        private readonly IEventStreamAggregateFactory _aggregateFactory;
 
-        public EventStreamAggregateBuilder(IEventSourcingAggregateFactory aggregateFactory)
+        public EventStreamAggregateBuilder(IEventStreamAggregateFactory aggregateFactory)
         {
             _aggregateFactory = aggregateFactory ?? throw new ArgumentNullException(nameof(aggregateFactory));
         }

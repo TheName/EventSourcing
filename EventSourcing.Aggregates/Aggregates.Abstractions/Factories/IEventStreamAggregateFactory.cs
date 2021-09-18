@@ -5,7 +5,7 @@ namespace EventSourcing.Aggregates.Abstractions.Factories
     /// <summary>
     /// Creates an object of provided <see cref="Type"/> that represents an aggregate.
     /// </summary>
-    public interface IEventSourcingAggregateFactory
+    public interface IEventStreamAggregateFactory
     {
         /// <summary>
         /// Creates an instance of provided <paramref name="aggregateType"/>.

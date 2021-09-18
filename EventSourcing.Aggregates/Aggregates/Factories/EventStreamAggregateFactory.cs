@@ -6,7 +6,7 @@ using EventSourcing.Aggregates.Abstractions.Factories;
 
 namespace EventSourcing.Aggregates.Factories
 {
-    internal class EventSourcingAggregateFactory : IEventSourcingAggregateFactory
+    internal class EventStreamAggregateFactory : IEventStreamAggregateFactory
     {
         public object Create(Type aggregateType)
         {
