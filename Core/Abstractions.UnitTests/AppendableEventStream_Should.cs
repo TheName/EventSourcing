@@ -54,6 +54,23 @@ namespace Abstractions.UnitTests
             Assert.Empty(stream.EventsWithMetadataToAppend); 
         }
 
+        [Fact]
+        public void ReturnZero_When_GettingNextSequenceOnEmptyEventStream()
+        {
+            var stream = new AppendableEventStream(EventStream.NewEventStream());
+            
+            Assert.Equal<uint>(0, stream.NextSequence);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void ReturnOne_When_GettingNextSequenceOnEventStreamWithOneEntry(EventStream eventStream)
+        {
+            var stream = new AppendableEventStream(new EventStream(eventStream.StreamId, eventStream.EventsWithMetadata.Take(1)));
+            
+            Assert.Equal<uint>(1, stream.NextSequence);
+        }
+
         [Theory]
         [AutoMoqData]
         public void ReturnMaxSequenceIncreasedByOne_When_GettingNextSequence(EventStream eventStream)
