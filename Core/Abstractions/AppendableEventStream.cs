@@ -36,7 +36,7 @@ namespace EventSourcing.Abstractions
         {
             get
             {
-                if (_maxSequence == 0 && EventsWithMetadataToAppend.Count == 0)
+                if (_maxSequence == 0 && EventsWithMetadata.Count == 0 && EventsWithMetadataToAppend.Count == 0)
                 {
                     return 0;
                 }
