@@ -25,6 +25,11 @@ namespace EventSourcing.Aggregates.Retrievers
         {
             var eventStream = await _eventStreamRetriever.RetrieveAsync(streamId, cancellationToken).ConfigureAwait(false);
 
+            if (eventStream.EventsWithMetadata.Count == 0)
+            {
+                return null;
+            }
+
             return _eventStreamAggregateBuilder.Build(aggregateType, eventStream);
         }
     }

@@ -61,6 +61,28 @@ namespace Aggregates.UnitTests.Retrievers
 
         [Theory]
         [AutoMoqData]
+        internal async Task ReturnNull_When_RetrievingAggregate_And_EventStreamHasNoEvents(
+            Type aggregateType,
+            EventStreamId streamId,
+            [Frozen] Mock<IEventStreamRetriever> eventStreamRetrieverMock,
+            [Frozen] Mock<IEventStreamAggregateBuilder> eventStreamAggregateBuilderMock,
+            EventStreamAggregateRetriever aggregateRetriever)
+        {
+            eventStreamRetrieverMock
+                .Setup(retriever => retriever.RetrieveAsync(streamId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(EventStream.NewEventStream(streamId))
+                .Verifiable();
+            
+            var result = await aggregateRetriever.RetrieveAsync(aggregateType, streamId, CancellationToken.None);
+            
+            Assert.Null(result);
+            eventStreamRetrieverMock.Verify();
+            eventStreamRetrieverMock.VerifyNoOtherCalls();
+            eventStreamAggregateBuilderMock.VerifyNoOtherCalls();
+        }
+
+        [Theory]
+        [AutoMoqData]
         internal async Task BuildAggregateOfProvidedTypeAndRetrievedEventStream_When_RetrievingAggregate(
             Type aggregateType,
             EventStreamId streamId,
