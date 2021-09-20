@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Conversion;
+using EventSourcing.UnitTests.ReferencedAssembly;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -44,6 +44,15 @@ namespace EventSourcing.UnitTests.Conversion
         
         [Theory]
         [AutoMoqData]
+        internal void ReturnTypeIdentifier_When_TryingToGetIdentifierForValidTypeFromReferencedAssembly(EventStreamEventTypeIdentifierConverter typeIdentifierConverter)
+        {
+            var result = typeIdentifierConverter.ToTypeIdentifier(typeof(SampleClassFromReferencedAssembly));
+            
+            Assert.Equal(nameof(SampleClassFromReferencedAssembly), result);
+        }
+        
+        [Theory]
+        [AutoMoqData]
         internal void Throw_When_TryingToGetTypeForRandomIdentifierForWhichNoClassIsRegistered(
             EventStreamEventTypeIdentifier typeIdentifier,
             EventStreamEventTypeIdentifierConverter typeIdentifierConverter)
@@ -82,6 +91,15 @@ namespace EventSourcing.UnitTests.Conversion
             var result = typeIdentifierConverter.FromTypeIdentifier(nameof(RandomClass));
             
             Assert.Equal(typeof(RandomClass), result);
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        internal void ReturnType_When_TryingToGetTypeForIdentifierRepresentingAValidTypeFromReferencedAssembly(EventStreamEventTypeIdentifierConverter typeIdentifierConverter)
+        {
+            var result = typeIdentifierConverter.FromTypeIdentifier(nameof(SampleClassFromReferencedAssembly));
+            
+            Assert.Equal(typeof(SampleClassFromReferencedAssembly), result);
         }
         
         private abstract class AbstractClass

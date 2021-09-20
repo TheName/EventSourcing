@@ -82,6 +82,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregates.Abstractions.Uni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Aggregates", "EventSourcing.Aggregates\Extensions.DependencyInjection.Aggregates\Extensions.DependencyInjection.Aggregates.csproj", "{D81FF910-476E-4FF6-B34B-003007568A4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcing.UnitTests.ReferencedAssembly", "Core\EventSourcing.UnitTests.ReferencedAssembly\EventSourcing.UnitTests.ReferencedAssembly.csproj", "{B23CEB74-9659-4E73-A264-8076BF2E69F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -228,6 +230,10 @@ Global
 		{D81FF910-476E-4FF6-B34B-003007568A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D81FF910-476E-4FF6-B34B-003007568A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D81FF910-476E-4FF6-B34B-003007568A4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B23CEB74-9659-4E73-A264-8076BF2E69F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B23CEB74-9659-4E73-A264-8076BF2E69F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B23CEB74-9659-4E73-A264-8076BF2E69F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B23CEB74-9659-4E73-A264-8076BF2E69F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FED5B0D5-163B-404E-9CD3-69C7B0A246B4} = {3829A2ED-C973-4C40-89B2-276296AC020A}
@@ -265,5 +271,6 @@ Global
 		{918D9C34-9263-4774-907D-87F1C9C860E9} = {554639EC-1D6A-41B9-8B71-07DE055A27EB}
 		{2CDB97C9-D7FD-4929-A99D-F3B7D8163BCF} = {554639EC-1D6A-41B9-8B71-07DE055A27EB}
 		{D81FF910-476E-4FF6-B34B-003007568A4D} = {554639EC-1D6A-41B9-8B71-07DE055A27EB}
+		{B23CEB74-9659-4E73-A264-8076BF2E69F1} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
 	EndGlobalSection
 EndGlobal

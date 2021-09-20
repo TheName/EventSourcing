@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EventSourcing.UnitTests.ReferencedAssembly\EventSourcing.UnitTests.ReferencedAssembly.csproj" />
       <ProjectReference Include="..\EventSourcing\EventSourcing.csproj" />
       <ProjectReference Include="..\..\Helpers\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>

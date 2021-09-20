@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.ValueObjects;
 
@@ -13,7 +12,15 @@ namespace EventSourcing.Conversion
         
         static EventStreamEventTypeIdentifierConverter()
         {
-            var validTypes = AppDomain.CurrentDomain.GetAssemblies()
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var allReferencedAssemblies = loadedAssemblies
+                .SelectMany(assembly => assembly.GetReferencedAssemblies())
+                .Distinct()
+                .Where(name => loadedAssemblies.All(assembly => assembly.FullName != name.FullName))
+                .Select(name => AppDomain.CurrentDomain.Load(name))
+                .Concat(loadedAssemblies);
+            
+            var validTypes = allReferencedAssemblies
                 .SelectMany(assembly => assembly.GetTypes())
                 .Where(type => !type.IsAbstract && !type.IsInterface);
 
