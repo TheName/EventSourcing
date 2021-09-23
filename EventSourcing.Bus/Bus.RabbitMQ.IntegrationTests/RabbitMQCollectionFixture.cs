@@ -77,11 +77,6 @@ namespace Bus.RabbitMQ.IntegrationTests
             {
                 await asyncDisposable.DisposeAsync();
             }
-
-            if (_serviceProvider is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
         }
     }
 }

@@ -2,15 +2,10 @@
 using EventSourcing.Bus.Abstractions;
 using EventSourcing.Bus.RabbitMQ;
 using EventSourcing.Bus.RabbitMQ.Abstractions.Configurations;
-using EventSourcing.Bus.RabbitMQ.Abstractions.Factories;
-using EventSourcing.Bus.RabbitMQ.Abstractions.Helpers;
-using EventSourcing.Bus.RabbitMQ.Abstractions.Providers;
+using EventSourcing.Bus.RabbitMQ.Abstractions.Connections;
 using EventSourcing.Bus.RabbitMQ.Configurations;
-using EventSourcing.Bus.RabbitMQ.Factories;
-using EventSourcing.Bus.RabbitMQ.Helpers;
-using EventSourcing.Bus.RabbitMQ.Providers;
+using EventSourcing.Bus.RabbitMQ.Connections;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
@@ -49,22 +44,14 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
                     "Provided connection string is invalid");
 
             eventSourcingBuilder.Services
-                .TryAddTransient<IRabbitMQConfiguration>(provider =>
-                    provider.GetRequiredService<IOptions<RabbitMQConfiguration>>().Value);
+                .AddTransient<IRabbitMQConfiguration>(provider => provider.GetRequiredService<IOptions<RabbitMQConfiguration>>().Value);
 
             eventSourcingBuilder.Services
-                .AddTransient<IRabbitMQConnectionFactory, RabbitMQConnectionFactory>()
-                .AddTransient<IRabbitMQChannelFactory, RabbitMQChannelFactory>()
-                .AddTransient<IRabbitMQConnectionFactoryProvider, RabbitMQConnectionFactoryProvider>()
-                .AddTransient<IRabbitMQConfigurationProvider, RabbitMQConfigurationProvider>()
-                .AddSingleton<IRabbitMQChannelProvider, RabbitMQChannelProvider>()
-                .AddSingleton<IRabbitMQConnectionProvider, RabbitMQConnectionProvider>()
-                .AddSingleton<IRabbitMQPublishAcknowledgmentTracker, RabbitMQPublishAcknowledgmentTracker>()
-                .AddTransient<IRabbitMQPublisher, RabbitMQPublisher>()
-                .AddTransient<IRabbitMQConsumerFactory, RabbitMQConsumerFactory>()
-                .AddTransient<IRabbitMQConsumer, RabbitMQConsumer>()
-                .AddTransient<IEventSourcingBusPublisher, RabbitMQEventSourcingBusPublisher>()
-                .AddTransient<IEventSourcingBusConsumer, RabbitMQEventSourcingBusConsumer>();
+                .AddTransient<EventSourcingRabbitMQChannelConfiguration>()
+                .AddTransient<IConnectionFactoryProvider, ConnectionFactoryProvider>()
+                .AddSingleton<IRabbitMQConnection, RabbitMQConnection>()
+                .AddSingleton<IEventSourcingBusConsumer, RabbitMQEventSourcingBusConsumer>()
+                .AddSingleton<IEventSourcingBusPublisher, RabbitMQEventSourcingBusPublisher>();
 
             return eventSourcingBuilder;
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventSourcing.Bus.RabbitMQ.Helpers
 {
-    internal class DisposingThreadLocal<T> : IDisposable where T : IDisposable
+    internal class DisposingThreadLocal<T>
     {
         private readonly ThreadLocal<TerminationNotifyingDecorator> _threadLocal;
         private readonly Channel<T> _channel;
@@ -40,9 +40,12 @@ namespace EventSourcing.Bus.RabbitMQ.Helpers
             _disposingThread.Dispose();
             _threadLocal.Dispose();
             
-            while (_queue.TryDequeue(out var disposable))
+            while (_queue.TryDequeue(out var dequeuedItem))
             {
-                disposable?.Dispose();
+                if (dequeuedItem is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
             }
         }
 
@@ -53,7 +56,8 @@ namespace EventSourcing.Bus.RabbitMQ.Helpers
                 IDisposable disposable;
                 try
                 {
-                    disposable = await _channel.Reader.ReadAsync(cancellationToken);
+                    object dequeuedItem = await _channel.Reader.ReadAsync(cancellationToken).ConfigureAwait(false);
+                    disposable = dequeuedItem as IDisposable;
                 }
                 catch (OperationCanceledException)
                 {
