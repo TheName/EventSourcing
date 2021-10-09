@@ -20,36 +20,20 @@ namespace Bus.RabbitMQ.UnitTests
         [Theory]
         [AutoMoqData]
         internal void Throw_ArgumentNullException_When_CreatingWithNullConnection(
-            EventSourcingRabbitMQChannelConfiguration configuration,
-            IEventStreamEntryDispatcher dispatcher)
+            EventSourcingRabbitMQChannelConfiguration configuration)
         {
             Assert.Throws<ArgumentNullException>(() => new RabbitMQEventSourcingBusConsumer(
                 null,
-                configuration,
-                dispatcher));
+                configuration));
         }
         
         [Theory]
         [AutoMoqData]
         internal void Throw_ArgumentNullException_When_CreatingWithNullConfiguration(
-            IRabbitMQConnection connection,
-            IEventStreamEntryDispatcher dispatcher)
+            IRabbitMQConnection connection)
         {
             Assert.Throws<ArgumentNullException>(() => new RabbitMQEventSourcingBusConsumer(
                 connection,
-                null,
-                dispatcher));
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        internal void Throw_ArgumentNullException_When_CreatingWithNullDispatcher(
-            IRabbitMQConnection connection,
-            EventSourcingRabbitMQChannelConfiguration configuration)
-        {
-            Assert.Throws<ArgumentNullException>(() => new RabbitMQEventSourcingBusConsumer(
-                connection,
-                configuration,
                 null));
         }
         
@@ -57,26 +41,22 @@ namespace Bus.RabbitMQ.UnitTests
         [AutoMoqData]
         internal void NotThrow_When_CreatingWithNotNullParameters(
             IRabbitMQConnection connection,
-            EventSourcingRabbitMQChannelConfiguration configuration,
-            IEventStreamEntryDispatcher dispatcher)
+            EventSourcingRabbitMQChannelConfiguration configuration)
         {
             _ = new RabbitMQEventSourcingBusConsumer(
                 connection,
-                configuration,
-                dispatcher);
+                configuration);
         }
         
         [Theory]
         [AutoMoqData]
         internal void NotCreateConsumingChannel_When_Created(
             Mock<IRabbitMQConnection> connectionMock,
-            EventSourcingRabbitMQChannelConfiguration configuration,
-            IEventStreamEntryDispatcher dispatcher)
+            EventSourcingRabbitMQChannelConfiguration configuration)
         {
             _ = new RabbitMQEventSourcingBusConsumer(
                 connectionMock.Object,
-                configuration,
-                dispatcher);
+                configuration);
             
             connectionMock.VerifyNoOtherCalls();
         }
@@ -84,11 +64,12 @@ namespace Bus.RabbitMQ.UnitTests
         [Theory]
         [AutoMoqData]
         internal async Task CreateConsumingChannel_When_StartedConsuming(
+            Func<EventStreamEntry, CancellationToken, Task> consumingTaskFunc,
             [Frozen] Mock<IRabbitMQConnection> connectionMock,
             [Frozen] EventSourcingRabbitMQChannelConfiguration configuration,
             RabbitMQEventSourcingBusConsumer consumer)
         {
-            await consumer.StartConsuming(CancellationToken.None);
+            await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
 
             connectionMock.Verify(connection => connection.CreateConsumingChannel(configuration), Times.Once);
         }
@@ -96,9 +77,9 @@ namespace Bus.RabbitMQ.UnitTests
         [Theory]
         [AutoMoqData]
         internal async Task AddConsumerOnConsumingChannel_When_StartedConsuming(
+            Func<EventStreamEntry, CancellationToken, Task> consumingTaskFunc,
             Mock<IRabbitMQConsumingChannel> consumingChannelMock,
             [Frozen] Mock<IRabbitMQConnection> connectionMock,
-            [Frozen] IEventStreamEntryDispatcher dispatcher,
             RabbitMQEventSourcingBusConsumer consumer,
             CancellationToken cancellationToken)
         {
@@ -106,17 +87,19 @@ namespace Bus.RabbitMQ.UnitTests
                 .Setup(connection => connection.CreateConsumingChannel(It.IsAny<IRabbitMQConsumingChannelConfiguration>()))
                 .Returns(consumingChannelMock.Object);
 
-            await consumer.StartConsuming(cancellationToken);
+            await consumer.StartConsuming(consumingTaskFunc, cancellationToken);
             
-            consumingChannelMock.Verify(channel => channel.AddConsumer<EventStreamEntry>(dispatcher.DispatchAsync, cancellationToken), Times.Once);
+            consumingChannelMock.Verify(channel => channel.AddConsumer(consumingTaskFunc, cancellationToken), Times.Once);
         }
         
         [Theory]
         [AutoMoqData]
-        internal async Task Throw_InvalidOperationException_When_TryingToStartConsumingMultipleTimes(RabbitMQEventSourcingBusConsumer consumer)
+        internal async Task Throw_InvalidOperationException_When_TryingToStartConsumingMultipleTimes(
+            Func<EventStreamEntry, CancellationToken, Task> consumingTaskFunc,
+            RabbitMQEventSourcingBusConsumer consumer)
         {
-            await consumer.StartConsuming(CancellationToken.None);
-            await Assert.ThrowsAsync<InvalidOperationException>(() => consumer.StartConsuming(CancellationToken.None));
+            await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => consumer.StartConsuming(consumingTaskFunc, CancellationToken.None));
         }
 
         [Theory]
@@ -133,6 +116,7 @@ namespace Bus.RabbitMQ.UnitTests
         [Theory]
         [AutoMoqData]
         internal async Task DoNothing_When_StoppingConsuming_And_ConsumingWasStarted_When_ConsumingChannelDoesNotImplementIDisposable(
+            Func<EventStreamEntry, CancellationToken, Task> consumingTaskFunc,
             Mock<IRabbitMQConsumingChannel> consumingChannelMock,
             [Frozen] Mock<IRabbitMQConnection> connectionMock,
             RabbitMQEventSourcingBusConsumer consumer)
@@ -141,7 +125,7 @@ namespace Bus.RabbitMQ.UnitTests
                 .Setup(connection => connection.CreateConsumingChannel(It.IsAny<IRabbitMQConsumingChannelConfiguration>()))
                 .Returns(consumingChannelMock.Object);
 
-            await consumer.StartConsuming(CancellationToken.None);
+            await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
             consumingChannelMock.Reset();
             
             await consumer.StopConsuming(CancellationToken.None);
@@ -152,6 +136,7 @@ namespace Bus.RabbitMQ.UnitTests
         [Theory]
         [AutoMoqData]
         internal async Task DisposeConsumingChannel_When_StoppingConsuming_And_ConsumingWasStarted_When_ConsumingChannelImplementsIDisposable(
+            Func<EventStreamEntry, CancellationToken, Task> consumingTaskFunc,
             [Frozen] Mock<IRabbitMQConnection> connectionMock,
             RabbitMQEventSourcingBusConsumer consumer)
         {
@@ -161,7 +146,7 @@ namespace Bus.RabbitMQ.UnitTests
                 .Setup(connection => connection.CreateConsumingChannel(It.IsAny<IRabbitMQConsumingChannelConfiguration>()))
                 .Returns(consumingChannelMock.Object);
 
-            await consumer.StartConsuming(CancellationToken.None);
+            await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
             consumingChannelMock.Reset();
             
             await consumer.StopConsuming(CancellationToken.None);

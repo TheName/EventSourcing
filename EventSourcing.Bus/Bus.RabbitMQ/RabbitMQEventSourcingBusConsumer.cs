@@ -16,7 +16,6 @@ namespace EventSourcing.Bus.RabbitMQ
     {
         private readonly IRabbitMQConnection _connection;
         private readonly IRabbitMQConsumingChannelConfiguration _eventSourcingConsumingChannelConfiguration;
-        private readonly IEventStreamEntryDispatcher _dispatcher;
         private readonly Lazy<IRabbitMQConsumingChannel> _lazyConsumingChannel;
 
         private bool _started;
@@ -25,24 +24,22 @@ namespace EventSourcing.Bus.RabbitMQ
 
         public RabbitMQEventSourcingBusConsumer(
             IRabbitMQConnection connection,
-            EventSourcingRabbitMQChannelConfiguration configuration,
-            IEventStreamEntryDispatcher dispatcher)
+            EventSourcingRabbitMQChannelConfiguration configuration)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _eventSourcingConsumingChannelConfiguration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
             
             _lazyConsumingChannel = new Lazy<IRabbitMQConsumingChannel>(CreateConsumingChannel);
         }
         
-        public Task StartConsuming(CancellationToken cancellationToken)
+        public Task StartConsuming(Func<EventStreamEntry, CancellationToken, Task> consumingTaskFunc, CancellationToken cancellationToken)
         {
             if (_started)
             {
                 throw new InvalidOperationException("Consuming has already been started.");
             }
             
-            ConsumingChannel.AddConsumer<EventStreamEntry>(_dispatcher.DispatchAsync, cancellationToken);
+            ConsumingChannel.AddConsumer(consumingTaskFunc, cancellationToken);
             _started = true;
             
             return Task.CompletedTask;
