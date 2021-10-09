@@ -106,7 +106,7 @@ namespace EventSourcing.Abstractions
                     correlationId ?? EventStreamEntryCorrelationId.Current));
             
             _eventsWithMetadataToAppend.Add(eventWithMetadataToAppend);
-            _maxSequence = NextSequence;
+            _maxSequence = eventWithMetadataToAppend.EventMetadata.EntrySequence;
             return eventWithMetadataToAppend;
         }
 

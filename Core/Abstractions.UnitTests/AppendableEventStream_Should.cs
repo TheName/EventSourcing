@@ -209,6 +209,19 @@ namespace Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
+        public void IncreaseNextSequenceByOne_After_AppendingEventWithMetadata_And_EventStreamWasEmpty(
+            object @event)
+        {
+            var appendableEventStream = new AppendableEventStream(EventStream.NewEventStream());
+            Assert.Equal<EventStreamEntrySequence>(0, appendableEventStream.NextSequence);
+            
+            appendableEventStream.AppendEventWithMetadata(@event);
+
+            Assert.Equal<EventStreamEntrySequence>(1, appendableEventStream.NextSequence);
+        }
+
+        [Theory]
+        [AutoMoqData]
         public void ReturnTrue_When_ComparingDifferentObjectsWithSameAppendableEventStream(AppendableEventStream appendableEventStream)
         {
             var stream1 = new PublishableEventStream(appendableEventStream);
