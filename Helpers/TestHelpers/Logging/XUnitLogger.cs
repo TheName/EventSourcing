@@ -17,10 +17,17 @@ namespace TestHelpers.Logging
         
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            _testOutputHelper.WriteLine($"{DateTime.Now:O} - {logLevel:G} - {eventId} - {_name} - {formatter(state, null)}");
-            if (exception != null)
+            try
             {
-                _testOutputHelper.WriteLine($"{exception}");
+                _testOutputHelper?.WriteLine($"{DateTime.Now:O} - {logLevel:G} - {eventId} - {_name} - {formatter(state, null)}");
+                if (exception != null)
+                {
+                    _testOutputHelper?.WriteLine($"{exception}");
+                }
+            }
+            catch 
+            {
+                // do nothing.
             }
         }
 

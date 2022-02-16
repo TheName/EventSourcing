@@ -1,63 +1,66 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Configurations;
-using EventSourcing.Abstractions.Handling;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Bus.Abstractions;
-using EventSourcing.Bus.RabbitMQ.Abstractions.Channels;
-using EventSourcing.Bus.RabbitMQ.Abstractions.Configurations;
-using EventSourcing.Bus.RabbitMQ.Abstractions.Connections;
-using EventSourcing.Bus.RabbitMQ.Configurations;
+using EventSourcing.Bus.RabbitMQ.Transport;
 
 namespace EventSourcing.Bus.RabbitMQ
 {
     internal class RabbitMQEventSourcingBusConsumer : IEventSourcingBusConsumer
     {
-        private readonly IRabbitMQConnection _connection;
-        private readonly IRabbitMQConsumingChannelConfiguration _eventSourcingConsumingChannelConfiguration;
-        private readonly Lazy<IRabbitMQConsumingChannel> _lazyConsumingChannel;
+        private readonly IRabbitMQConsumerFactory _consumerFactory;
+        private readonly SemaphoreSlim _consumerCreationSemaphore = new SemaphoreSlim(1, 1);
+        private IRabbitMQConsumer<EventStreamEntry> _rabbitMQConsumer;
 
-        private bool _started;
-
-        private IRabbitMQConsumingChannel ConsumingChannel => _lazyConsumingChannel.Value;
-
-        public RabbitMQEventSourcingBusConsumer(
-            IRabbitMQConnection connection,
-            EventSourcingRabbitMQChannelConfiguration configuration)
+        public RabbitMQEventSourcingBusConsumer(IRabbitMQConsumerFactory consumerFactory)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _eventSourcingConsumingChannelConfiguration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            
-            _lazyConsumingChannel = new Lazy<IRabbitMQConsumingChannel>(CreateConsumingChannel);
+            _consumerFactory = consumerFactory ?? throw new ArgumentNullException(nameof(consumerFactory));
         }
         
-        public Task StartConsuming(Func<EventStreamEntry, CancellationToken, Task> consumingTaskFunc, CancellationToken cancellationToken)
+        public async Task StartConsuming(
+            Func<EventStreamEntry, CancellationToken, Task> consumingTaskFunc,
+            CancellationToken cancellationToken)
         {
-            if (_started)
+            cancellationToken.ThrowIfCancellationRequested();
+            if (_rabbitMQConsumer != null)
             {
                 throw new InvalidOperationException("Consuming has already been started.");
             }
+
+            await _consumerCreationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                if (_rabbitMQConsumer != null)
+                {
+                    throw new InvalidOperationException("Consuming has already been started.");
+                }
+                
+                cancellationToken.ThrowIfCancellationRequested();
+                _rabbitMQConsumer = await _consumerFactory.CreateAsync(consumingTaskFunc, cancellationToken).ConfigureAwait(false);
+
+            }
+            finally
+            {
+                _consumerCreationSemaphore.Release();
+            }
             
-            ConsumingChannel.AddConsumer(consumingTaskFunc, cancellationToken);
-            _started = true;
-            
-            return Task.CompletedTask;
+            cancellationToken.ThrowIfCancellationRequested();
+            await _rabbitMQConsumer.StartConsumingAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public Task StopConsuming(CancellationToken cancellationToken)
+        public async Task StopConsuming(CancellationToken cancellationToken)
         {
-            if (_lazyConsumingChannel.IsValueCreated && _lazyConsumingChannel.Value is IDisposable disposable)
+            if (_rabbitMQConsumer == null)
+            {
+                return;
+            }
+
+            await _rabbitMQConsumer.StopConsumingAsync(cancellationToken).ConfigureAwait(false);
+            if (_rabbitMQConsumer is IDisposable disposable)
             {
                 disposable.Dispose();
             }
-
-            return Task.CompletedTask;
-        }
-
-        private IRabbitMQConsumingChannel CreateConsumingChannel()
-        {
-            return _connection.CreateConsumingChannel(_eventSourcingConsumingChannelConfiguration);
         }
     }
 }
