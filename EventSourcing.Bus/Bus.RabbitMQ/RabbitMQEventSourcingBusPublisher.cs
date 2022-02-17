@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Bus.Abstractions;
+using EventSourcing.Bus.RabbitMQ.Extensions;
 using EventSourcing.Bus.RabbitMQ.Transport;
 
 namespace EventSourcing.Bus.RabbitMQ
@@ -11,6 +12,7 @@ namespace EventSourcing.Bus.RabbitMQ
     {
         private readonly IRabbitMQProducerFactory _rabbitMQProducerFactory;
         private readonly SemaphoreSlim _producerCreationSemaphore = new SemaphoreSlim(1, 1);
+        private readonly CancellationTokenSource _disposingCancellationTokenSource = new CancellationTokenSource();
         private IRabbitMQProducer<EventStreamEntry> _producer;
         private bool _isDisposed;
 
@@ -21,8 +23,15 @@ namespace EventSourcing.Bus.RabbitMQ
 
         public async Task PublishAsync(EventStreamEntry eventStreamEntry, CancellationToken cancellationToken)
         {
-            var producer = await GetOrCreateProducerIfNotExistsAsync(cancellationToken).ConfigureAwait(false);
-            await producer.PublishAsync(eventStreamEntry, cancellationToken).ConfigureAwait(false);
+            if (_isDisposed)
+            {
+                throw new ObjectDisposedException(nameof(RabbitMQEventSourcingBusPublisher));
+            }
+            
+            var linkedToken = CreateLinkedToken(cancellationToken);
+            
+            var producer = await GetOrCreateProducerIfNotExistsAsync(linkedToken).ConfigureAwait(false);
+            await producer.PublishAsync(eventStreamEntry, linkedToken).ConfigureAwait(false);
         }
 
         public void Dispose()
@@ -31,13 +40,25 @@ namespace EventSourcing.Bus.RabbitMQ
             {
                 return;
             }
-            
+
+            _disposingCancellationTokenSource.Cancel();
+            _disposingCancellationTokenSource.Dispose();
+            _producerCreationSemaphore.Dispose();
             if (_producer is IDisposable disposable)
             {
                 disposable.Dispose();
             }
 
             _isDisposed = true;
+        }
+
+        private CancellationToken CreateLinkedToken(CancellationToken cancellationToken)
+        {
+            var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(
+                cancellationToken,
+                _disposingCancellationTokenSource.Token);
+
+            return linkedTokenSource.Token;
         }
 
         private async Task<IRabbitMQProducer<EventStreamEntry>> GetOrCreateProducerIfNotExistsAsync(CancellationToken cancellationToken)
@@ -47,9 +68,11 @@ namespace EventSourcing.Bus.RabbitMQ
                 return _producer;
             }
             
+            cancellationToken.ThrowIfCancellationRequested();
             await _producerCreationSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 if (_producer != null)
                 {
                     return _producer;
@@ -57,10 +80,12 @@ namespace EventSourcing.Bus.RabbitMQ
 
                 _producer = await _rabbitMQProducerFactory.CreateAsync<EventStreamEntry>(cancellationToken)
                     .ConfigureAwait(false);
+                
+                cancellationToken.ThrowIfCancellationRequested();
             }
             finally
             {
-                _producerCreationSemaphore.Release();
+                _producerCreationSemaphore?.TryRelease();
             }
 
             return _producer;
