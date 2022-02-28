@@ -18,20 +18,30 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus
         /// <param name="eventSourcingBuilder">
         /// The <see cref="IEventSourcingBuilder"/>.
         /// </param>
+        /// <param name="options">
+        /// The <see cref="EventSourcingBusBuilderOptions"/>.
+        /// </param>
         /// <returns>
-        /// The <see cref="IEventSourcingBuilder"/>.
+        /// The <see cref="IEventSourcingBusBuilder"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="eventSourcingBuilder"/> is null.
         /// </exception>
-        public static IEventSourcingBuilder WithBus(this IEventSourcingBuilder eventSourcingBuilder)
+        public static IEventSourcingBusBuilder WithBus(
+            this IEventSourcingBuilder eventSourcingBuilder,
+            EventSourcingBusBuilderOptions options = null)
         {
             if (eventSourcingBuilder == null)
             {
                 throw new ArgumentNullException(nameof(eventSourcingBuilder));
             }
 
-            eventSourcingBuilder.Services.AddHostedService<EventSourcingConsumerHostedService>();
+            var optionsToUse = options ?? new EventSourcingBusBuilderOptions();
+
+            if (optionsToUse.WithConsumer)
+            {
+                eventSourcingBuilder.Services.AddHostedService<EventSourcingConsumerHostedService>();
+            }
             
             eventSourcingBuilder.Services
                 .AddOptions<EventSourcingBusHandlingExceptionPublisherConfiguration>()
@@ -44,7 +54,9 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus
                 .TryAddTransient<IEventSourcingBusHandlingExceptionPublisherConfiguration>(provider =>
                     provider.GetRequiredService<IOptions<EventSourcingBusHandlingExceptionPublisherConfiguration>>().Value);
 
-            return eventSourcingBuilder;
+            return new EventSourcingBusBuilder(
+                eventSourcingBuilder,
+                optionsToUse);
         }
     }
 }

@@ -1,10 +1,4 @@
 ﻿using System;
-using EventSourcing.Bus.Abstractions;
-using EventSourcing.Bus.RabbitMQ;
-using EventSourcing.Bus.RabbitMQ.Configurations;
-using EventSourcing.Bus.RabbitMQ.Transport;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
 {
@@ -14,10 +8,13 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
     public static class EventSourcingBuilderExtensions
     {
         /// <summary>
-        /// Adds RabbitMQ bus layer for EventSourcing library.
+        /// Adds bus layer using RabbitMQ for EventSourcing library.
         /// </summary>
         /// <param name="eventSourcingBuilder">
         /// The <see cref="IEventSourcingBuilder"/>.
+        /// </param>
+        /// <param name="options">
+        /// The <see cref="EventSourcingBusBuilderOptions"/>
         /// </param>
         /// <returns>
         /// The <see cref="IEventSourcingBuilder"/>.
@@ -25,50 +22,18 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="eventSourcingBuilder"/> is null.
         /// </exception>
-        public static IEventSourcingBuilder WithRabbitMQBus(this IEventSourcingBuilder eventSourcingBuilder)
+        public static IEventSourcingBuilder WithRabbitMQBus(
+            this IEventSourcingBuilder eventSourcingBuilder,
+            EventSourcingBusBuilderOptions options = null)
         {
             if (eventSourcingBuilder == null)
             {
                 throw new ArgumentNullException(nameof(eventSourcingBuilder));
             }
 
-            eventSourcingBuilder.WithBus();
-
-            eventSourcingBuilder.Services
-                .AddOptions<RabbitMQConfiguration>()
-                .BindConfiguration(nameof(RabbitMQConfiguration))
-                .Validate(
-                    configuration => !string.IsNullOrWhiteSpace(configuration.ConnectionString),
-                    "Provided connection string is invalid");
-            
-            // common
-            eventSourcingBuilder.Services
-                .AddTransient<IRabbitMQConfiguration>(provider => provider.GetRequiredService<IOptions<RabbitMQConfiguration>>().Value)
-                .AddTransient<IRabbitMQConnectionFactory, RabbitMQConnectionFactory>()
-                .AddTransient<IRabbitMQConnectionConfigurationProvider, RabbitMQConnectionConfigurationProvider>();
-
-            // consuming
-            eventSourcingBuilder.Services
-                .AddTransient<IRabbitMQConsumerFactory, RabbitMQConsumerFactory>()
-                .AddTransient<IRabbitMQConsumingQueueBindingConfigurationProvider, RabbitMQQueueBindingConfigurationProvider>()
-                .AddSingleton<IRabbitMQConsumingChannelFactory, RabbitMQChannelFactory>()
-                .AddSingleton<IEventSourcingBusConsumer, RabbitMQEventSourcingBusConsumer>();
-                
-            // producing
-            eventSourcingBuilder.Services
-                .AddTransient<IRabbitMQProducerFactory, RabbitMQProducerFactory>()
-                .AddTransient<IRabbitMQProducingQueueBindingConfigurationProvider, RabbitMQQueueBindingConfigurationProvider>()
-                .AddSingleton<IRabbitMQProducingChannelFactory, RabbitMQChannelFactory>()
-                .AddSingleton<IEventSourcingBusPublisher, RabbitMQEventSourcingBusPublisher>();
-            
-            // handling exception producing
-            eventSourcingBuilder.Services
-                .AddTransient<IRabbitMQHandlingExceptionProducerFactory, RabbitMQHandlingExceptionProducerFactory>()
-                .AddTransient<IRabbitMQProducingQueueBindingConfigurationProvider, RabbitMQQueueBindingConfigurationProvider>()
-                .AddSingleton<IRabbitMQHandlingExceptionProducingChannelFactory, RabbitMQChannelFactory>()
-                .AddSingleton<IEventSourcingBusHandlingExceptionPublisher, EventSourcingBusHandlingExceptionPublisher>();
-
-            return eventSourcingBuilder;
+            return eventSourcingBuilder
+                .WithBus(options)
+                .UsingRabbitMQ();
         }
     }
 }
