@@ -114,86 +114,58 @@ namespace EventSourcing.UnitTests
         [Theory]
         [AutoMoqData]
         internal async Task ConvertAllEventsToAppend_When_Publishing(
-            [Frozen] EventStreamId eventStreamId,
-            List<EventStreamEventWithMetadata> eventsToAppend,
+            EventStreamId eventStreamId,
+            List<object> eventsToAppend,
             [Frozen] Mock<IEventStreamEventConverter> eventStreamEventConverterMock,
             EventStreamPublisher publisher)
         {
-            eventsToAppend = eventsToAppend
-                .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
-                    eventWithMetadata.Event,
-                    new EventStreamEventMetadata(
-                        eventWithMetadata.EventMetadata.StreamId,
-                        eventWithMetadata.EventMetadata.EntryId,
-                        Convert.ToUInt32(i),
-                        eventWithMetadata.EventMetadata.CausationId,
-                        eventWithMetadata.EventMetadata.CreationTime,
-                        eventWithMetadata.EventMetadata.CorrelationId)))
-                .ToList();
-            
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
-            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            foreach (var eventToAppend in eventsToAppend)
             {
-                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+                appendableStream.AppendEventWithMetadata(eventToAppend);
             }
 
             var stream = new PublishableEventStream(appendableStream);
 
             await PublishAndIgnoreExceptionsAsync(publisher, stream);
 
-            foreach (var eventStreamEventWithMetadata in eventsToAppend)
+            foreach (var eventToAppend in eventsToAppend)
             {
-                eventStreamEventConverterMock.Verify(converter => converter.ToEventDescriptor(eventStreamEventWithMetadata.Event), Times.Once);
+                eventStreamEventConverterMock.Verify(converter => converter.ToEventDescriptor(eventToAppend), Times.Once);
             }
         }
 
         [Theory]
         [AutoMoqData]
         internal async Task WriteAllConvertedEventsToAppendToStaging_When_Publishing(
-            [Frozen] EventStreamId eventStreamId,
-            List<(EventStreamEventWithMetadata EventWithMetadata, EventStreamEventDescriptor EventDescriptor)> eventsToAppendWithEventDescriptors,
+            EventStreamId eventStreamId,
+            List<(object Event, EventStreamEventDescriptor EventDescriptor)> eventsToAppend,
             [Frozen] Mock<IEventStreamEventConverter> eventStreamEventConverterMock,
             [Frozen] Mock<IEventStreamStagingWriter> storeStagingWriterMock,
             EventStreamPublisher publisher)
         {
-            eventsToAppendWithEventDescriptors = eventsToAppendWithEventDescriptors
-                .Select((eventWithMetadataWithEventDescriptor, i) =>
-                (
-                    new EventStreamEventWithMetadata(
-                        eventWithMetadataWithEventDescriptor.EventWithMetadata.Event,
-                        new EventStreamEventMetadata(
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.StreamId,
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.EntryId,
-                            Convert.ToUInt32(i),
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.CausationId,
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.CreationTime,
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.CorrelationId)),
-                    eventWithMetadataWithEventDescriptor.EventDescriptor))
-                .ToList();
-            
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
-            foreach (var eventStreamEventWithMetadata in eventsToAppendWithEventDescriptors.Select(tuple => tuple.EventWithMetadata))
+            var appendedEventsMetadata = new List<EventStreamEventWithMetadata>();
+            foreach (var (@event, eventDescriptor) in eventsToAppend)
             {
-                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+                var eventWithMetadata = appendableStream.AppendEventWithMetadata(@event);
+                appendedEventsMetadata.Add(eventWithMetadata);
+                
+                eventStreamEventConverterMock
+                    .Setup(converter => converter.ToEventDescriptor(@event))
+                    .Returns(eventDescriptor);
             }
 
             var stream = new PublishableEventStream(appendableStream);
-
-            foreach (var (eventWithMetadata, eventDescriptor) in eventsToAppendWithEventDescriptors)
-            {
-                eventStreamEventConverterMock
-                    .Setup(converter => converter.ToEventDescriptor(eventWithMetadata.Event))
-                    .Returns(eventDescriptor);
-            }
 
             await PublishAndIgnoreExceptionsAsync(publisher, stream);
 
             var assertEntries = new Func<EventStreamEntries, bool>(entries =>
             {
-                for (var i = 0; i < eventsToAppendWithEventDescriptors.Count; i++)
+                for (var i = 0; i < appendedEventsMetadata.Count; i++)
                 {
-                    var expectedEventMetadata = eventsToAppendWithEventDescriptors[i].EventWithMetadata.EventMetadata;
-                    var expectedEventDescriptor = eventsToAppendWithEventDescriptors[i].EventDescriptor;
+                    var expectedEventMetadata = appendedEventsMetadata[i].EventMetadata;
+                    var expectedEventDescriptor = eventsToAppend[i].EventDescriptor;
 
                     var actualEventMetadata = entries[i].ToEventMetadata();
                     var actualEventDescriptor = entries[i].EventDescriptor;
@@ -215,50 +187,34 @@ namespace EventSourcing.UnitTests
         [Theory]
         [AutoMoqData]
         internal async Task WriteAllConvertedEventsToAppendToStream_When_Publishing(
-            [Frozen] EventStreamId eventStreamId,
-            List<(EventStreamEventWithMetadata EventWithMetadata, EventStreamEventDescriptor EventDescriptor)> eventsToAppendWithEventDescriptors,
+            EventStreamId eventStreamId,
+            List<(object Event, EventStreamEventDescriptor EventDescriptor)> eventsToAppend,
             [Frozen] Mock<IEventStreamEventConverter> eventStreamEventConverterMock,
             [Frozen] Mock<IEventStreamWriter> storeWriterMock,
             EventStreamPublisher publisher)
         {
-            eventsToAppendWithEventDescriptors = eventsToAppendWithEventDescriptors
-                .Select((eventWithMetadataWithEventDescriptor, i) =>
-                (
-                    new EventStreamEventWithMetadata(
-                        eventWithMetadataWithEventDescriptor.EventWithMetadata.Event,
-                        new EventStreamEventMetadata(
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.StreamId,
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.EntryId,
-                            Convert.ToUInt32(i),
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.CausationId,
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.CreationTime,
-                            eventWithMetadataWithEventDescriptor.EventWithMetadata.EventMetadata.CorrelationId)),
-                    eventWithMetadataWithEventDescriptor.EventDescriptor))
-                .ToList();
-            
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
-            foreach (var eventStreamEventWithMetadata in eventsToAppendWithEventDescriptors.Select(tuple => tuple.EventWithMetadata))
+            var appendedEventsMetadata = new List<EventStreamEventWithMetadata>();
+            foreach (var (@event, eventDescriptor) in eventsToAppend)
             {
-                appendableStream.AppendEventWithMetadata(eventStreamEventWithMetadata);
+                var eventWithMetadata = appendableStream.AppendEventWithMetadata(@event);
+                appendedEventsMetadata.Add(eventWithMetadata);
+                
+                eventStreamEventConverterMock
+                    .Setup(converter => converter.ToEventDescriptor(@event))
+                    .Returns(eventDescriptor);
             }
 
             var stream = new PublishableEventStream(appendableStream);
-
-            foreach (var (eventWithMetadata, eventDescriptor) in eventsToAppendWithEventDescriptors)
-            {
-                eventStreamEventConverterMock
-                    .Setup(converter => converter.ToEventDescriptor(eventWithMetadata.Event))
-                    .Returns(eventDescriptor);
-            }
 
             await PublishAndIgnoreExceptionsAsync(publisher, stream);
 
             var assertEntries = new Func<EventStreamEntries, bool>(entries =>
             {
-                for (var i = 0; i < eventsToAppendWithEventDescriptors.Count; i++)
+                for (var i = 0; i < appendedEventsMetadata.Count; i++)
                 {
-                    var expectedEventMetadata = eventsToAppendWithEventDescriptors[i].EventWithMetadata.EventMetadata;
-                    var expectedEventDescriptor = eventsToAppendWithEventDescriptors[i].EventDescriptor;
+                    var expectedEventMetadata = appendedEventsMetadata[i].EventMetadata;
+                    var expectedEventDescriptor = eventsToAppend[i].EventDescriptor;
 
                     var actualEventMetadata = entries[i].ToEventMetadata();
                     var actualEventDescriptor = entries[i].EventDescriptor;
