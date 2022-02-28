@@ -1,6 +1,6 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using EventSourcing.Abstractions.Exceptions;
 using EventSourcing.Abstractions.ValueObjects;
 
 namespace EventSourcing.Abstractions.Handling
@@ -13,11 +13,8 @@ namespace EventSourcing.Abstractions.Handling
         /// <summary>
         /// Handles exception thrown during handling of <see cref="EventStreamEntry"/>.
         /// </summary>
-        /// <param name="entry">
-        /// The handled <see cref="EventStreamEntry"/>.
-        /// </param>
-        /// <param name="exception">
-        /// The exception thrown during handling.
+        /// <param name="entryHandlingException">
+        /// The <see cref="EventStreamEntryHandlingException"/>.
         /// </param>
         /// <param name="cancellationToken">
         /// The <see cref="CancellationToken"/>.
@@ -25,6 +22,6 @@ namespace EventSourcing.Abstractions.Handling
         /// <returns>
         /// The <see cref="Task"/> representing the action.
         /// </returns>
-        Task HandleAsync(EventStreamEntry entry, Exception exception, CancellationToken cancellationToken);
+        Task HandleAsync(EventStreamEntryHandlingException entryHandlingException, CancellationToken cancellationToken);
     }
 }

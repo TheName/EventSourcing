@@ -4,6 +4,7 @@
     {
         Undefined,
         Consumer,
-        Producer
+        Producer,
+        HandlingExceptionProducer
     }
 }

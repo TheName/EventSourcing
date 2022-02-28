@@ -7,6 +7,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
     internal class RabbitMQChannelFactory : 
         IRabbitMQConsumingChannelFactory,
         IRabbitMQProducingChannelFactory,
+        IRabbitMQHandlingExceptionProducingChannelFactory,
         IDisposable
     {
         private readonly IRabbitMQConnectionFactory _connectionFactory;
@@ -15,9 +16,11 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
         private readonly ILogger<RabbitMQChannelFactory> _logger;
         private readonly Lazy<IRabbitMQConnection> _lazyConsumerConnection;
         private readonly Lazy<IRabbitMQConnection> _lazyProducerConnection;
+        private readonly Lazy<IRabbitMQConnection> _lazyHandlingExceptionProducerConnection;
 
         private IRabbitMQConnection ConsumerConnection => _lazyConsumerConnection.Value;
         private IRabbitMQConnection ProducerConnection => _lazyProducerConnection.Value;
+        private IRabbitMQConnection HandlingExceptionProducerConnection => _lazyHandlingExceptionProducerConnection.Value;
 
         public RabbitMQChannelFactory(
             IRabbitMQConnectionFactory connectionFactory,
@@ -31,6 +34,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
             _lazyConsumerConnection = new Lazy<IRabbitMQConnection>(CreateConsumerConnection, LazyThreadSafetyMode.ExecutionAndPublication);
             _lazyProducerConnection = new Lazy<IRabbitMQConnection>(CreateProducerConnection, LazyThreadSafetyMode.ExecutionAndPublication);
+            _lazyHandlingExceptionProducerConnection = new Lazy<IRabbitMQConnection>(CreateHandlingExceptionProducerConnection, LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         public void Dispose()
@@ -62,6 +66,16 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
             return producingChannel;
         }
 
+        IRabbitMQProducingChannel IRabbitMQHandlingExceptionProducingChannelFactory.Create()
+        {
+            var channel = HandlingExceptionProducerConnection.CreateChannel();
+            var producingChannel = new RabbitMQProducingChannel(channel, _loggerFactory.CreateLogger<RabbitMQProducingChannel>());
+            
+            _logger.LogInformation("Created a new RabbitMQ producing channel: {RabbitMQProducingChannel}", producingChannel);
+
+            return producingChannel;
+        }
+
         private IRabbitMQConnection CreateConsumerConnection()
         {
             var consumerConnectionConfiguration = _connectionConfigurationProvider.ConsumerConnectionConfiguration;
@@ -71,6 +85,12 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
         private IRabbitMQConnection CreateProducerConnection()
         {
             var producerConnectionConfiguration = _connectionConfigurationProvider.ProducerConnectionConfiguration;
+            return _connectionFactory.Create(producerConnectionConfiguration);
+        }
+
+        private IRabbitMQConnection CreateHandlingExceptionProducerConnection()
+        {
+            var producerConnectionConfiguration = _connectionConfigurationProvider.HandlingExceptionProducerConnectionConfiguration;
             return _connectionFactory.Create(producerConnectionConfiguration);
         }
     }

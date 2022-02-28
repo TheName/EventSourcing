@@ -60,6 +60,13 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
                 .AddTransient<IRabbitMQProducingQueueBindingConfigurationProvider, RabbitMQQueueBindingConfigurationProvider>()
                 .AddSingleton<IRabbitMQProducingChannelFactory, RabbitMQChannelFactory>()
                 .AddSingleton<IEventSourcingBusPublisher, RabbitMQEventSourcingBusPublisher>();
+            
+            // handling exception producing
+            eventSourcingBuilder.Services
+                .AddTransient<IRabbitMQHandlingExceptionProducerFactory, RabbitMQHandlingExceptionProducerFactory>()
+                .AddTransient<IRabbitMQProducingQueueBindingConfigurationProvider, RabbitMQQueueBindingConfigurationProvider>()
+                .AddSingleton<IRabbitMQHandlingExceptionProducingChannelFactory, RabbitMQChannelFactory>()
+                .AddSingleton<IEventSourcingBusHandlingExceptionPublisher, EventSourcingBusHandlingExceptionPublisher>();
 
             return eventSourcingBuilder;
         }

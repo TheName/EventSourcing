@@ -6,5 +6,6 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
     {
         IRabbitMQConnectionConfiguration ConsumerConnectionConfiguration { get; }
         IRabbitMQConnectionConfiguration ProducerConnectionConfiguration { get; }
+        IRabbitMQConnectionConfiguration HandlingExceptionProducerConnectionConfiguration { get; }
     }
 }

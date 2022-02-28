@@ -10,6 +10,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
         private readonly IEventSourcingConfiguration _eventSourcingConfiguration;
         public IRabbitMQConnectionConfiguration ConsumerConnectionConfiguration { get; }
         public IRabbitMQConnectionConfiguration ProducerConnectionConfiguration { get; }
+        public IRabbitMQConnectionConfiguration HandlingExceptionProducerConnectionConfiguration { get; }
 
         public RabbitMQConnectionConfigurationProvider(
             IEventSourcingConfiguration eventSourcingConfiguration,
@@ -32,6 +33,12 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
                 TimeSpan.FromSeconds(5),
                 new Uri(rabbitMQConfiguration.ConnectionString),
                 50);
+
+            HandlingExceptionProducerConnectionConfiguration = new RabbitMQConnectionConfiguration(
+                GetClientName(RabbitMQConnectionType.HandlingExceptionProducer),
+                TimeSpan.FromSeconds(5),
+                new Uri(rabbitMQConfiguration.ConnectionString),
+                50);
         }
 
         private string GetClientName(RabbitMQConnectionType connectionType) =>
@@ -43,6 +50,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
             {
                 case RabbitMQConnectionType.Consumer:
                 case RabbitMQConnectionType.Producer:
+                case RabbitMQConnectionType.HandlingExceptionProducer:
                     return connectionType.ToString();
                 
                 default:

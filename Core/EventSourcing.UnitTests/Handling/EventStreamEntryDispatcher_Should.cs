@@ -5,9 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using EventSourcing.Abstractions.Conversion;
+using EventSourcing.Abstractions.Exceptions;
 using EventSourcing.Abstractions.Handling;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Handling;
+using Microsoft.Extensions.Logging;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;
@@ -20,27 +22,56 @@ namespace EventSourcing.UnitTests.Handling
         [AutoMoqData]
         internal void Throw_When_Creating_With_NullEventConverter(
             IEventHandlerProvider eventHandlerProvider,
-            IEventHandlingExceptionsHandler exceptionsHandler)
+            IEventHandlingExceptionsHandler exceptionsHandler,
+            ILogger<EventStreamEntryDispatcher> logger)
         {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryDispatcher(null, eventHandlerProvider, exceptionsHandler));
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryDispatcher(
+                null,
+                eventHandlerProvider,
+                exceptionsHandler,
+                logger));
         }
         
         [Theory]
         [AutoMoqData]
         internal void Throw_When_Creating_With_NullEventHandlerProvider(
             IEventStreamEventConverter eventConverter,
-            IEventHandlingExceptionsHandler exceptionsHandler)
+            IEventHandlingExceptionsHandler exceptionsHandler,
+            ILogger<EventStreamEntryDispatcher> logger)
         {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryDispatcher(eventConverter, null, exceptionsHandler));
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryDispatcher(
+                eventConverter,
+                null,
+                exceptionsHandler,
+                logger));
         }
         
         [Theory]
         [AutoMoqData]
         internal void Throw_When_Creating_With_NullExceptionsHandler(
             IEventStreamEventConverter eventConverter,
-            IEventHandlerProvider eventHandlerProvider)
+            IEventHandlerProvider eventHandlerProvider,
+            ILogger<EventStreamEntryDispatcher> logger)
         {
-            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryDispatcher(eventConverter, eventHandlerProvider, null));
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryDispatcher(
+                eventConverter,
+                eventHandlerProvider,
+                null,
+                logger));
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        internal void Throw_When_Creating_With_NullLogger(
+            IEventStreamEventConverter eventConverter,
+            IEventHandlerProvider eventHandlerProvider,
+            IEventHandlingExceptionsHandler exceptionsHandler)
+        {
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEntryDispatcher(
+                eventConverter,
+                eventHandlerProvider,
+                exceptionsHandler,
+                null));
         }
         
         [Theory]
@@ -48,9 +79,14 @@ namespace EventSourcing.UnitTests.Handling
         internal void NotThrow_When_Creating_With_NoNullArguments(
             IEventStreamEventConverter eventConverter,
             IEventHandlerProvider eventHandlerProvider,
-            IEventHandlingExceptionsHandler exceptionsHandler)
+            IEventHandlingExceptionsHandler exceptionsHandler,
+            ILogger<EventStreamEntryDispatcher> logger)
         {
-            _ = new EventStreamEntryDispatcher(eventConverter, eventHandlerProvider, exceptionsHandler);
+            _ = new EventStreamEntryDispatcher(
+                eventConverter,
+                eventHandlerProvider,
+                exceptionsHandler,
+                logger);
         }
 
         [Theory]
@@ -188,8 +224,23 @@ namespace EventSourcing.UnitTests.Handling
                 .Throws(exception);
             
             await dispatcher.DispatchAsync(entry, cancellationToken);
+
+            var assertHandlingException = new Func<EventStreamEntryHandlingException, bool>(handlingException =>
+            {
+                Assert.Equal(entry, handlingException.Entry);
+                var innerAggregateException = Assert.IsType<AggregateException>(handlingException.InnerException);
+                var singleException = Assert.Single(innerAggregateException.InnerExceptions);
+                Assert.Equal(exception, singleException);
+
+                return true;
+            });
+
+            exceptionsHandlerMock.Verify(
+                handler => handler.HandleAsync(
+                    It.Is<EventStreamEntryHandlingException>(handlingException => assertHandlingException(handlingException)),
+                    cancellationToken),
+                Times.Once);
             
-            exceptionsHandlerMock.Verify(handler => handler.HandleAsync(entry, exception, cancellationToken), Times.Once);
             exceptionsHandlerMock.VerifyNoOtherCalls();
         }
 
@@ -223,8 +274,23 @@ namespace EventSourcing.UnitTests.Handling
                 .Throws(exception);
             
             await dispatcher.DispatchAsync(entry, cancellationToken);
+
+            var assertHandlingException = new Func<EventStreamEntryHandlingException, bool>(handlingException =>
+            {
+                Assert.Equal(entry, handlingException.Entry);
+                var innerAggregateException = Assert.IsType<AggregateException>(handlingException.InnerException);
+                var singleException = Assert.Single(innerAggregateException.InnerExceptions);
+                Assert.Equal(exception, singleException);
+
+                return true;
+            });
+
+            exceptionsHandlerMock.Verify(
+                handler => handler.HandleAsync(
+                    It.Is<EventStreamEntryHandlingException>(handlingException => assertHandlingException(handlingException)),
+                    cancellationToken),
+                Times.Once);
             
-            exceptionsHandlerMock.Verify(handler => handler.HandleAsync(entry, exception, cancellationToken), Times.Once);
             exceptionsHandlerMock.VerifyNoOtherCalls();
         }
 
@@ -274,8 +340,23 @@ namespace EventSourcing.UnitTests.Handling
                 .Returns(new List<IEventHandler<object>> {eventHandlerMock.Object});
             
             await dispatcher.DispatchAsync(entry, cancellationToken);
-            
-            exceptionsHandlerMock.Verify(handler => handler.HandleAsync(entry, exception, cancellationToken), Times.Once);
+
+            var assertHandlingException = new Func<EventStreamEntryHandlingException, bool>(handlingException =>
+            {
+                Assert.Equal(entry, handlingException.Entry);
+                var innerAggregateException = Assert.IsType<AggregateException>(handlingException.InnerException);
+                var singleException = Assert.Single(innerAggregateException.InnerExceptions);
+                Assert.Equal(exception, singleException);
+
+                return true;
+            });
+
+            exceptionsHandlerMock.Verify(
+                handler => handler.HandleAsync(
+                    It.Is<EventStreamEntryHandlingException>(handlingException => assertHandlingException(handlingException)),
+                    cancellationToken),
+                Times.Once);
+
             exceptionsHandlerMock.VerifyNoOtherCalls();
         }
     }

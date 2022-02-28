@@ -1,6 +1,9 @@
 ﻿using System;
 using EventSourcing.Bus;
+using EventSourcing.Bus.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace EventSourcing.Extensions.DependencyInjection.Bus
 {
@@ -29,6 +32,17 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus
             }
 
             eventSourcingBuilder.Services.AddHostedService<EventSourcingConsumerHostedService>();
+            
+            eventSourcingBuilder.Services
+                .AddOptions<EventSourcingBusHandlingExceptionPublisherConfiguration>()
+                .BindConfiguration(nameof(EventSourcingBusHandlingExceptionPublisherConfiguration))
+                .Validate(
+                    configuration => configuration.PublishingTimeout <= TimeSpan.Zero,
+                    "PublishingTimeout cannot be less or equal to zero.");
+
+            eventSourcingBuilder.Services
+                .TryAddTransient<IEventSourcingBusHandlingExceptionPublisherConfiguration>(provider =>
+                    provider.GetRequiredService<IOptions<EventSourcingBusHandlingExceptionPublisherConfiguration>>().Value);
 
             return eventSourcingBuilder;
         }
