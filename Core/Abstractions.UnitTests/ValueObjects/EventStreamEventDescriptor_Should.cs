@@ -10,9 +10,23 @@ namespace Abstractions.UnitTests.ValueObjects
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventContent(
+            SerializationFormat serializationFormat,
             EventStreamEventTypeIdentifier eventTypeIdentifier)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
+                null,
+                serializationFormat,
+                eventTypeIdentifier));
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        public void Throw_ArgumentNullException_When_CreatingWithNullSerializationFormat(
+            EventStreamEventContent eventContent,
+            EventStreamEventTypeIdentifier eventTypeIdentifier)
+        {
+            Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
+                eventContent,
                 null,
                 eventTypeIdentifier));
         }
@@ -20,10 +34,12 @@ namespace Abstractions.UnitTests.ValueObjects
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventTypeIdentifier(
-            EventStreamEventContent eventContent)
+            EventStreamEventContent eventContent,
+            SerializationFormat serializationFormat)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEventDescriptor(
                 eventContent,
+                serializationFormat,
                 null));
         }
 
@@ -31,10 +47,12 @@ namespace Abstractions.UnitTests.ValueObjects
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNonNullValues(
             EventStreamEventContent eventContent,
+            SerializationFormat serializationFormat,
             EventStreamEventTypeIdentifier eventTypeIdentifier)
         {
             _ = new EventStreamEventDescriptor(
                 eventContent,
+                serializationFormat,
                 eventTypeIdentifier);
         }
 
@@ -42,10 +60,12 @@ namespace Abstractions.UnitTests.ValueObjects
         [AutoMoqData]
         public void ReturnEventContentProvidedDuringCreation_When_GettingEventContent(
             EventStreamEventContent eventContent,
+            SerializationFormat serializationFormat,
             EventStreamEventTypeIdentifier eventTypeIdentifier)
         {
             var eventStreamEventDescriptor = new EventStreamEventDescriptor(
                 eventContent,
+                serializationFormat,
                 eventTypeIdentifier);
             
             Assert.Equal(eventContent, eventStreamEventDescriptor.EventContent);
@@ -55,10 +75,12 @@ namespace Abstractions.UnitTests.ValueObjects
         [AutoMoqData]
         public void ReturnEventTypeIdentifierProvidedDuringCreation_When_GettingEventTypeIdentifier(
             EventStreamEventContent eventContent,
+            SerializationFormat serializationFormat,
             EventStreamEventTypeIdentifier eventTypeIdentifier)
         {
             var eventStreamEventDescriptor = new EventStreamEventDescriptor(
                 eventContent,
+                serializationFormat,
                 eventTypeIdentifier);
             
             Assert.Equal(eventTypeIdentifier, eventStreamEventDescriptor.EventTypeIdentifier);
@@ -71,10 +93,12 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var event1 = new EventStreamEventDescriptor(
                 eventStreamEventDescriptor.EventContent,
+                eventStreamEventDescriptor.EventContentSerializationFormat,
                 eventStreamEventDescriptor.EventTypeIdentifier);
             
             var event2 = new EventStreamEventDescriptor(
                 eventStreamEventDescriptor.EventContent,
+                eventStreamEventDescriptor.EventContentSerializationFormat,
                 eventStreamEventDescriptor.EventTypeIdentifier);
             
             Assert.Equal(event1, event2);
@@ -90,10 +114,33 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var event1 = new EventStreamEventDescriptor(
                 eventStreamEventDescriptor.EventContent,
+                eventStreamEventDescriptor.EventContentSerializationFormat,
                 eventStreamEventDescriptor.EventTypeIdentifier);
             
             var event2 = new EventStreamEventDescriptor(
                 differentEventContent,
+                eventStreamEventDescriptor.EventContentSerializationFormat,
+                eventStreamEventDescriptor.EventTypeIdentifier);
+            
+            Assert.NotEqual(event1, event2);
+            Assert.False(event1 == event2);
+            Assert.True(event1 != event2);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void ReturnFalse_When_ComparingDifferentObjectsWithDifferentEventContentSerializationFormat(
+            EventStreamEventDescriptor eventStreamEventDescriptor,
+            SerializationFormat serializationFormat)
+        {
+            var event1 = new EventStreamEventDescriptor(
+                eventStreamEventDescriptor.EventContent,
+                eventStreamEventDescriptor.EventContentSerializationFormat,
+                eventStreamEventDescriptor.EventTypeIdentifier);
+            
+            var event2 = new EventStreamEventDescriptor(
+                eventStreamEventDescriptor.EventContent,
+                serializationFormat,
                 eventStreamEventDescriptor.EventTypeIdentifier);
             
             Assert.NotEqual(event1, event2);
@@ -109,10 +156,12 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var event1 = new EventStreamEventDescriptor(
                 eventStreamEventDescriptor.EventContent,
+                eventStreamEventDescriptor.EventContentSerializationFormat,
                 eventStreamEventDescriptor.EventTypeIdentifier);
             
             var event2 = new EventStreamEventDescriptor(
                 eventStreamEventDescriptor.EventContent,
+                eventStreamEventDescriptor.EventContentSerializationFormat,
                 differentEventTypeIdentifier);
             
             Assert.NotEqual(event1, event2);
@@ -125,7 +174,7 @@ namespace Abstractions.UnitTests.ValueObjects
         public void ReturnExpectedValue_When_CallingToString(EventStreamEventDescriptor eventStreamEventDescriptor)
         {
             var expectedValue =
-                $"Event Content: {eventStreamEventDescriptor.EventContent}, Event Type Identifier: {eventStreamEventDescriptor.EventTypeIdentifier}";
+                $"Event Content Serialization Format: {eventStreamEventDescriptor.EventContentSerializationFormat}, Event Content: {eventStreamEventDescriptor.EventContent}, Event Type Identifier: {eventStreamEventDescriptor.EventTypeIdentifier}";
             
             Assert.Equal(expectedValue, eventStreamEventDescriptor.ToString());
         }

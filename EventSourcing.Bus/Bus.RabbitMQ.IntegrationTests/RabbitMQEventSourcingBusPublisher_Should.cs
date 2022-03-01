@@ -22,7 +22,7 @@ namespace Bus.RabbitMQ.IntegrationTests
 
         private SimpleEventHandler SimpleEventHandler => _fixture.GetService<SimpleEventHandler>();
 
-        private ISerializer Serializer => _fixture.GetService<ISerializer>();
+        private ISerializer Serializer => _fixture.GetService<ISerializerProvider>().GetEventContentSerializer();
 
         private IEventStreamEventTypeIdentifierConverter TypeIdentifierConverter => _fixture.GetService<IEventStreamEventTypeIdentifierConverter>();
 
@@ -41,6 +41,7 @@ namespace Bus.RabbitMQ.IntegrationTests
                 eventMetadata.EntrySequence,
                 new EventStreamEventDescriptor(
                     Serializer.Serialize(simpleEvent),
+                    Serializer.SerializationFormat,
                     TypeIdentifierConverter.ToTypeIdentifier(simpleEvent.GetType())),
                 eventMetadata.CausationId,
                 eventMetadata.CreationTime,
@@ -66,6 +67,7 @@ namespace Bus.RabbitMQ.IntegrationTests
                 eventMetadata.EntrySequence,
                 new EventStreamEventDescriptor(
                     Serializer.Serialize(simpleEvent),
+                    Serializer.SerializationFormat,
                     TypeIdentifierConverter.ToTypeIdentifier(simpleEvent.GetType())),
                 eventMetadata.CausationId,
                 eventMetadata.CreationTime,

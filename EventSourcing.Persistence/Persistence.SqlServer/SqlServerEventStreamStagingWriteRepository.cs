@@ -71,13 +71,13 @@ namespace EventSourcing.Persistence.SqlServer
         {
             var parameters = new List<SqlParameter>();
             var insertCommand = new StringBuilder();
-            insertCommand.Append($"INSERT INTO {TableName} (StagingId, StreamId, EntrySequence, EntryId, EventContent, EventTypeIdentifier, CausationId, CreationTime, CorrelationId) VALUES");
+            insertCommand.Append($"INSERT INTO {TableName} (StagingId, StreamId, EntrySequence, EntryId, EventContent, EventContentSerializationFormat, EventTypeIdentifier, CausationId, CreationTime, CorrelationId) VALUES");
 
             var separator = " ";
             for (var i = 0; i < eventStreamEntries.Count; i++)
             {
                 insertCommand.Append(
-                    $"{separator}(@StagingId_{i}, @StreamId_{i}, @EntrySequence_{i}, @EntryId_{i}, @EventContent_{i}, @EventTypeIdentifier_{i}, @CausationId_{i}, @CreationTime_{i}, @CorrelationId_{i})");
+                    $"{separator}(@StagingId_{i}, @StreamId_{i}, @EntrySequence_{i}, @EntryId_{i}, @EventContent_{i}, @EventContentSerializationFormat_{i}, @EventTypeIdentifier_{i}, @CausationId_{i}, @CreationTime_{i}, @CorrelationId_{i})");
                 var entry = eventStreamEntries[i];
                 parameters.AddRange(new []
                 {
@@ -86,6 +86,7 @@ namespace EventSourcing.Persistence.SqlServer
                     new SqlParameter($"@EntrySequence_{i}", SqlDbType.BigInt) {Value = (uint) entry.EntrySequence},
                     new SqlParameter($"@EntryId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.EntryId},
                     new SqlParameter($"@EventContent_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventContent},
+                    new SqlParameter($"@EventContentSerializationFormat_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventContentSerializationFormat},
                     new SqlParameter($"@EventTypeIdentifier_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventTypeIdentifier},
                     new SqlParameter($"@CausationId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.CausationId},
                     new SqlParameter($"@CreationTime_{i}", SqlDbType.DateTimeOffset) {Value = (DateTime) entry.CreationTime},

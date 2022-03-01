@@ -13,7 +13,12 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The serialized <see cref="EventStreamEventContent"/> of the event.
         /// </summary>
         public EventStreamEventContent EventContent { get; }
-        
+
+        /// <summary>
+        /// The <see cref="SerializationFormat"/> used to serialize the <see cref="EventContent"/>.
+        /// </summary>
+        public SerializationFormat EventContentSerializationFormat { get; }
+
         /// <summary>
         /// The <see cref="EventStreamEventTypeIdentifier"/> of the event.
         /// </summary>
@@ -25,6 +30,9 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// <param name="eventContent">
         /// The serialized <see cref="EventStreamEventContent"/> of the event.
         /// </param>
+        /// <param name="eventContentSerializationFormat">
+        /// The <see cref="SerializationFormat"/>.
+        /// </param>
         /// <param name="eventTypeIdentifier">
         /// The <see cref="EventStreamEventTypeIdentifier"/> of the event.
         /// </param>
@@ -33,9 +41,11 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// </exception>
         public EventStreamEventDescriptor(
             EventStreamEventContent eventContent,
+            SerializationFormat eventContentSerializationFormat,
             EventStreamEventTypeIdentifier eventTypeIdentifier)
         {
             EventContent = eventContent ?? throw new ArgumentNullException(nameof(eventContent));
+            EventContentSerializationFormat = eventContentSerializationFormat ?? throw new ArgumentNullException(nameof(eventContentSerializationFormat));
             EventTypeIdentifier = eventTypeIdentifier ?? throw new ArgumentNullException(nameof(eventTypeIdentifier));
         }
 
@@ -92,10 +102,11 @@ namespace EventSourcing.Abstractions.ValueObjects
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"Event Content: {EventContent}, Event Type Identifier: {EventTypeIdentifier}";
+            $"Event Content Serialization Format: {EventContentSerializationFormat}, Event Content: {EventContent}, Event Type Identifier: {EventTypeIdentifier}";
 
         private IEnumerable<object> GetPropertiesForHashCode()
         {
+            yield return EventContentSerializationFormat;
             yield return EventContent;
             yield return EventTypeIdentifier;
         }

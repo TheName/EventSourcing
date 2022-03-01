@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Serialization.Abstractions;
 using EventSourcing.Serialization.NewtonsoftJson.Converters;
 using Newtonsoft.Json;
@@ -22,9 +23,14 @@ namespace EventSourcing.Serialization.NewtonsoftJson
                 new EventStreamEntrySequenceConverter(),
                 new EventStreamEventContentConverter(),
                 new EventStreamEventTypeIdentifierConverter(),
-                new EventStreamIdConverter()
+                new EventStreamIdConverter(),
+                new SerializationFormatConverter()
             }
         };
+        
+        private static readonly SerializationFormat JsonSerializationFormat = SerializationFormat.Json;
+
+        public SerializationFormat SerializationFormat => JsonSerializationFormat;
 
         public string Serialize(object @object)
         {

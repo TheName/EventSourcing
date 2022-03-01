@@ -1,4 +1,5 @@
 ﻿using System;
+using EventSourcing.Abstractions.ValueObjects;
 
 namespace EventSourcing.Serialization.Abstractions
 {
@@ -7,6 +8,11 @@ namespace EventSourcing.Serialization.Abstractions
     /// </summary>
     public interface ISerializer
     {
+        /// <summary>
+        /// The <see cref="EventSourcing.Abstractions.ValueObjects.SerializationFormat"/> used by this instance of serializer.
+        /// </summary>
+        SerializationFormat SerializationFormat { get; }
+        
         /// <summary>
         /// Serializes provided object to a string representation
         /// </summary>

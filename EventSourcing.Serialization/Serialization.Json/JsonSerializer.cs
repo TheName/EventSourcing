@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Serialization.Abstractions;
 using EventSourcing.Serialization.Json.Converters;
 
@@ -9,6 +10,9 @@ namespace EventSourcing.Serialization.Json
     internal class JsonSerializer : ISerializer
     {
         private static readonly JsonSerializerOptions JsonSerializerOptions;
+        private static readonly SerializationFormat JsonSerializationFormat = SerializationFormat.Json;
+
+        public SerializationFormat SerializationFormat => JsonSerializationFormat;
         
         static JsonSerializer()
         {
@@ -22,6 +26,7 @@ namespace EventSourcing.Serialization.Json
             JsonSerializerOptions.Converters.Add(new EventStreamEventContentConverter());
             JsonSerializerOptions.Converters.Add(new EventStreamEventTypeIdentifierConverter());
             JsonSerializerOptions.Converters.Add(new EventStreamIdConverter());
+            JsonSerializerOptions.Converters.Add(new SerializationFormatConverter());
         }
 
         public string Serialize(object @object)

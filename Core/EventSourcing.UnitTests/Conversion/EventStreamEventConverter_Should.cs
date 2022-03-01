@@ -1,6 +1,5 @@
 ﻿using System;
 using AutoFixture.Xunit2;
-using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Conversion;
@@ -16,7 +15,7 @@ namespace EventSourcing.UnitTests.Conversion
         
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_Creating_And_SerializerIsNull(
+        public void Throw_ArgumentNullException_When_Creating_And_SerializerProviderIsNull(
             IEventStreamEventTypeIdentifierConverter typeIdentifierConverter)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEventConverter(
@@ -27,20 +26,20 @@ namespace EventSourcing.UnitTests.Conversion
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_TypeIdentifierConverterIsNull(
-            ISerializer serializer)
+            ISerializerProvider serializerProvider)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEventConverter(
-                serializer,
+                serializerProvider,
                 null));
         }
         
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_Creating_And_AllParametersAreNotNull(
-            ISerializer serializer,
+            ISerializerProvider serializerProvider,
             IEventStreamEventTypeIdentifierConverter typeIdentifierConverter)
         {
-            _ = new EventStreamEventConverter(serializer, typeIdentifierConverter);
+            _ = new EventStreamEventConverter(serializerProvider, typeIdentifierConverter);
         }
         
         [Theory]
@@ -57,13 +56,23 @@ namespace EventSourcing.UnitTests.Conversion
             object @event,
             string serializedEvent,
             EventStreamEventTypeIdentifier typeIdentifier,
-            [Frozen] Mock<ISerializer> serializerMock,
+            SerializationFormat serializationFormat,
+            Mock<ISerializer> serializerMock,
+            [Frozen] Mock<ISerializerProvider> serializerProviderMock,
             [Frozen] Mock<IEventStreamEventTypeIdentifierConverter> typeIdentifierConverterMock,
             EventStreamEventConverter converter)
         {
+            serializerProviderMock
+                .Setup(provider => provider.GetEventContentSerializer())
+                .Returns(serializerMock.Object);
+            
             serializerMock
                 .Setup(serializer => serializer.Serialize(@event))
                 .Returns(serializedEvent);
+
+            serializerMock
+                .SetupGet(serializer => serializer.SerializationFormat)
+                .Returns(serializationFormat);
 
             typeIdentifierConverterMock
                 .Setup(identifierConverter => identifierConverter.ToTypeIdentifier(@event.GetType()))
@@ -72,6 +81,7 @@ namespace EventSourcing.UnitTests.Conversion
             var result = converter.ToEventDescriptor(@event);
 
             Assert.Equal(serializedEvent, result.EventContent);
+            Assert.Equal(serializationFormat, result.EventContentSerializationFormat);
             Assert.Equal(typeIdentifier, result.EventTypeIdentifier);
         }
         
@@ -89,10 +99,15 @@ namespace EventSourcing.UnitTests.Conversion
             EventStreamEventDescriptor eventDescriptor,
             object deserializedEvent,
             Type eventType,
-            [Frozen] Mock<ISerializer> serializerMock,
+            Mock<ISerializer> serializerMock,
+            [Frozen] Mock<ISerializerProvider> serializerProviderMock,
             [Frozen] Mock<IEventStreamEventTypeIdentifierConverter> typeIdentifierConverterMock,
             EventStreamEventConverter converter)
         {
+            serializerProviderMock
+                .Setup(provider => provider.GetSerializer(eventDescriptor.EventContentSerializationFormat))
+                .Returns(serializerMock.Object);
+            
             serializerMock
                 .Setup(serializer => serializer.Deserialize(eventDescriptor.EventContent, eventType))
                 .Returns(deserializedEvent);

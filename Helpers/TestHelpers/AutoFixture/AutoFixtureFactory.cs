@@ -26,6 +26,7 @@ namespace TestHelpers.AutoFixture
             fixture.Register<ISpecimenBuilder, EventStreamEventTypeIdentifier>(builder => builder.Create<string>());
             fixture.Register<ISpecimenBuilder, EventStreamId>(builder => builder.Create<Guid>());
             fixture.Register<ISpecimenBuilder, EventStreamStagingId>(builder => builder.Create<Guid>());
+            fixture.Register<ISpecimenBuilder, SerializationFormat>(builder => builder.Create<string>());
 
             return fixture;
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Serialization.Abstractions;
@@ -8,14 +7,14 @@ namespace EventSourcing.Conversion
 {
     internal class EventStreamEventConverter : IEventStreamEventConverter
     {
-        private readonly ISerializer _serializer;
+        private readonly ISerializerProvider _serializerProvider;
         private readonly IEventStreamEventTypeIdentifierConverter _typeIdentifierConverter;
 
         public EventStreamEventConverter(
-            ISerializer serializer,
+            ISerializerProvider serializerProvider,
             IEventStreamEventTypeIdentifierConverter typeIdentifierConverter)
         {
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _serializerProvider = serializerProvider ?? throw new ArgumentNullException(nameof(serializerProvider));
             _typeIdentifierConverter = typeIdentifierConverter ?? throw new ArgumentNullException(nameof(typeIdentifierConverter));
         }
         
@@ -27,8 +26,9 @@ namespace EventSourcing.Conversion
             }
 
             var typeIdentifier = _typeIdentifierConverter.ToTypeIdentifier(eventStreamEvent.GetType());
-            var content = _serializer.Serialize(eventStreamEvent);
-            return new EventStreamEventDescriptor(content, typeIdentifier);
+            var serializer = _serializerProvider.GetEventContentSerializer();
+            var content = serializer.Serialize(eventStreamEvent);
+            return new EventStreamEventDescriptor(content, serializer.SerializationFormat, typeIdentifier);
         }
 
         public object FromEventDescriptor(EventStreamEventDescriptor eventStreamEventDescriptor)
@@ -39,7 +39,8 @@ namespace EventSourcing.Conversion
             }
             
             var eventType = _typeIdentifierConverter.FromTypeIdentifier(eventStreamEventDescriptor.EventTypeIdentifier);
-            return _serializer.Deserialize(eventStreamEventDescriptor.EventContent, eventType);
+            var serializer = _serializerProvider.GetSerializer(eventStreamEventDescriptor.EventContentSerializationFormat);
+            return serializer.Deserialize(eventStreamEventDescriptor.EventContent, eventType);
         }
     }
 }

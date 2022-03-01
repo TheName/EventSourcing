@@ -4,22 +4,22 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RootNamespace>EventSourcing.Serialization.Abstractions</RootNamespace>
-        <AssemblyName>EventSourcing.Serialization.Abstractions</AssemblyName>
+        <RootNamespace>EventSourcing.Serialization</RootNamespace>
+        <AssemblyName>EventSourcing.Serialization</AssemblyName>
     </PropertyGroup>
 
     <!-- NuGet metadata -->
     <PropertyGroup>
-        <Title>EventSourcing.Serialization.Abstractions</Title>
-        <Description>This package contains abstractions over EventSourcing.Serialization packages.</Description>
+        <Title>EventSourcing.Serialization</Title>
+        <Description>This package contains default implementation of EventSourcing.Serialization.Abstractions package.</Description>
         <Authors>Dawid Szmidka</Authors>
-        <PackageId>EventSourcing.Serialization.Abstractions</PackageId>
+        <PackageId>EventSourcing.Serialization</PackageId>
         <Version>0.1.0-alpha</Version>
         <PackageReleaseNotes>
-            - Initial version of EventSourcing.Serialization.Abstractions project
+            - Initial version of EventSourcing.Serialization project
         </PackageReleaseNotes>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageTags>EventSourcing;EventSourcing.Serialization;EventSourcing.Serialization.Abstractions</PackageTags>
+        <PackageTags>EventSourcing;EventSourcing.Serialization</PackageTags>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <IncludeSource>true</IncludeSource>
@@ -27,7 +27,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
+      <ProjectReference Include="..\Serialization.Abstractions\Serialization.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>
