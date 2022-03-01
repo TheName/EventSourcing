@@ -141,7 +141,7 @@ namespace Persistence.SqlServer.IntegrationTests
         {
             await using var connection = new SqlConnection(_fixture.GetService<ISqlServerEventStreamPersistenceConfiguration>().ConnectionString);
             await using var command = connection.CreateCommand();
-            command.CommandText = "SELECT StreamId, EntrySequence, EntryId, EventContent, EventContentSerializationFormat, EventTypeIdentifier, CausationId, CreationTime, CorrelationId FROM EventStream WHERE StreamId = @StreamId";
+            command.CommandText = "SELECT StreamId, EntrySequence, EntryId, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CorrelationId FROM EventStream WHERE StreamId = @StreamId";
             command.Parameters.AddWithValue("@StreamId", streamId);
             await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
             await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
@@ -156,9 +156,10 @@ namespace Persistence.SqlServer.IntegrationTests
                     EventContent = reader.GetString(3),
                     EventContentSerializationFormat = reader.GetString(4),
                     EventTypeIdentifier = reader.GetString(5),
-                    CausationId = reader.GetGuid(6),
-                    CreationTime = reader.GetDateTimeOffset(7).UtcDateTime,
-                    CorrelationId = reader.GetGuid(8)
+                    EventTypeIdentifierFormat = reader.GetString(6),
+                    CausationId = reader.GetGuid(7),
+                    CreationTime = reader.GetDateTimeOffset(8).UtcDateTime,
+                    CorrelationId = reader.GetGuid(9)
                 });
             }
 
@@ -173,6 +174,7 @@ namespace Persistence.SqlServer.IntegrationTests
             public string EventContent { get; set; }
             public string EventContentSerializationFormat { get; set; }
             public string EventTypeIdentifier { get; set; }
+            public string EventTypeIdentifierFormat { get; set; }
             public Guid CausationId { get; set; }
             public DateTime CreationTime { get; set; }
             public Guid CorrelationId { get; set; }
@@ -187,7 +189,8 @@ namespace Persistence.SqlServer.IntegrationTests
                 new EventStreamEventDescriptor(
                     actualEntry.EventContent,
                     actualEntry.EventContentSerializationFormat,
-                    actualEntry.EventTypeIdentifier),
+                    actualEntry.EventTypeIdentifier,
+                    actualEntry.EventTypeIdentifierFormat),
                 actualEntry.CausationId,
                 actualEntry.CreationTime,
                 actualEntry.CorrelationId);

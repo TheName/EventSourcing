@@ -27,6 +27,7 @@ namespace EventSourcing.Serialization.Json
             JsonSerializerOptions.Converters.Add(new EventStreamEventTypeIdentifierConverter());
             JsonSerializerOptions.Converters.Add(new EventStreamIdConverter());
             JsonSerializerOptions.Converters.Add(new SerializationFormatConverter());
+            JsonSerializerOptions.Converters.Add(new EventStreamEventTypeIdentifierFormatConverter());
         }
 
         public string Serialize(object @object)

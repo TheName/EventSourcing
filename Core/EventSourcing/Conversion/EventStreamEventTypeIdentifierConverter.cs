@@ -8,8 +8,9 @@ namespace EventSourcing.Conversion
 {
     internal class EventStreamEventTypeIdentifierConverter : IEventStreamEventTypeIdentifierConverter
     {
+        private static readonly EventStreamEventTypeIdentifierFormat ClassNameTypeIdentifierFormat = EventStreamEventTypeIdentifierFormat.ClassName;
         private static readonly IReadOnlyDictionary<string, List<Type>> Types;
-        
+
         static EventStreamEventTypeIdentifierConverter()
         {
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -38,6 +39,8 @@ namespace EventSourcing.Conversion
 
             Types = dictionary;
         }
+
+        public EventStreamEventTypeIdentifierFormat TypeIdentifierFormat => ClassNameTypeIdentifierFormat;
 
         public EventStreamEventTypeIdentifier ToTypeIdentifier(Type type)
         {

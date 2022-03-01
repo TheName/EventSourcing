@@ -24,7 +24,8 @@ namespace EventSourcing.Serialization.NewtonsoftJson
                 new EventStreamEventContentConverter(),
                 new EventStreamEventTypeIdentifierConverter(),
                 new EventStreamIdConverter(),
-                new SerializationFormatConverter()
+                new SerializationFormatConverter(),
+                new EventStreamEventTypeIdentifierFormatConverter()
             }
         };
         

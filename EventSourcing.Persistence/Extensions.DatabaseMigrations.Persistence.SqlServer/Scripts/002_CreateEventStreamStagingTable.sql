@@ -6,6 +6,7 @@
     EventContent                        VARCHAR(MAX)            NOT NULL,
     EventContentSerializationFormat     VARCHAR(MAX)            NOT NULL,
     EventTypeIdentifier                 VARCHAR(MAX)            NOT NULL,
+    EventTypeIdentifierFormat           VARCHAR(MAX)            NOT NULL,
     CausationId                         UNIQUEIDENTIFIER        NOT NULL,
     CreationTime                        DATETIMEOFFSET          NOT NULL,
     CorrelationId                       UNIQUEIDENTIFIER        NOT NULL,

@@ -12,20 +12,19 @@ namespace EventSourcing.UnitTests.Conversion
 {
     public class EventStreamEventConverter_Should
     {
-        
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_SerializerProviderIsNull(
-            IEventStreamEventTypeIdentifierConverter typeIdentifierConverter)
+            IEventStreamEventTypeIdentifierConverterProvider typeIdentifierConverterProvider)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEventConverter(
                 null,
-                typeIdentifierConverter));
+                typeIdentifierConverterProvider));
         }
         
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_Creating_And_TypeIdentifierConverterIsNull(
+        public void Throw_ArgumentNullException_When_Creating_And_TypeIdentifierConverterProviderIsNull(
             ISerializerProvider serializerProvider)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEventConverter(
@@ -37,9 +36,9 @@ namespace EventSourcing.UnitTests.Conversion
         [AutoMoqData]
         public void NotThrow_When_Creating_And_AllParametersAreNotNull(
             ISerializerProvider serializerProvider,
-            IEventStreamEventTypeIdentifierConverter typeIdentifierConverter)
+            IEventStreamEventTypeIdentifierConverterProvider typeIdentifierConverterProvider)
         {
-            _ = new EventStreamEventConverter(serializerProvider, typeIdentifierConverter);
+            _ = new EventStreamEventConverter(serializerProvider, typeIdentifierConverterProvider);
         }
         
         [Theory]
@@ -56,10 +55,12 @@ namespace EventSourcing.UnitTests.Conversion
             object @event,
             string serializedEvent,
             EventStreamEventTypeIdentifier typeIdentifier,
+            EventStreamEventTypeIdentifierFormat typeIdentifierFormat,
             SerializationFormat serializationFormat,
             Mock<ISerializer> serializerMock,
+            Mock<IEventStreamEventTypeIdentifierConverter> typeIdentifierConverterMock,
             [Frozen] Mock<ISerializerProvider> serializerProviderMock,
-            [Frozen] Mock<IEventStreamEventTypeIdentifierConverter> typeIdentifierConverterMock,
+            [Frozen] Mock<IEventStreamEventTypeIdentifierConverterProvider> typeIdentifierConverterProviderMock,
             EventStreamEventConverter converter)
         {
             serializerProviderMock
@@ -74,15 +75,24 @@ namespace EventSourcing.UnitTests.Conversion
                 .SetupGet(serializer => serializer.SerializationFormat)
                 .Returns(serializationFormat);
 
+            typeIdentifierConverterProviderMock
+                .Setup(provider => provider.GetEventTypeIdentifierConverter())
+                .Returns(typeIdentifierConverterMock.Object);
+
             typeIdentifierConverterMock
                 .Setup(identifierConverter => identifierConverter.ToTypeIdentifier(@event.GetType()))
                 .Returns(typeIdentifier);
+
+            typeIdentifierConverterMock
+                .SetupGet(identifierConverter => identifierConverter.TypeIdentifierFormat)
+                .Returns(typeIdentifierFormat);
 
             var result = converter.ToEventDescriptor(@event);
 
             Assert.Equal(serializedEvent, result.EventContent);
             Assert.Equal(serializationFormat, result.EventContentSerializationFormat);
             Assert.Equal(typeIdentifier, result.EventTypeIdentifier);
+            Assert.Equal(typeIdentifierFormat, result.EventTypeIdentifierFormat);
         }
         
         [Theory]
@@ -100,8 +110,9 @@ namespace EventSourcing.UnitTests.Conversion
             object deserializedEvent,
             Type eventType,
             Mock<ISerializer> serializerMock,
+            Mock<IEventStreamEventTypeIdentifierConverter> typeIdentifierConverterMock,
             [Frozen] Mock<ISerializerProvider> serializerProviderMock,
-            [Frozen] Mock<IEventStreamEventTypeIdentifierConverter> typeIdentifierConverterMock,
+            [Frozen] Mock<IEventStreamEventTypeIdentifierConverterProvider> typeIdentifierConverterProviderMock,
             EventStreamEventConverter converter)
         {
             serializerProviderMock
@@ -111,6 +122,10 @@ namespace EventSourcing.UnitTests.Conversion
             serializerMock
                 .Setup(serializer => serializer.Deserialize(eventDescriptor.EventContent, eventType))
                 .Returns(deserializedEvent);
+
+            typeIdentifierConverterProviderMock
+                .Setup(provider => provider.GetConverter(eventDescriptor.EventTypeIdentifierFormat))
+                .Returns(typeIdentifierConverterMock.Object);
 
             typeIdentifierConverterMock
                 .Setup(identifierConverter => identifierConverter.FromTypeIdentifier(eventDescriptor.EventTypeIdentifier))

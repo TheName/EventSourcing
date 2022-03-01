@@ -115,10 +115,11 @@ namespace EventSourcing.Persistence.SqlServer
                                 new EventStreamEventDescriptor(
                                     reader.GetString(3),
                                     reader.GetString(4),
-                                    reader.GetString(5)),
-                                reader.GetGuid(6),
-                                reader.GetDateTimeOffset(7).UtcDateTime,
-                                reader.GetGuid(8)));
+                                    reader.GetString(5),
+                                    reader.GetString(6)),
+                                reader.GetGuid(7),
+                                reader.GetDateTimeOffset(8).UtcDateTime,
+                                reader.GetGuid(9)));
                         }
 
                         return new EventStreamEntries(entries);
@@ -132,13 +133,13 @@ namespace EventSourcing.Persistence.SqlServer
             var parameters = new List<SqlParameter>();
             var insertCommand = new StringBuilder();
             insertCommand.AppendLine("BEGIN TRY");
-            insertCommand.Append($"INSERT INTO {TableName} (StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, CausationId, CreationTime, CorrelationId) VALUES");
+            insertCommand.Append($"INSERT INTO {TableName} (StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CorrelationId) VALUES");
 
             var separator = " ";
             for (var i = 0; i < eventStreamEntries.Count; i++)
             {
                 insertCommand.Append(
-                    $"{separator}(@StreamId_{i}, @EntryId_{i}, @EntrySequence_{i}, @EventContent_{i}, @EventContentSerializationFormat_{i}, @EventTypeIdentifier_{i}, @CausationId_{i}, @CreationTime_{i}, @CorrelationId_{i})");
+                    $"{separator}(@StreamId_{i}, @EntryId_{i}, @EntrySequence_{i}, @EventContent_{i}, @EventContentSerializationFormat_{i}, @EventTypeIdentifier_{i}, @EventTypeIdentifierFormat_{i}, @CausationId_{i}, @CreationTime_{i}, @CorrelationId_{i})");
                 var entry = eventStreamEntries[i];
                 parameters.AddRange(new []
                 {
@@ -148,6 +149,7 @@ namespace EventSourcing.Persistence.SqlServer
                     new SqlParameter($"@EventContent_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventContent},
                     new SqlParameter($"@EventContentSerializationFormat_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventContentSerializationFormat},
                     new SqlParameter($"@EventTypeIdentifier_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventTypeIdentifier},
+                    new SqlParameter($"@EventTypeIdentifierFormat_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventTypeIdentifierFormat},
                     new SqlParameter($"@CausationId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.CausationId},
                     new SqlParameter($"@CreationTime_{i}", SqlDbType.DateTimeOffset) {Value = (DateTime) entry.CreationTime},
                     new SqlParameter($"@CorrelationId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.CorrelationId}
@@ -166,7 +168,7 @@ namespace EventSourcing.Persistence.SqlServer
 
         private static (string Command, List<SqlParameter> Parameters) PrepareSelectCommand(EventStreamId streamId)
         {
-            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, CausationId, CreationTime, CorrelationId FROM {TableName} WHERE StreamId = @StreamId";
+            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CorrelationId FROM {TableName} WHERE StreamId = @StreamId";
             var parameters = new List<SqlParameter>
             {
                 new SqlParameter("@StreamId", SqlDbType.UniqueIdentifier)

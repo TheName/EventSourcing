@@ -25,6 +25,11 @@ namespace EventSourcing.Abstractions.ValueObjects
         public EventStreamEventTypeIdentifier EventTypeIdentifier { get; }
 
         /// <summary>
+        /// The <see cref="EventStreamEventTypeIdentifierFormat"/> of the <see cref="EventTypeIdentifier"/>.
+        /// </summary>
+        public EventStreamEventTypeIdentifierFormat EventTypeIdentifierFormat { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="EventStreamEventDescriptor"/> class.
         /// </summary>
         /// <param name="eventContent">
@@ -36,17 +41,22 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// <param name="eventTypeIdentifier">
         /// The <see cref="EventStreamEventTypeIdentifier"/> of the event.
         /// </param>
+        /// <param name="eventTypeIdentifierFormat">
+        /// The <see cref="EventStreamEventTypeIdentifierFormat"/> of the <paramref name="eventTypeIdentifier"/>.
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// Thrown when any of provided parameters is null.
         /// </exception>
         public EventStreamEventDescriptor(
             EventStreamEventContent eventContent,
             SerializationFormat eventContentSerializationFormat,
-            EventStreamEventTypeIdentifier eventTypeIdentifier)
+            EventStreamEventTypeIdentifier eventTypeIdentifier,
+            EventStreamEventTypeIdentifierFormat eventTypeIdentifierFormat)
         {
             EventContent = eventContent ?? throw new ArgumentNullException(nameof(eventContent));
             EventContentSerializationFormat = eventContentSerializationFormat ?? throw new ArgumentNullException(nameof(eventContentSerializationFormat));
             EventTypeIdentifier = eventTypeIdentifier ?? throw new ArgumentNullException(nameof(eventTypeIdentifier));
+            EventTypeIdentifierFormat = eventTypeIdentifierFormat ?? throw new ArgumentNullException(nameof(eventTypeIdentifierFormat));
         }
 
         #region Operators
@@ -102,13 +112,14 @@ namespace EventSourcing.Abstractions.ValueObjects
 
         /// <inheritdoc />
         public override string ToString() =>
-            $"Event Content Serialization Format: {EventContentSerializationFormat}, Event Content: {EventContent}, Event Type Identifier: {EventTypeIdentifier}";
+            $"Event Type Identifier: {EventTypeIdentifier}, Event Type Identifier Format: {EventTypeIdentifierFormat}, Event Content Serialization Format: {EventContentSerializationFormat}, Event Content: {EventContent}";
 
         private IEnumerable<object> GetPropertiesForHashCode()
         {
             yield return EventContentSerializationFormat;
-            yield return EventContent;
             yield return EventTypeIdentifier;
+            yield return EventTypeIdentifierFormat;
+            yield return EventContent;
         }
     }
 }

@@ -40,6 +40,7 @@ namespace EventSourcing.Extensions.DependencyInjection
                 .AddTransient<IEventStreamPublisher, EventStreamPublisher>()
                 .AddTransient<IEventStreamEventConverter, EventStreamEventConverter>()
                 .AddTransient<IEventStreamEventTypeIdentifierConverter, EventStreamEventTypeIdentifierConverter>()
+                .AddTransient<IEventStreamEventTypeIdentifierConverterProvider, EventStreamEventTypeIdentifierConverterProvider>()
                 .AddTransient<IEventHandlerProvider, EventHandlerProvider>()
                 .AddTransient<IEventHandlingExceptionsHandler, EventHandlingExceptionsHandler>()
                 .AddTransient<IEventStreamEntryDispatcher, EventStreamEntryDispatcher>()
@@ -55,6 +56,14 @@ namespace EventSourcing.Extensions.DependencyInjection
             serviceCollection
                 .TryAddTransient<IEventSourcingConfiguration>(provider =>
                     provider.GetRequiredService<IOptions<EventSourcingConfiguration>>().Value);
+
+            serviceCollection
+                .AddOptions<EventSourcingTypeConversionConfiguration>()
+                .BindConfiguration(nameof(EventSourcingTypeConversionConfiguration));
+
+            serviceCollection
+                .TryAddTransient<IEventSourcingTypeConversionConfiguration>(provider =>
+                    provider.GetRequiredService<IOptions<EventSourcingTypeConversionConfiguration>>().Value);
 
             return new EventSourcingBuilder(serviceCollection);
         }

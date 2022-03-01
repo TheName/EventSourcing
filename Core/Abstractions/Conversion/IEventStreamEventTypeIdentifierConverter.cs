@@ -9,6 +9,11 @@ namespace EventSourcing.Abstractions.Conversion
     public interface IEventStreamEventTypeIdentifierConverter
     {
         /// <summary>
+        /// The <see cref="EventStreamEventTypeIdentifierFormat"/> used by this instance of serializer.
+        /// </summary>
+        EventStreamEventTypeIdentifierFormat TypeIdentifierFormat { get; }
+        
+        /// <summary>
         /// Converts <paramref name="type"/> to <see cref="EventStreamEventTypeIdentifier"/>.
         /// </summary>
         /// <param name="type">

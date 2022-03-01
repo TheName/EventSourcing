@@ -8,14 +8,14 @@ namespace EventSourcing.Conversion
     internal class EventStreamEventConverter : IEventStreamEventConverter
     {
         private readonly ISerializerProvider _serializerProvider;
-        private readonly IEventStreamEventTypeIdentifierConverter _typeIdentifierConverter;
+        private readonly IEventStreamEventTypeIdentifierConverterProvider _typeIdentifierConverterProvider;
 
         public EventStreamEventConverter(
             ISerializerProvider serializerProvider,
-            IEventStreamEventTypeIdentifierConverter typeIdentifierConverter)
+            IEventStreamEventTypeIdentifierConverterProvider typeIdentifierConverterProvider)
         {
             _serializerProvider = serializerProvider ?? throw new ArgumentNullException(nameof(serializerProvider));
-            _typeIdentifierConverter = typeIdentifierConverter ?? throw new ArgumentNullException(nameof(typeIdentifierConverter));
+            _typeIdentifierConverterProvider = typeIdentifierConverterProvider ?? throw new ArgumentNullException(nameof(typeIdentifierConverterProvider));
         }
         
         public EventStreamEventDescriptor ToEventDescriptor(object eventStreamEvent)
@@ -25,10 +25,16 @@ namespace EventSourcing.Conversion
                 throw new ArgumentNullException(nameof(eventStreamEvent));
             }
 
-            var typeIdentifier = _typeIdentifierConverter.ToTypeIdentifier(eventStreamEvent.GetType());
+            var typeIdentifierConverter = _typeIdentifierConverterProvider.GetEventTypeIdentifierConverter();
+            var typeIdentifier = typeIdentifierConverter.ToTypeIdentifier(eventStreamEvent.GetType());
             var serializer = _serializerProvider.GetEventContentSerializer();
             var content = serializer.Serialize(eventStreamEvent);
-            return new EventStreamEventDescriptor(content, serializer.SerializationFormat, typeIdentifier);
+            
+            return new EventStreamEventDescriptor(
+                content,
+                serializer.SerializationFormat,
+                typeIdentifier,
+                typeIdentifierConverter.TypeIdentifierFormat);
         }
 
         public object FromEventDescriptor(EventStreamEventDescriptor eventStreamEventDescriptor)
@@ -38,7 +44,8 @@ namespace EventSourcing.Conversion
                 throw new ArgumentNullException(nameof(eventStreamEventDescriptor));
             }
             
-            var eventType = _typeIdentifierConverter.FromTypeIdentifier(eventStreamEventDescriptor.EventTypeIdentifier);
+            var typeIdentifierConverter = _typeIdentifierConverterProvider.GetConverter(eventStreamEventDescriptor.EventTypeIdentifierFormat);
+            var eventType = typeIdentifierConverter.FromTypeIdentifier(eventStreamEventDescriptor.EventTypeIdentifier);
             var serializer = _serializerProvider.GetSerializer(eventStreamEventDescriptor.EventContentSerializationFormat);
             return serializer.Deserialize(eventStreamEventDescriptor.EventContent, eventType);
         }
