@@ -28,7 +28,20 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
                 UseBackgroundThreadsForIO = true
             };
 
-            var libraryConnection = libraryConnectionFactory.CreateConnection();
+            IConnection libraryConnection;
+            try
+            {
+                libraryConnection = libraryConnectionFactory.CreateConnection();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(
+                    e,
+                    "Failed to create RabbitMQ connection. Configuration: {@RabbitMQConnectionConfiguration}",
+                    connectionConfiguration);
+                
+                throw;
+            }
 
             var loggingConnection = new RabbitMQConnection(
                 libraryConnection,
