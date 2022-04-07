@@ -15,7 +15,10 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// </summary>
         public static EventStreamId NewEventStreamId() => new EventStreamId(Guid.NewGuid());
         
-        private Guid Value { get; }
+        /// <summary>
+        /// The actual value of stream id
+        /// </summary>
+        public Guid Value { get; }
 
         private EventStreamId(Guid value)
         {

@@ -7,7 +7,10 @@ namespace EventSourcing.Abstractions.ValueObjects
     /// </summary>
     public class EventStreamEventTypeIdentifier
     {
-        private string Value { get; }
+        /// <summary>
+        /// The actual value of event type identifier
+        /// </summary>
+        public string Value { get; }
 
         private EventStreamEventTypeIdentifier(string value)
         {

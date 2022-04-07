@@ -10,7 +10,10 @@ namespace EventSourcing.Abstractions.ValueObjects
     /// </summary>
     public class EventStreamEntryCreationTime
     {
-        private DateTime Value { get; }
+        /// <summary>
+        /// The actual value of creation time
+        /// </summary>
+        public DateTime Value { get; }
 
         /// <summary>
         /// Returns a new instance of <see cref="EventStreamEntryCreationTime"/> representing current moment in time.

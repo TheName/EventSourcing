@@ -50,8 +50,11 @@ namespace EventSourcing.Abstractions.ValueObjects
                 AsyncLocalCorrelationId.Value = value;
             }
         }
-
-        private Guid Value { get; }
+        
+        /// <summary>
+        /// The actual value of correlation id
+        /// </summary>
+        public Guid Value { get; }
 
         private EventStreamEntryCorrelationId(Guid value)
         {

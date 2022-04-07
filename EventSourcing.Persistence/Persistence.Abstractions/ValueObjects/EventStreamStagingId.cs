@@ -10,7 +10,10 @@ namespace EventSourcing.Persistence.Abstractions.ValueObjects
     /// </summary>
     public class EventStreamStagingId
     {
-        private Guid Value { get; }
+        /// <summary>
+        /// The actual value of staging id
+        /// </summary>
+        public Guid Value { get; }
         
         /// <summary>
         /// Creates a new instance of <see cref="EventStreamStagingId"/> initialized with a random <see cref="Guid"/>.

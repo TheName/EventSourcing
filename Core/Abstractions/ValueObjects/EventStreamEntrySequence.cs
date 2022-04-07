@@ -8,7 +8,10 @@
     /// </summary>
     public class EventStreamEntrySequence
     {
-        private uint Value { get; }
+        /// <summary>
+        /// The actual value of sequence
+        /// </summary>
+        public uint Value { get; }
 
         private EventStreamEntrySequence(uint value)
         {

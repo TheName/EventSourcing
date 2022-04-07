@@ -42,13 +42,13 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus
             {
                 eventSourcingBuilder.Services.AddHostedService<EventSourcingConsumerHostedService>();
             }
-            
+
             eventSourcingBuilder.Services
                 .AddOptions<EventSourcingBusHandlingExceptionPublisherConfiguration>()
-                .BindConfiguration(nameof(EventSourcingBusHandlingExceptionPublisherConfiguration))
-                .Validate(
-                    configuration => configuration.PublishingTimeout <= TimeSpan.Zero,
-                    "PublishingTimeout cannot be less or equal to zero.");
+                .BindConfiguration(nameof(EventSourcingBusHandlingExceptionPublisherConfiguration));
+                // .Validate(
+                //     configuration => configuration.PublishingTimeout <= TimeSpan.Zero,
+                //     "PublishingTimeout cannot be less or equal to zero.");
 
             eventSourcingBuilder.Services
                 .TryAddTransient<IEventSourcingBusHandlingExceptionPublisherConfiguration>(provider =>

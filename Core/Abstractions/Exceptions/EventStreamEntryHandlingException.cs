@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Runtime.Serialization;
 using EventSourcing.Abstractions.ValueObjects;
 
 namespace EventSourcing.Abstractions.Exceptions
@@ -6,9 +8,13 @@ namespace EventSourcing.Abstractions.Exceptions
     /// <summary>
     /// Handling an event stream entry has failed.
     /// </summary>
-    [Serializable]
-    public class EventStreamEntryHandlingException : Exception
+    public class EventStreamEntryHandlingException
     {
+        /// <summary>
+        /// Exception's message
+        /// </summary>
+        public string Message { get; }
+
         /// <summary>
         /// The entry that has failed to be handled properly
         /// </summary>
@@ -22,17 +28,11 @@ namespace EventSourcing.Abstractions.Exceptions
         private EventStreamEntryHandlingException(
             string message, 
             EventStreamEntry entry,
-            EventStreamEntryHandlingTime handlingTime,
-            Exception innerException)
-            : base(message, innerException)
+            EventStreamEntryHandlingTime handlingTime)
         {
+            Message = message ?? throw new ArgumentNullException(nameof(message));
             Entry = entry ?? throw new ArgumentNullException(nameof(entry));
             HandlingTime = handlingTime ?? throw new ArgumentNullException(nameof(handlingTime));
-            if (!(innerException is AggregateException))
-            {
-                throw new ArgumentException(
-                    $"Inner exception must be of type {typeof(AggregateException)} and the provided value is of type {innerException.GetType()}");
-            }
         }
 
         /// <summary>
@@ -46,10 +46,22 @@ namespace EventSourcing.Abstractions.Exceptions
             EventStreamEntryHandlingTime handlingTime,
             Exception exception) =>
             new EventStreamEntryHandlingException(
-                "Handling event stream entry has failed",
+                GetAggregateExceptionMessage(exception),
                 entry,
-                handlingTime,
-                GetAggregateException(exception));
+                handlingTime);
+
+        private static string GetAggregateExceptionMessage(Exception exception)
+        {
+            var aggregateException = GetAggregateException(exception);
+            var flattenedAggregateException = aggregateException.Flatten();
+
+            var innerExceptionsMessages = flattenedAggregateException.InnerExceptions
+                .Select((ex, index) => $"    {index}) {ex}");
+
+            var innerExceptionsMessage = string.Join(Environment.NewLine, innerExceptionsMessages);
+
+            return $"{aggregateException.Message}{Environment.NewLine}Inner exceptions:{Environment.NewLine}{innerExceptionsMessage}";
+        }
 
         private static AggregateException GetAggregateException(Exception exception)
         {

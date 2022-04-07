@@ -12,7 +12,10 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// </summary>
         public static SerializationFormat Json = new SerializationFormat(nameof(Json));
         
-        private string Value { get; }
+        /// <summary>
+        /// The actual value of serialization format
+        /// </summary>
+        public string Value { get; }
 
         private SerializationFormat(string value)
         {

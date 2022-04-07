@@ -10,7 +10,10 @@ namespace EventSourcing.Abstractions.ValueObjects
     /// </summary>
     public class EventStreamEventContent
     {
-        private string Value { get; }
+        /// <summary>
+        /// The actual value of event content.
+        /// </summary>
+        public string Value { get; }
 
         private EventStreamEventContent(string value)
         {

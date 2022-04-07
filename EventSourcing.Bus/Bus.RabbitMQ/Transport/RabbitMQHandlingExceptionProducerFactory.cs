@@ -28,7 +28,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
             _logger = _loggerFactory.CreateLogger<RabbitMQProducerFactory>();
         }
         
-        public async Task<IRabbitMQProducer<T>> CreateAsync<T>(CancellationToken cancellationToken) where T : Exception
+        public async Task<IRabbitMQProducer<T>> CreateAsync<T>(CancellationToken cancellationToken)
         {
             var producingChannel = _handlingExceptionProducingChannelFactory.Create();
             var queueBindingConfiguration = _queueBindingConfigurationProvider.Get(typeof(T));

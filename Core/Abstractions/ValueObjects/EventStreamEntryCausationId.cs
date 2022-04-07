@@ -47,7 +47,10 @@ namespace EventSourcing.Abstractions.ValueObjects
             }
         }
         
-        private Guid Value { get; }
+        /// <summary>
+        /// The actual value of causation id
+        /// </summary>
+        public Guid Value { get; }
 
         private EventStreamEntryCausationId(Guid value)
         {
