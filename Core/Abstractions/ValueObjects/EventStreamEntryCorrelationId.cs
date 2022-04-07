@@ -19,7 +19,15 @@ namespace EventSourcing.Abstractions.ValueObjects
         public static EventStreamEntryCorrelationId NewEventStreamEntryCorrelationId() => new EventStreamEntryCorrelationId(Guid.NewGuid());
 
         /// <summary>
+        /// Gets the current async local value of <see cref="EventStreamEntryCorrelationId"/>.
+        /// </summary>
+        public static EventStreamEntryCorrelationId CurrentOrNone => AsyncLocalCorrelationId.Value;
+
+        /// <summary>
         /// Gets or sets the current async local value of <see cref="EventStreamEntryCorrelationId"/>.
+        /// <remarks>
+        /// When trying to get the current value and it's not set - the code automatically sets the value to new correlation id
+        /// </remarks>
         /// </summary>
         /// <exception cref="InvalidOperationException">
         /// When trying to set a new value of <see cref="Current"/> without clearing the previous one.

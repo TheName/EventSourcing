@@ -15,7 +15,15 @@ namespace EventSourcing.Abstractions.ValueObjects
         private static readonly AsyncLocal<EventStreamEntryCausationId> AsyncLocalCausationId = new AsyncLocal<EventStreamEntryCausationId>();
 
         /// <summary>
+        /// Gets the current async local value of <see cref="EventStreamEntryCausationId"/>.
+        /// </summary>
+        public static EventStreamEntryCausationId CurrentOrNone => AsyncLocalCausationId.Value;
+
+        /// <summary>
         /// Gets or sets the current async local value of <see cref="EventStreamEntryCausationId"/>.
+        /// <remarks>
+        /// When trying to get the current value and it's not set - the code automatically sets the value to new causation id
+        /// </remarks>
         /// </summary>
         /// <exception cref="InvalidOperationException">
         /// When trying to set a new value of <see cref="Current"/> without clearing the previous one.
