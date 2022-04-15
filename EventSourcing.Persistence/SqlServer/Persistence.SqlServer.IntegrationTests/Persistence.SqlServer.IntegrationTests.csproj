@@ -24,11 +24,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.NewtonsoftJson\Extensions.DependencyInjection.Serialization.NewtonsoftJson.csproj" />
+      <ProjectReference Include="..\..\..\EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.NewtonsoftJson\Extensions.DependencyInjection.Serialization.NewtonsoftJson.csproj" />
       <ProjectReference Include="..\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.csproj" />
       <ProjectReference Include="..\Extensions.DependencyInjection.Persistence.SqlServer\Extensions.DependencyInjection.Persistence.SqlServer.csproj" />
       <ProjectReference Include="..\Persistence.SqlServer\Persistence.SqlServer.csproj" />
-      <ProjectReference Include="..\..\Helpers\TestHelpers\TestHelpers.csproj" />
+      <ProjectReference Include="..\..\..\Helpers\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>
 
     <ItemGroup>

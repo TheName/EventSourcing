@@ -27,7 +27,7 @@
     </PropertyGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Extensions.DependencyInjection.Persistence\Extensions.DependencyInjection.Persistence.csproj" />
+      <ProjectReference Include="..\..\Extensions.DependencyInjection.Persistence\Extensions.DependencyInjection.Persistence.csproj" />
       <ProjectReference Include="..\Persistence.SqlServer\Persistence.SqlServer.csproj" />
     </ItemGroup>
 

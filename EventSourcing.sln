@@ -14,13 +14,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bus.RabbitMQ.UnitTests", "E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventSourcing.Persistence", "EventSourcing.Persistence", "{8792BDC7-C64B-4270-A84C-579204AC79B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.SqlServer", "EventSourcing.Persistence\Extensions.DatabaseMigrations.Persistence.SqlServer\Extensions.DatabaseMigrations.Persistence.SqlServer.csproj", "{1B426689-F3C7-460B-A8D1-539CDFE09630}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.SqlServer", "EventSourcing.Persistence\SqlServer\Extensions.DatabaseMigrations.Persistence.SqlServer\Extensions.DatabaseMigrations.Persistence.SqlServer.csproj", "{1B426689-F3C7-460B-A8D1-539CDFE09630}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp", "EventSourcing.Persistence\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.csproj", "{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp", "EventSourcing.Persistence\SqlServer\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.csproj", "{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Persistence", "EventSourcing.Persistence\Extensions.DependencyInjection.Persistence\Extensions.DependencyInjection.Persistence.csproj", "{9F569390-1B76-4D6C-98FC-87D2F7F6C051}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Persistence.SqlServer", "EventSourcing.Persistence\Extensions.DependencyInjection.Persistence.SqlServer\Extensions.DependencyInjection.Persistence.SqlServer.csproj", "{F38FF8D9-F592-45BF-87BE-632647F06165}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Persistence.SqlServer", "EventSourcing.Persistence\SqlServer\Extensions.DependencyInjection.Persistence.SqlServer\Extensions.DependencyInjection.Persistence.SqlServer.csproj", "{F38FF8D9-F592-45BF-87BE-632647F06165}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "EventSourcing.Persistence\Persistence\Persistence.csproj", "{44E808CF-ABC2-4903-B9A8-A25F25079643}"
 EndProject
@@ -28,9 +28,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.Abstractions", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.Abstractions.UnitTests", "EventSourcing.Persistence\Persistence.Abstractions.UnitTests\Persistence.Abstractions.UnitTests.csproj", "{F5BF6C9E-4709-4E98-810F-9F3F8A87D021}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.SqlServer", "EventSourcing.Persistence\Persistence.SqlServer\Persistence.SqlServer.csproj", "{8063A8D8-20A4-41ED-AB51-F510BF6925E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.SqlServer", "EventSourcing.Persistence\SqlServer\Persistence.SqlServer\Persistence.SqlServer.csproj", "{8063A8D8-20A4-41ED-AB51-F510BF6925E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.SqlServer.IntegrationTests", "EventSourcing.Persistence\Persistence.SqlServer.IntegrationTests\Persistence.SqlServer.IntegrationTests.csproj", "{844B3E44-E5CA-41FF-9EA1-214236504B06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.SqlServer.IntegrationTests", "EventSourcing.Persistence\SqlServer\Persistence.SqlServer.IntegrationTests\Persistence.SqlServer.IntegrationTests.csproj", "{844B3E44-E5CA-41FF-9EA1-214236504B06}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{39A4BAD4-D06B-482E-B5A0-5D79C36FBE33}"
 EndProject
@@ -87,6 +87,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization", "EventSourcing.Serialization\Serialization\Serialization.csproj", "{1450F357-8633-4F64-BB94-435D504108FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Serialization", "EventSourcing.Serialization\Extensions.DependencyInjection.Serialization\Extensions.DependencyInjection.Serialization.csproj", "{C8F807A0-1770-4417-8410-61A2C7E89A58}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlServer", "SqlServer", "{CF15C20C-3512-4966-8BA8-20F6C98BB96E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -253,15 +255,10 @@ Global
 		{A2CE13CB-9C3F-49A2-8109-BE1C02BAA25D} = {3829A2ED-C973-4C40-89B2-276296AC020A}
 		{78749D02-0B4A-4F9B-BE31-3F0B6B7DC9BD} = {3829A2ED-C973-4C40-89B2-276296AC020A}
 		{7B67F03F-428F-40B2-86F9-B5ED8E3EC1E3} = {3829A2ED-C973-4C40-89B2-276296AC020A}
-		{1B426689-F3C7-460B-A8D1-539CDFE09630} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
-		{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
 		{9F569390-1B76-4D6C-98FC-87D2F7F6C051} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
-		{F38FF8D9-F592-45BF-87BE-632647F06165} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
 		{44E808CF-ABC2-4903-B9A8-A25F25079643} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
 		{A50EA1B7-9778-4AEB-88B4-3F9563646F99} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
 		{F5BF6C9E-4709-4E98-810F-9F3F8A87D021} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
-		{8063A8D8-20A4-41ED-AB51-F510BF6925E1} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
-		{844B3E44-E5CA-41FF-9EA1-214236504B06} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
 		{51F13F2F-517E-45FC-B95B-8AB849994CB4} = {39A4BAD4-D06B-482E-B5A0-5D79C36FBE33}
 		{D97DB10B-1E63-4A0C-B395-B9008DB8DB87} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
 		{C3E3CBAE-7BBB-4223-8B11-6410AE5FF7E2} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
@@ -286,5 +283,11 @@ Global
 		{B23CEB74-9659-4E73-A264-8076BF2E69F1} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
 		{1450F357-8633-4F64-BB94-435D504108FB} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{C8F807A0-1770-4417-8410-61A2C7E89A58} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
+		{CF15C20C-3512-4966-8BA8-20F6C98BB96E} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
+		{1B426689-F3C7-460B-A8D1-539CDFE09630} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
+		{F38FF8D9-F592-45BF-87BE-632647F06165} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
+		{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
+		{8063A8D8-20A4-41ED-AB51-F510BF6925E1} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
+		{844B3E44-E5CA-41FF-9EA1-214236504B06} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
 	EndGlobalSection
 EndGlobal
