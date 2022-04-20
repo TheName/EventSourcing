@@ -58,7 +58,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         private void ConnectionOnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Connection blocked. Sender: {ConnectionBlockedSender}, EventArgs: {@ConnectionBlockedEventArgs}, Connection: {RabbitMQConnection}",
                 sender,
                 e,
@@ -67,7 +67,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         private void ConnectionOnConnectionUnblocked(object sender, EventArgs e)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Connection unblocked. Sender: {ConnectionUnblockedSender}, EventArgs: {@EventArgs}, Connection: {RabbitMQConnection}",
                 sender,
                 e,
@@ -76,7 +76,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         private void ConnectionOnConnectionShutdown(object sender, ShutdownEventArgs e)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Connection shutdown. Sender: {ConnectionShutdownSender}, EventArgs: {ShutdownEventArgs}, Connection: {RabbitMQConnection}",
                 sender,
                 e,

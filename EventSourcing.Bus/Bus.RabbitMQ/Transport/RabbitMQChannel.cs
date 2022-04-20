@@ -66,7 +66,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         private void ModelOnBasicRecoverOk(object sender, EventArgs e)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Model basic recover ok. Sender: {ModelBasicRecoverOkSender}, EventArgs: {@EventArgs}, Channel: {RabbitMQChannel}",
                 sender,
                 e,
@@ -75,7 +75,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         private void ModelOnModelShutdown(object sender, ShutdownEventArgs e)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Model shutdown. Sender: {ModelShutdownSender}, EventArgs: {ShutdownEventArgs}, Channel: {RabbitMQChannel}",
                 sender,
                 e,
@@ -84,7 +84,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         private void ModelOnFlowControl(object sender, FlowControlEventArgs e)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Model on flow control. Sender: {ModelOnFlowControlSender}, EventArgs: {@FlowControlEventArgs}, Channel: {RabbitMQChannel}",
                 sender,
                 e,
@@ -93,7 +93,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         private void ModelOnCallbackException(object sender, CallbackExceptionEventArgs e)
         {
-            _logger.LogWarning(
+            _logger.LogDebug(
                 e.Exception,
                 "Model callback exception. Sender: {ModelCallbackExceptionSender}, EventArgs: {CallbackExceptionEventArgs}, Detail: {@CallbackExceptionDetail}, Channel: {RabbitMQChannel}",
                 sender,
@@ -104,7 +104,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         private void ModelOnBasicReturn(object sender, BasicReturnEventArgs e)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Model on basic return. Sender: {ModelOnBasicReturnSender}, EventArgs: {@SerializableBasicReturnEventArgs}, Channel: {RabbitMQChannel}",
                 sender,
                 SerializableBasicReturnEventArgs.FromBasicReturnEventArgs(e),

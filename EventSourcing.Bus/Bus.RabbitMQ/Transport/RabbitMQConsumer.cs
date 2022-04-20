@@ -156,7 +156,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
                 throw;
             }
             
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Successfully acknowledged message. Consumer {Consumer}, Message: {@Message} Args: {@SerializableBasicDeliverEventArgs}",
                 this,
                 message,
@@ -182,7 +182,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
                 throw;
             }
 
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Successfully handled message in {ElapsedTime}. Consumer {Consumer}, Message: {@Message} Args: {@SerializableBasicDeliverEventArgs}",
                 stopwatch.Elapsed,
                 this,
@@ -367,7 +367,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         async Task IAsyncBasicConsumer.HandleBasicCancelOk(string consumerTag)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Cancelling consumer {RabbitMQConsumer} due to IAsyncBasicConsumer.HandleBasicCancelOk method invocation with consumer tag {ConsumerTag}",
                 this,
                 consumerTag);
@@ -378,7 +378,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         async Task IAsyncBasicConsumer.HandleBasicCancel(string consumerTag)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Cancelling consumer {RabbitMQConsumer} due to IAsyncBasicConsumer.HandleBasicCancel method invocation with consumer tag {ConsumerTag}",
                 this,
                 consumerTag);
@@ -389,7 +389,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         async Task IAsyncBasicConsumer.HandleBasicConsumeOk(string consumerTag)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Marking consumer {RabbitMQConsumer} as successfully registered with the broker due to IAsyncBasicConsumer.HandleBasicConsumeOk method invocation with consumer tag {ConsumerTag}",
                 this,
                 consumerTag);
@@ -427,7 +427,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         async Task IAsyncBasicConsumer.HandleModelShutdown(object model, ShutdownEventArgs reason)
         {
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Shutting down consumer {RabbitMQConsumer} due to IAsyncBasicConsumer.HandleModelShutdown method invocation with sender {ModelShutdownSender} and reason {ShutdownEventArgs}",
                 this,
                 model,

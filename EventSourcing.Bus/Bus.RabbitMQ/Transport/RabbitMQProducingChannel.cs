@@ -193,7 +193,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
                 if (taskCompletionSource.TrySetException(new TaskCanceledException(
                         $"Cancelling publishing acknowledgment waiting task (delivery tag: {deliveryTag}) due to disposing of Producing channel {this}")))
                 {
-                    _logger.LogInformation(
+                    _logger.LogDebug(
                         "Cancelling publishing acknowledgment waiting task (delivery tag: {DeliveryTag}) due to disposing of Producing channel {RabbitMQProducingChannel}",
                         deliveryTag,
                         this);
@@ -216,7 +216,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
             if (taskCompletionSource.TrySetException(new TaskCanceledException(
                     $"Cancelling publishing acknowledgment waiting task (delivery tag: {deliveryTag}). Producing channel {this}")))
             {
-                _logger.LogInformation(
+                _logger.LogDebug(
                     "Cancelling publishing acknowledgment waiting task (delivery tag: {DeliveryTag}). Producing channel {RabbitMQProducingChannel}",
                     deliveryTag,
                     this);
@@ -261,7 +261,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
                 {
                     if (!taskCompletionSource.TrySetResult(publishingResult))
                     {
-                        _logger.LogWarning(
+                        _logger.LogDebug(
                             "Failed to set publishing result {PublishingResult} for delivery tag {DeliveryTag} (multiple: {Multiple}). Producing channel {RabbitMQProducingChannel}",
                             publishingResult,
                             tag,
@@ -270,7 +270,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
                     }
                     else
                     {
-                        _logger.LogInformation(
+                        _logger.LogDebug(
                             "Successfully set publishing result {PublishingResult} for delivery tag {DeliveryTag} (multiple: {Multiple}). Producing channel {RabbitMQProducingChannel}",
                             publishingResult,
                             tag,
@@ -280,7 +280,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
                 }
                 else
                 {
-                    _logger.LogError(
+                    _logger.LogDebug(
                         "Could not find task completion source; tried to set publishing result {PublishingResult} for delivery tag {DeliveryTag} (multiple: {Multiple}). Producing channel {RabbitMQProducingChannel}",
                         publishingResult,
                         tag,
