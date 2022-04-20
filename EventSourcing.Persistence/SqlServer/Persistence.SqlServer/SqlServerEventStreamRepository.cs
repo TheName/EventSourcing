@@ -143,16 +143,16 @@ namespace EventSourcing.Persistence.SqlServer
                 var entry = eventStreamEntries[i];
                 parameters.AddRange(new []
                 {
-                    new SqlParameter($"@StreamId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.StreamId},
-                    new SqlParameter($"@EntryId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.EntryId},
-                    new SqlParameter($"@EntrySequence_{i}", SqlDbType.BigInt) {Value = (uint) entry.EntrySequence},
-                    new SqlParameter($"@EventContent_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventContent},
-                    new SqlParameter($"@EventContentSerializationFormat_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventContentSerializationFormat},
-                    new SqlParameter($"@EventTypeIdentifier_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventTypeIdentifier},
-                    new SqlParameter($"@EventTypeIdentifierFormat_{i}", SqlDbType.VarChar) {Value = (string) entry.EventDescriptor.EventTypeIdentifierFormat},
-                    new SqlParameter($"@CausationId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.CausationId},
-                    new SqlParameter($"@CreationTime_{i}", SqlDbType.DateTimeOffset) {Value = (DateTime) entry.CreationTime},
-                    new SqlParameter($"@CorrelationId_{i}", SqlDbType.UniqueIdentifier) {Value = (Guid) entry.CorrelationId}
+                    new SqlParameter($"@StreamId_{i}", SqlDbType.UniqueIdentifier) {Value = entry.StreamId.Value},
+                    new SqlParameter($"@EntryId_{i}", SqlDbType.UniqueIdentifier) {Value = entry.EntryId.Value},
+                    new SqlParameter($"@EntrySequence_{i}", SqlDbType.BigInt) {Value = entry.EntrySequence.Value},
+                    new SqlParameter($"@EventContent_{i}", SqlDbType.VarChar) {Value = entry.EventDescriptor.EventContent.Value},
+                    new SqlParameter($"@EventContentSerializationFormat_{i}", SqlDbType.VarChar) {Value = entry.EventDescriptor.EventContentSerializationFormat.Value},
+                    new SqlParameter($"@EventTypeIdentifier_{i}", SqlDbType.VarChar) {Value = entry.EventDescriptor.EventTypeIdentifier.Value},
+                    new SqlParameter($"@EventTypeIdentifierFormat_{i}", SqlDbType.VarChar) {Value = entry.EventDescriptor.EventTypeIdentifierFormat.Value},
+                    new SqlParameter($"@CausationId_{i}", SqlDbType.UniqueIdentifier) {Value = entry.CausationId.Value},
+                    new SqlParameter($"@CreationTime_{i}", SqlDbType.DateTimeOffset) {Value = entry.CreationTime.Value},
+                    new SqlParameter($"@CorrelationId_{i}", SqlDbType.UniqueIdentifier) {Value = entry.CorrelationId.Value}
                 });
                 
                 separator = ", ";
@@ -173,7 +173,7 @@ namespace EventSourcing.Persistence.SqlServer
             {
                 new SqlParameter("@StreamId", SqlDbType.UniqueIdentifier)
                 {
-                    Value = (Guid) streamId
+                    Value = streamId.Value
                 }
             };
 

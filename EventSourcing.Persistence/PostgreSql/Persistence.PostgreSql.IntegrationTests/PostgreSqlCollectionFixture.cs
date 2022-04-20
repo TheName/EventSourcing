@@ -1,33 +1,35 @@
 ﻿using System;
-using System.Data.SqlClient;
+using System.Data;
+using System.Threading;
 using System.Threading.Tasks;
 using DbUp;
 using EventSourcing.Bus.Abstractions;
-using EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.Extensions;
+using EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp.Extensions;
 using EventSourcing.Extensions.DependencyInjection;
-using EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer;
+using EventSourcing.Extensions.DependencyInjection.Persistence.PostgreSql;
 using EventSourcing.Extensions.DependencyInjection.Serialization.NewtonsoftJson;
-using EventSourcing.Persistence.SqlServer;
+using EventSourcing.Persistence.PostgreSql;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Npgsql;
 using Persistence.IntegrationTests.Base;
 using TestHelpers.Logging;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Persistence.SqlServer.IntegrationTests
+namespace Persistence.PostgreSql.IntegrationTests
 {
-    public class SqlServerCollectionFixture : IAsyncLifetime
+    public class PostgreSqlCollectionFixture : IAsyncLifetime
     {
         private readonly IServiceProvider _serviceProvider;
-
+        
         private ITestOutputHelper _testOutputHelper;
-
+        
         private Func<ITestOutputHelper> TestOutputHelperFunc => () => _testOutputHelper;
-
-        public SqlServerCollectionFixture()
+        
+        public PostgreSqlCollectionFixture()
         {
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", false)
@@ -36,22 +38,23 @@ namespace Persistence.SqlServer.IntegrationTests
             var serviceCollection = new ServiceCollection()
                 .AddSingleton<IConfiguration>(configuration)
                 .AddLogging(builder => builder.AddProvider(new XUnitLoggerProvider(TestOutputHelperFunc)))
-                .PostConfigure<SqlServerEventStreamPersistenceConfiguration>(persistenceConfiguration =>
+                .PostConfigure<PostgreSqlEventStreamPersistenceConfiguration>(persistenceConfiguration =>
                 {
                     var sqlConnectionBuilder =
-                        new SqlConnectionStringBuilder(persistenceConfiguration.ConnectionString);
-                    sqlConnectionBuilder.InitialCatalog = $"{sqlConnectionBuilder.InitialCatalog}_{Guid.NewGuid()}";
+                        new NpgsqlConnectionStringBuilder(persistenceConfiguration.ConnectionString);
+                    
+                    sqlConnectionBuilder.Database = $"{sqlConnectionBuilder.Database}_{Guid.NewGuid()}";
                     persistenceConfiguration.ConnectionString = sqlConnectionBuilder.ConnectionString;
                 })
                 .AddSingleton(new Mock<IEventSourcingBusPublisher>().Object)
                 .AddSingleton(new Mock<IEventSourcingBusHandlingExceptionPublisherConfiguration>().Object)
                 .AddSingleton(new Mock<IEventSourcingBusHandlingExceptionPublisher>().Object)
-                .AddTransient<IEventStreamTestReadRepository, SqlServerEventStreamTestReadRepository>()
-                .AddTransient<IEventStreamStagingTestReadRepository, SqlServerEventStreamStagingTestReadRepository>();
+                .AddTransient<IEventStreamTestReadRepository, PostgreSqlEventStreamTestReadRepository>()
+                .AddTransient<IEventStreamStagingTestReadRepository, PostgreSqlEventStreamStagingTestReadRepository>();
 
             serviceCollection
                 .AddEventSourcing()
-                .WithSqlServerPersistence()
+                .WithPostgreSqlPersistence()
                 .WithNewtonsoftJsonSerialization();
 
             _serviceProvider = serviceCollection
@@ -62,7 +65,7 @@ namespace Persistence.SqlServer.IntegrationTests
                 });
         }
 
-        public SqlServerCollectionFixture SetTestOutputHelper(ITestOutputHelper testOutputHelper)
+        public PostgreSqlCollectionFixture SetTestOutputHelper(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
             return this;
@@ -70,15 +73,15 @@ namespace Persistence.SqlServer.IntegrationTests
 
         public T GetService<T>() => 
             _serviceProvider.GetRequiredService<T>();
-
+        
         public Task InitializeAsync()
         {
-            var sqlConnectionString = GetService<ISqlServerEventStreamPersistenceConfiguration>().ConnectionString;
-            EnsureDatabase.For.SqlDatabase(sqlConnectionString);
+            var sqlConnectionString = GetService<IPostgreSqlEventStreamPersistenceConfiguration>().ConnectionString;
+            EnsureDatabase.For.PostgresqlDatabase(sqlConnectionString);
 
             var upgrader = DeployChanges.To
-                .SqlDatabase(sqlConnectionString)
-                .WithSqlServerScriptsForEventSourcing()
+                .PostgresqlDatabase(sqlConnectionString)
+                .WithPostgreSqlScriptsForEventSourcing()
                 .LogToAutodetectedLog()
                 .Build();
 
@@ -91,10 +94,18 @@ namespace Persistence.SqlServer.IntegrationTests
             return Task.CompletedTask;
         }
 
-        public Task DisposeAsync()
+        public async Task DisposeAsync()
         {
-            DropDatabase.For.SqlDatabase(GetService<ISqlServerEventStreamPersistenceConfiguration>().ConnectionString);
-            return Task.CompletedTask;
+            var sqlConnectionBuilder = new NpgsqlConnectionStringBuilder(GetService<IPostgreSqlEventStreamPersistenceConfiguration>().ConnectionString);
+            var databaseToDelete = sqlConnectionBuilder.Database;
+            sqlConnectionBuilder.Database = null;
+            
+            await using var connection = new NpgsqlConnection(sqlConnectionBuilder.ConnectionString);
+            await using var command = connection.CreateCommand();
+            command.CommandText = $"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{databaseToDelete}'; DROP DATABASE \"{databaseToDelete}\"";
+            command.CommandType = CommandType.Text;
+            await connection.OpenAsync(CancellationToken.None);
+            await command.ExecuteNonQueryAsync(CancellationToken.None);
         }
     }
 }

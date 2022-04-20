@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp</RootNamespace>
+        <AssemblyName>EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp</Title>
+        <Description>This package contains database migration DbUp scripts provider for PostgreSql implementation of EventSourcing.Persistence.Abstraction package.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.Extensions;EventSourcing.Extensions.DatabaseMigrations;EventSourcing.Extensions.DatabaseMigrations.Persistence</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="dbup-postgresql" Version="4.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Extensions.DatabaseMigrations.Persistence.PostgreSql\Extensions.DatabaseMigrations.Persistence.PostgreSql.csproj" />
+    </ItemGroup>
+
+</Project>
