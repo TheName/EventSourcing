@@ -228,9 +228,7 @@ namespace EventSourcing.UnitTests.Handling
             var assertHandlingException = new Func<EventStreamEntryHandlingException, bool>(handlingException =>
             {
                 Assert.Equal(entry, handlingException.Entry);
-                var innerAggregateException = Assert.IsType<AggregateException>(handlingException.InnerException);
-                var singleException = Assert.Single(innerAggregateException.InnerExceptions);
-                Assert.Equal(exception, singleException);
+                Assert.Contains(exception.Message, handlingException.Message);
 
                 return true;
             });
@@ -278,9 +276,7 @@ namespace EventSourcing.UnitTests.Handling
             var assertHandlingException = new Func<EventStreamEntryHandlingException, bool>(handlingException =>
             {
                 Assert.Equal(entry, handlingException.Entry);
-                var innerAggregateException = Assert.IsType<AggregateException>(handlingException.InnerException);
-                var singleException = Assert.Single(innerAggregateException.InnerExceptions);
-                Assert.Equal(exception, singleException);
+                Assert.Contains(exception.Message, handlingException.Message);
 
                 return true;
             });
@@ -344,9 +340,7 @@ namespace EventSourcing.UnitTests.Handling
             var assertHandlingException = new Func<EventStreamEntryHandlingException, bool>(handlingException =>
             {
                 Assert.Equal(entry, handlingException.Entry);
-                var innerAggregateException = Assert.IsType<AggregateException>(handlingException.InnerException);
-                var singleException = Assert.Single(innerAggregateException.InnerExceptions);
-                Assert.Equal(exception, singleException);
+                Assert.Contains(exception.Message, handlingException.Message);
 
                 return true;
             });
