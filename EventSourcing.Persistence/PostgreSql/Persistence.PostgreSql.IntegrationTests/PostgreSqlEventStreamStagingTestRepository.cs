@@ -8,11 +8,11 @@ using Persistence.IntegrationTests.Base;
 
 namespace Persistence.PostgreSql.IntegrationTests
 {
-    public class PostgreSqlEventStreamStagingTestReadRepository : IEventStreamStagingTestReadRepository
+    public class PostgreSqlEventStreamStagingTestRepository : IEventStreamStagingTestRepository
     {
         private readonly IPostgreSqlEventStreamPersistenceConfiguration _configuration;
 
-        public PostgreSqlEventStreamStagingTestReadRepository(IPostgreSqlEventStreamPersistenceConfiguration configuration)
+        public PostgreSqlEventStreamStagingTestRepository(IPostgreSqlEventStreamPersistenceConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
@@ -48,6 +48,15 @@ namespace Persistence.PostgreSql.IntegrationTests
             }
 
             return result;
+        }
+
+        public async Task DeleteAllAsync()
+        {
+            await using var connection = new NpgsqlConnection(_configuration.ConnectionString);
+            await using var command = connection.CreateCommand();
+            command.CommandText = "DELETE FROM EventStreamStaging";
+            await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
+            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
         }
     }
 }

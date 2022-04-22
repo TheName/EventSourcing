@@ -10,19 +10,19 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
     {
         private readonly IRabbitMQHandlingExceptionProducingChannelFactory _handlingExceptionProducingChannelFactory;
         private readonly IRabbitMQProducingQueueBindingConfigurationProvider _queueBindingConfigurationProvider;
-        private readonly ISerializer _serializer;
+        private readonly ISerializerProvider _serializerProvider;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<RabbitMQProducerFactory> _logger;
 
         public RabbitMQHandlingExceptionProducerFactory(
             IRabbitMQHandlingExceptionProducingChannelFactory handlingExceptionProducingChannelFactory,
             IRabbitMQProducingQueueBindingConfigurationProvider queueBindingConfigurationProvider,
-            ISerializer serializer,
+            ISerializerProvider serializerProvider,
             ILoggerFactory loggerFactory)
         {
             _handlingExceptionProducingChannelFactory = handlingExceptionProducingChannelFactory ?? throw new ArgumentNullException(nameof(handlingExceptionProducingChannelFactory));
             _queueBindingConfigurationProvider = queueBindingConfigurationProvider ?? throw new ArgumentNullException(nameof(queueBindingConfigurationProvider));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _serializerProvider = serializerProvider ?? throw new ArgumentNullException(nameof(serializerProvider));
             _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
 
             _logger = _loggerFactory.CreateLogger<RabbitMQProducerFactory>();
@@ -37,7 +37,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
             var producer = new RabbitMQProducer<T>(
                 producingChannel,
-                _serializer,
+                _serializerProvider,
                 _loggerFactory.CreateLogger<RabbitMQProducer<T>>());
             
             _logger.LogInformation("Created a new RabbitMQ producer: {RabbitMQProducer}", producer);

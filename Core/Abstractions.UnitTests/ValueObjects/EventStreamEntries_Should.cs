@@ -22,6 +22,14 @@ namespace Abstractions.UnitTests.ValueObjects
         }
         
         [Fact]
+        public void ReturnNull_When_CallingStreamIdOnEmptyEntries()
+        {
+            var events = EventStreamEntries.Empty;
+            
+            Assert.Null(events.StreamId);
+        }
+        
+        [Fact]
         public void Throw_ArgumentNullException_When_CreatingWithNullValue()
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamEntries(null));
@@ -159,6 +167,38 @@ namespace Abstractions.UnitTests.ValueObjects
 
             Assert.Equal(entriesCollection.Count, entries.Count);
             Assert.True(entriesCollection.SequenceEqual(entries));
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void ReturnEntryStreamId_When_CallingStreamId_And_CreatedWithSingleEntry(EventStreamEntry entry)
+        {
+            var entries = new EventStreamEntries(new[] {entry});
+            
+            Assert.Equal(entry.StreamId, entries.StreamId);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void ReturnEntriesStreamId_When_CallingStreamId_And_CreatedWithMultipleEntries(
+            EventStreamId validStreamId,
+            EventStreamEntrySequence startingSequence,
+            List<EventStreamEntry> entriesCollection)
+        {
+            entriesCollection = entriesCollection
+                .Select(entry => new EventStreamEntry(
+                    validStreamId,
+                    entry.EntryId,
+                    startingSequence++,
+                    entry.EventDescriptor,
+                    entry.CausationId,
+                    entry.CreationTime,
+                    entry.CorrelationId))
+                .ToList();
+            
+            var entries = new EventStreamEntries(entriesCollection);
+            
+            Assert.Equal(validStreamId, entries.StreamId);
         }
 
         [Theory]

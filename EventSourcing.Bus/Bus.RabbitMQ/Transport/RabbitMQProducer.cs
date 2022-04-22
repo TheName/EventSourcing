@@ -11,7 +11,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
     internal class RabbitMQProducer<T> : IRabbitMQProducer<T>, IDisposable
     {
         private readonly IRabbitMQProducingChannel _producingChannel;
-        private readonly ISerializer _serializer;
+        private readonly ISerializerProvider _serializerProvider;
         private readonly ILogger<RabbitMQProducer<T>> _logger;
         private readonly Guid _producerId = Guid.NewGuid();
         private readonly CancellationTokenSource _disposingTokenSource = new CancellationTokenSource();
@@ -19,13 +19,15 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
         private bool _isDisposed;
         private bool _isDisposing;
 
+        private ISerializer Serializer => _serializerProvider.GetBusSerializer();
+
         public RabbitMQProducer(
             IRabbitMQProducingChannel producingChannel,
-            ISerializer serializer,
+            ISerializerProvider serializerProvider,
             ILogger<RabbitMQProducer<T>> logger)
         {
             _producingChannel = producingChannel ?? throw new ArgumentNullException(nameof(producingChannel));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _serializerProvider = serializerProvider ?? throw new ArgumentNullException(nameof(serializerProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         
@@ -47,7 +49,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
         {
             try
             {
-                return _serializer.SerializeToUtf8Bytes(message);
+                return Serializer.SerializeToUtf8Bytes(message);
             }
             catch (Exception e)
             {

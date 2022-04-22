@@ -16,6 +16,14 @@ namespace EventSourcing.Serialization.Abstractions
         ISerializer GetEventContentSerializer();
         
         /// <summary>
+        /// Gets <see cref="ISerializer"/> configured to be used for serialization by bus package.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="ISerializer"/>.
+        /// </returns>
+        ISerializer GetBusSerializer();
+        
+        /// <summary>
         /// Gets <see cref="ISerializer"/> registered for provided <paramref name="serializationFormat"/>.
         /// </summary>
         /// <param name="serializationFormat">

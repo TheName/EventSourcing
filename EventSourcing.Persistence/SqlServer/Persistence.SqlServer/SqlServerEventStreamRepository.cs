@@ -79,6 +79,31 @@ namespace EventSourcing.Persistence.SqlServer
             }
         }
 
+        public async Task<EventStreamEntries> ReadAsync(
+            EventStreamId streamId,
+            EventStreamEntrySequence minimumSequenceInclusive,
+            EventStreamEntrySequence maximumSequenceInclusive,
+            CancellationToken cancellationToken)
+        {
+            var (sqlCommand, sqlParameters) = PrepareSelectInRangeCommand(streamId, minimumSequenceInclusive, maximumSequenceInclusive);
+            
+            try
+            {
+                return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(
+                    exception,
+                    "An unexpected failure happened when trying to select event stream entries within inclusive range {MinimumSequence} - {MaximumSequence}. EventStreamId to select: {EventStreamId}",
+                    minimumSequenceInclusive,
+                    maximumSequenceInclusive,
+                    streamId);
+
+                throw;
+            }
+        }
+
         private async Task<int> ExecuteCommand(string sqlCommandText, List<SqlParameter> parameters, CancellationToken cancellationToken)
         {
             using (var connection = new SqlConnection(_configuration.ConnectionString))
@@ -175,6 +200,31 @@ namespace EventSourcing.Persistence.SqlServer
                 {
                     Value = streamId.Value
                 }
+            };
+
+            return (command, parameters);
+        }
+
+        private static (string Command, List<SqlParameter> Parameters) PrepareSelectInRangeCommand(
+            EventStreamId streamId,
+            EventStreamEntrySequence minimumSequence,
+            EventStreamEntrySequence maximumSequence)
+        {
+            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CorrelationId FROM {TableName} WHERE StreamId = @StreamId AND EntrySequence >= @MinimumSequence AND EntrySequence <= @MaximumSequence";
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@StreamId", SqlDbType.UniqueIdentifier)
+                {
+                    Value = streamId.Value
+                },
+                new SqlParameter("@MinimumSequence", SqlDbType.BigInt)
+                {
+                    Value = minimumSequence.Value
+                },
+                new SqlParameter("@MaximumSequence", SqlDbType.BigInt)
+                {
+                    Value = maximumSequence.Value
+                },
             };
 
             return (command, parameters);

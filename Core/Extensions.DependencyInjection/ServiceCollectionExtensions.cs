@@ -3,9 +3,11 @@ using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Configurations;
 using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.Handling;
+using EventSourcing.Abstractions.Reconciliation;
 using EventSourcing.Configurations;
 using EventSourcing.Conversion;
 using EventSourcing.Handling;
+using EventSourcing.Reconciliation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -44,7 +46,9 @@ namespace EventSourcing.Extensions.DependencyInjection
                 .AddTransient<IEventHandlerProvider, EventHandlerProvider>()
                 .AddTransient<IEventHandlingExceptionsHandler, EventHandlingExceptionsHandler>()
                 .AddTransient<IEventStreamEntryDispatcher, EventStreamEntryDispatcher>()
-                .AddTransient<IEventStreamRetriever, EventStreamRetriever>();
+                .AddTransient<IEventStreamRetriever, EventStreamRetriever>()
+                .AddTransient<IReconciliationJob, ReconciliationJob>()
+                .AddTransient<IEventStreamStagedEntriesReconciliationService, EventStreamStagedEntriesReconciliationService>();
             
             serviceCollection
                 .AddOptions<EventSourcingConfiguration>()
@@ -64,6 +68,8 @@ namespace EventSourcing.Extensions.DependencyInjection
             serviceCollection
                 .TryAddTransient<IEventSourcingTypeConversionConfiguration>(provider =>
                     provider.GetRequiredService<IOptions<EventSourcingTypeConversionConfiguration>>().Value);
+
+            serviceCollection.AddHostedService<ReconciliationBackgroundService>();
 
             return new EventSourcingBuilder(serviceCollection);
         }

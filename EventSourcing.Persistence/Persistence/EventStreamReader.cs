@@ -19,5 +19,19 @@ namespace EventSourcing.Persistence
         {
             return await _eventStreamRepository.ReadAsync(streamId, cancellationToken).ConfigureAwait(false);
         }
+
+        public async Task<EventStreamEntries> ReadAsync(
+            EventStreamId streamId,
+            EventStreamEntrySequence minimumSequenceInclusive,
+            EventStreamEntrySequence maximumSequenceInclusive,
+            CancellationToken cancellationToken)
+        {
+            return await _eventStreamRepository.ReadAsync(
+                    streamId,
+                    minimumSequenceInclusive,
+                    maximumSequenceInclusive,
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
     }
 }

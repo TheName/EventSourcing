@@ -1,5 +1,7 @@
 ﻿CREATE TABLE EventStreamStaging (
     StagingId                           UUID                    NOT NULL,
+    StagingTime                         TIMESTAMP               NOT NULL,
+    StagingTimeNanoSeconds              BIGINT                  NOT NULL,
     StreamId                            UUID                    NOT NULL,
     EntrySequence                       BIGINT                  NOT NULL,
     EntryId                             UUID                    NOT NULL,

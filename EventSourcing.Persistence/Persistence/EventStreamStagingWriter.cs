@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Persistence.Abstractions;
 using EventSourcing.Persistence.Abstractions.ValueObjects;
@@ -10,30 +9,33 @@ namespace EventSourcing.Persistence
 {
     internal class EventStreamStagingWriter : IEventStreamStagingWriter
     {
-        private readonly IEventStreamStagingWriteRepository _writeRepository;
+        private readonly IEventStreamStagingRepository _repository;
 
-        public EventStreamStagingWriter(IEventStreamStagingWriteRepository writeRepository)
+        public EventStreamStagingWriter(IEventStreamStagingRepository repository)
         {
-            _writeRepository = writeRepository ?? throw new ArgumentNullException(nameof(writeRepository));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public async Task<EventStreamStagingId> WriteAsync(EventStreamEntries eventStreamEntries, CancellationToken cancellationToken)
         {
-            var stagingId = EventStreamStagingId.NewEventStreamStagingId();
+            var stagedEntries = new EventStreamStagedEntries(
+                EventStreamStagingId.NewEventStreamStagingId(),
+                EventStreamStagedEntriesStagingTime.Now(),
+                eventStreamEntries);
             
-            await _writeRepository.InsertAsync(stagingId, eventStreamEntries, cancellationToken).ConfigureAwait(false);
+            await _repository.InsertAsync(stagedEntries, cancellationToken).ConfigureAwait(false);
 
-            return stagingId;
+            return stagedEntries.StagingId;
         }
 
         public async Task MarkAsPublishedAsync(EventStreamStagingId streamStagingId, CancellationToken cancellationToken)
         {
-            await _writeRepository.DeleteAsync(streamStagingId, cancellationToken).ConfigureAwait(false);
+            await _repository.DeleteAsync(streamStagingId, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task MarkAsFailedToStoreAsync(EventStreamStagingId streamStagingId, CancellationToken cancellationToken)
         {
-            await _writeRepository.DeleteAsync(streamStagingId, cancellationToken).ConfigureAwait(false);
+            await _repository.DeleteAsync(streamStagingId, cancellationToken).ConfigureAwait(false);
         }
     }
 }

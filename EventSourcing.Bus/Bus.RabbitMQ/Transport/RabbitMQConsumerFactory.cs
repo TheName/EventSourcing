@@ -10,19 +10,19 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
     {
         private readonly IRabbitMQConsumingChannelFactory _consumingChannelFactory;
         private readonly IRabbitMQConsumingQueueBindingConfigurationProvider _queueBindingConfigurationProvider;
-        private readonly ISerializer _serializer;
+        private readonly ISerializerProvider _serializerProvider;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<RabbitMQConsumerFactory> _logger;
 
         public RabbitMQConsumerFactory(
             IRabbitMQConsumingChannelFactory consumingChannelFactory,
             IRabbitMQConsumingQueueBindingConfigurationProvider queueBindingConfigurationProvider,
-            ISerializer serializer,
+            ISerializerProvider serializerProvider,
             ILoggerFactory loggerFactory)
         {
             _consumingChannelFactory = consumingChannelFactory ?? throw new ArgumentNullException(nameof(consumingChannelFactory));
             _queueBindingConfigurationProvider = queueBindingConfigurationProvider ?? throw new ArgumentNullException(nameof(queueBindingConfigurationProvider));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _serializerProvider = serializerProvider ?? throw new ArgumentNullException(nameof(serializerProvider));
             _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
             _logger = _loggerFactory.CreateLogger<RabbitMQConsumerFactory>();
         }
@@ -36,7 +36,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
             var consumer = new RabbitMQConsumer<T>(
                 consumingChannel,
                 handler,
-                _serializer,
+                _serializerProvider,
                 _loggerFactory.CreateLogger<RabbitMQConsumer<T>>());
             
             _logger.LogInformation("Created a new RabbitMQ consumer: {RabbitMQConsumer}", consumer);

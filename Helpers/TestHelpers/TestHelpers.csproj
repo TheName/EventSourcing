@@ -9,6 +9,7 @@
     <ItemGroup>
       <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
       <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
       <PackageReference Include="Moq" Version="4.16.1" />
       <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
@@ -16,7 +17,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
+      <ProjectReference Include="..\..\EventSourcing.Bus\Bus.Abstractions\Bus.Abstractions.csproj" />
       <ProjectReference Include="..\..\EventSourcing.Persistence\Persistence.Abstractions\Persistence.Abstractions.csproj" />
+      <ProjectReference Include="..\..\EventSourcing.Serialization\Serialization.Abstractions\Serialization.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

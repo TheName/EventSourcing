@@ -17,7 +17,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// <summary>
         /// A read-only instance of the <see cref="EventStreamEntries"/> that contains no entries.
         /// </summary>
-        public static EventStreamEntries Empty { get; } = new EventStreamEntries(new EventStreamEntry[0]);
+        public static EventStreamEntries Empty { get; } = new EventStreamEntries(Array.Empty<EventStreamEntry>());
         
         /// <summary>
         /// The minimum <see cref="EventStreamEntrySequence"/> in this collection of entries. 
@@ -28,6 +28,11 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The maximum <see cref="EventStreamEntrySequence"/> in this collection of entries.
         /// </summary>
         public EventStreamEntrySequence MaximumSequence { get; }
+        
+        /// <summary>
+        /// Gets the stream id assigned to entries in this instance or null (in case there are no entries)
+        /// </summary>
+        public EventStreamId StreamId { get; }
         
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStreamEntries"/> class.
@@ -56,7 +61,7 @@ namespace EventSourcing.Abstractions.ValueObjects
             }
 
             MinimumSequence = Value[0].EntrySequence;
-            var streamId = Value[0].StreamId;
+            StreamId = Value[0].StreamId;
             
             var previousSequence = MinimumSequence;
             for (var i = 1; i < Value.Count; i++)
@@ -70,10 +75,10 @@ namespace EventSourcing.Abstractions.ValueObjects
                         nameof(value));
                 }
 
-                if (Value[i].StreamId != streamId)
+                if (Value[i].StreamId != StreamId)
                 {
                     throw InvalidEventStreamIdException.New(
-                        streamId,
+                        StreamId,
                         Value[i].StreamId,
                         $"{nameof(EventStreamEntries)} have to have same stream id.",
                         nameof(value));

@@ -97,12 +97,58 @@ namespace Persistence.IntegrationTests.Base
 
         [Theory]
         [AutoMoqData]
+        public async Task ReturnNoData_When_ReadingNonExistingStreamIdAndSequenceRange(
+            EventStreamId streamId,
+            EventStreamEntrySequence minimumSequence,
+            EventStreamEntrySequence maximumSequence)
+        {
+            var result = await Repository.ReadAsync(
+                streamId,
+                minimumSequence,
+                maximumSequence,
+                CancellationToken.None);
+
+            Assert.Empty(result);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task ReturnNoData_When_ReadingExistingStreamIdAndNonExistingSequenceRange(EventStreamEntries entries)
+        {
+            var result = await Repository.ReadAsync(
+                entries.StreamId,
+                entries.MaximumSequence,
+                entries.MaximumSequence.Value + (uint)entries.Count,
+                CancellationToken.None);
+
+            Assert.Empty(result);
+        }
+
+        [Theory]
+        [AutoMoqData]
         public async Task ReturnWrittenEntry_When_ReadingStreamId_And_SingleEntryUnderProvidedStreamIdExists(EventStreamEntry entry)
         {
             var writeResult = await Repository.WriteAsync(new EventStreamEntries(new[] {entry}), CancellationToken.None);
             Assert.Equal(EventStreamWriteResult.Success, writeResult);
             
             var result = await Repository.ReadAsync(entry.StreamId, CancellationToken.None);
+
+            var singleEntry = Assert.Single(result);
+            Assert.Equal(entry, singleEntry);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task ReturnWrittenEntry_When_ReadingStreamIdWithinRange_And_SingleEntryUnderProvidedStreamIdAndInSequencesRangeExists(EventStreamEntry entry)
+        {
+            var writeResult = await Repository.WriteAsync(new EventStreamEntries(new[] {entry}), CancellationToken.None);
+            Assert.Equal(EventStreamWriteResult.Success, writeResult);
+            
+            var result = await Repository.ReadAsync(
+                entry.StreamId,
+                entry.EntrySequence,
+                entry.EntrySequence,
+                CancellationToken.None);
 
             var singleEntry = Assert.Single(result);
             Assert.Equal(entry, singleEntry);
@@ -120,6 +166,66 @@ namespace Persistence.IntegrationTests.Base
                 .Single();
 
             var result = await Repository.ReadAsync(streamId, CancellationToken.None);
+            Assert.Equal(entries.Count, result.Count);
+            for (var i = 0; i < entries.Count; i++)
+            {
+                Assert.Equal(entries[i], result[i]);
+            }
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task ReturnWrittenEntries_When_ReadingStreamIdWithinRange_And_MultipleEntriesUnderProvidedStreamIdAndInSequencesRangeExist(EventStreamEntries entries)
+        {
+            var writeResult = await Repository.WriteAsync(entries, CancellationToken.None);
+            Assert.Equal(EventStreamWriteResult.Success, writeResult);
+
+            var result = await Repository.ReadAsync(
+                entries.StreamId,
+                entries.MinimumSequence,
+                entries.MaximumSequence,
+                CancellationToken.None);
+            
+            Assert.Equal(entries.Count, result.Count);
+            for (var i = 0; i < entries.Count; i++)
+            {
+                Assert.Equal(entries[i], result[i]);
+            }
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task ReturnWrittenEntries_When_ReadingStreamIdWithinRangeWithBiggerThanExistingMaximumSequence_And_MultipleEntriesUnderProvidedStreamIdAndInSequencesRangeExist(EventStreamEntries entries)
+        {
+            var writeResult = await Repository.WriteAsync(entries, CancellationToken.None);
+            Assert.Equal(EventStreamWriteResult.Success, writeResult);
+
+            var result = await Repository.ReadAsync(
+                entries.StreamId,
+                entries.MinimumSequence,
+                entries.MaximumSequence + 3,
+                CancellationToken.None);
+            
+            Assert.Equal(entries.Count, result.Count);
+            for (var i = 0; i < entries.Count; i++)
+            {
+                Assert.Equal(entries[i], result[i]);
+            }
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task ReturnWrittenEntries_When_ReadingStreamIdWithinRangeWithSmallerThanExistingMinimumSequence_And_MultipleEntriesUnderProvidedStreamIdAndInSequencesRangeExist(EventStreamEntries entries)
+        {
+            var writeResult = await Repository.WriteAsync(entries, CancellationToken.None);
+            Assert.Equal(EventStreamWriteResult.Success, writeResult);
+
+            var result = await Repository.ReadAsync(
+                entries.StreamId,
+                entries.MinimumSequence - 3,
+                entries.MaximumSequence,
+                CancellationToken.None);
+            
             Assert.Equal(entries.Count, result.Count);
             for (var i = 0; i < entries.Count; i++)
             {

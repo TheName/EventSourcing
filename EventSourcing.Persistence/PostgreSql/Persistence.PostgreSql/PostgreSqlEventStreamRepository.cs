@@ -77,6 +77,31 @@ namespace EventSourcing.Persistence.PostgreSql
             }
         }
 
+        public async Task<EventStreamEntries> ReadAsync(
+            EventStreamId streamId,
+            EventStreamEntrySequence minimumSequenceInclusive,
+            EventStreamEntrySequence maximumSequenceInclusive,
+            CancellationToken cancellationToken)
+        {
+            var (sqlCommand, sqlParameters) = PrepareSelectInRangeCommand(streamId, minimumSequenceInclusive, maximumSequenceInclusive);
+            
+            try
+            {
+                return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(
+                    exception,
+                    "An unexpected failure happened when trying to select event stream entries within inclusive range {MinimumSequence} - {MaximumSequence}. EventStreamId to select: {EventStreamId}",
+                    minimumSequenceInclusive,
+                    maximumSequenceInclusive,
+                    streamId);
+
+                throw;
+            }
+        }
+
         private async Task<int> ExecuteCommand(string sqlCommandText, List<NpgsqlParameter> parameters, CancellationToken cancellationToken)
         {
             using (var connection = new NpgsqlConnection(_configuration.ConnectionString))
@@ -173,6 +198,31 @@ namespace EventSourcing.Persistence.PostgreSql
                 {
                     Value = streamId.Value
                 }
+            };
+
+            return (command, parameters);
+        }
+
+        private static (string Command, List<NpgsqlParameter> Parameters) PrepareSelectInRangeCommand(
+            EventStreamId streamId,
+            EventStreamEntrySequence minimumSequence,
+            EventStreamEntrySequence maximumSequence)
+        {
+            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CreationTimeNanoSeconds, CorrelationId FROM {TableName} WHERE StreamId = @StreamId AND EntrySequence >= @MinimumSequence AND EntrySequence <= @MaximumSequence";
+            var parameters = new List<NpgsqlParameter>
+            {
+                new NpgsqlParameter("@StreamId", NpgsqlDbType.Uuid)
+                {
+                    Value = streamId.Value
+                },
+                new NpgsqlParameter("@MinimumSequence", NpgsqlDbType.Oid)
+                {
+                    Value = minimumSequence.Value
+                },
+                new NpgsqlParameter("@MaximumSequence", NpgsqlDbType.Oid)
+                {
+                    Value = maximumSequence.Value
+                },
             };
 
             return (command, parameters);

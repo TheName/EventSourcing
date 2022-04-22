@@ -49,6 +49,16 @@ namespace EventSourcing.Serialization
             return _serializers.Values.Single();
         }
 
+        public ISerializer GetBusSerializer()
+        {
+            if (_serializationConfiguration.BusSerializationFormat != null)
+            {
+                return GetSerializer(_serializationConfiguration.BusSerializationFormat);
+            }
+
+            return _serializers.Values.Single();
+        }
+
         public ISerializer GetSerializer(SerializationFormat serializationFormat)
         {
             if (_serializers.TryGetValue(serializationFormat, out var serializer))

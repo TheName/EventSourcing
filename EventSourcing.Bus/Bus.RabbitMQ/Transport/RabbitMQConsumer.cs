@@ -21,7 +21,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
         private readonly ILogger<RabbitMQConsumer<T>> _logger;
         private readonly IRabbitMQConsumingChannel _consumingChannel;
         private readonly Func<T, CancellationToken, Task> _handler;
-        private readonly ISerializer _serializer;
+        private readonly ISerializerProvider _serializerProvider;
         private readonly object _disposingLock = new object();
         private readonly SemaphoreSlim _startConsumingSemaphore = new SemaphoreSlim(1, 1);
         private readonly Guid _consumerId = Guid.NewGuid();
@@ -37,15 +37,17 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
 
         private bool IsCancellationRequested => _cancellationTokenSource?.IsCancellationRequested ?? true;
 
+        private ISerializer Serializer => _serializerProvider.GetBusSerializer();
+
         public RabbitMQConsumer(
             IRabbitMQConsumingChannel consumingChannel,
             Func<T, CancellationToken, Task> handler,
-            ISerializer serializer,
+            ISerializerProvider serializerProvider,
             ILogger<RabbitMQConsumer<T>> logger)
         {
             _consumingChannel = consumingChannel ?? throw new ArgumentNullException(nameof(consumingChannel));
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
-            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            _serializerProvider = serializerProvider ?? throw new ArgumentNullException(nameof(serializerProvider));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -213,7 +215,7 @@ namespace EventSourcing.Bus.RabbitMQ.Transport
             var messageArray = message.ToArray();
             try
             {
-                return (T)_serializer.DeserializeFromUtf8Bytes(messageArray, typeof(T));
+                return (T)Serializer.DeserializeFromUtf8Bytes(messageArray, typeof(T));
             }
             catch (Exception e)
             {

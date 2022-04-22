@@ -1,5 +1,6 @@
 ﻿CREATE TABLE EventStreamStaging (
     StagingId                           UNIQUEIDENTIFIER        NOT NULL,
+    StagingTime                         DATETIMEOFFSET          NOT NULL,
     StreamId                            UNIQUEIDENTIFIER        NOT NULL,
     EntrySequence                       BIGINT                  NOT NULL,
     EntryId                             UNIQUEIDENTIFIER        NOT NULL,

@@ -69,7 +69,7 @@ namespace EventSourcing.Extensions.DependencyInjection.Persistence.PostgreSql
 
             eventSourcingBuilder.Services
                 .AddTransient<IEventStreamRepository, PostgreSqlEventStreamRepository>()
-                .AddTransient<IEventStreamStagingWriteRepository, PostgreSqlEventStreamStagingWriteRepository>();
+                .AddTransient<IEventStreamStagingRepository, PostgreSqlEventStreamStagingRepository>();
 
             return eventSourcingBuilder;
         }

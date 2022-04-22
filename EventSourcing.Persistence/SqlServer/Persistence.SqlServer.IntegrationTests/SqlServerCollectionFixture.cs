@@ -47,7 +47,7 @@ namespace Persistence.SqlServer.IntegrationTests
                 .AddSingleton(new Mock<IEventSourcingBusHandlingExceptionPublisherConfiguration>().Object)
                 .AddSingleton(new Mock<IEventSourcingBusHandlingExceptionPublisher>().Object)
                 .AddTransient<IEventStreamTestReadRepository, SqlServerEventStreamTestReadRepository>()
-                .AddTransient<IEventStreamStagingTestReadRepository, SqlServerEventStreamStagingTestReadRepository>();
+                .AddTransient<IEventStreamStagingTestRepository, SqlServerEventStreamStagingTestRepository>();
 
             serviceCollection
                 .AddEventSourcing()

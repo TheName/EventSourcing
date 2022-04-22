@@ -8,11 +8,11 @@ using Persistence.IntegrationTests.Base;
 
 namespace Persistence.SqlServer.IntegrationTests
 {
-    public class SqlServerEventStreamStagingTestReadRepository : IEventStreamStagingTestReadRepository
+    public class SqlServerEventStreamStagingTestRepository : IEventStreamStagingTestRepository
     {
         private readonly ISqlServerEventStreamPersistenceConfiguration _configuration;
 
-        public SqlServerEventStreamStagingTestReadRepository(ISqlServerEventStreamPersistenceConfiguration configuration)
+        public SqlServerEventStreamStagingTestRepository(ISqlServerEventStreamPersistenceConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
@@ -45,6 +45,15 @@ namespace Persistence.SqlServer.IntegrationTests
             }
 
             return result;
+        }
+
+        public async Task DeleteAllAsync()
+        {
+            await using var connection = new SqlConnection(_configuration.ConnectionString);
+            await using var command = connection.CreateCommand();
+            command.CommandText = "DELETE FROM EventStreamStaging";
+            await connection.OpenAsync(CancellationToken.None).ConfigureAwait(false);
+            await command.ExecuteNonQueryAsync(CancellationToken.None).ConfigureAwait(false);
         }
     }
 }

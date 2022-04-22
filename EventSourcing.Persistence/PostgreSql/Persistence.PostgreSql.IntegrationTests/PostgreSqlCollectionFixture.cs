@@ -50,7 +50,7 @@ namespace Persistence.PostgreSql.IntegrationTests
                 .AddSingleton(new Mock<IEventSourcingBusHandlingExceptionPublisherConfiguration>().Object)
                 .AddSingleton(new Mock<IEventSourcingBusHandlingExceptionPublisher>().Object)
                 .AddTransient<IEventStreamTestReadRepository, PostgreSqlEventStreamTestReadRepository>()
-                .AddTransient<IEventStreamStagingTestReadRepository, PostgreSqlEventStreamStagingTestReadRepository>();
+                .AddTransient<IEventStreamStagingTestRepository, PostgreSqlEventStreamStagingTestRepository>();
 
             serviceCollection
                 .AddEventSourcing()

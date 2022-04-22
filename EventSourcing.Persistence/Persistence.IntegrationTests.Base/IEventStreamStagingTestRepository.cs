@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 
 namespace Persistence.IntegrationTests.Base
 {
-    public interface IEventStreamStagingTestReadRepository
+    public interface IEventStreamStagingTestRepository
     {
         Task<IReadOnlyList<EventStreamStagingEntryTestReadModel>> SelectAsync(Guid stagingId);
+
+        Task DeleteAllAsync();
     }
 }
