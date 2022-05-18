@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.ForgettablePayloads.Abstractions</RootNamespace>
+        <AssemblyName>EventSourcing.ForgettablePayloads.Abstractions</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.ForgettablePayloads.Abstractions</Title>
+        <Description>This package contains abstractions over EventSourcing.ForgettablePayloads packages.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.ForgettablePayloads.Abstractions</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.ForgettablePayloads.Abstractions project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.ForgettablePayloads;EventSourcing.ForgettablePayloads.Abstractions</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
+    </ItemGroup>
+
+</Project>

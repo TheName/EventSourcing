@@ -16,5 +16,10 @@ namespace EventSourcing.Serialization.Abstractions
         /// The <see cref="SerializationFormat"/> that should be used for serialization by bus package
         /// </summary>
         SerializationFormat BusSerializationFormat { get; }
+        
+        /// <summary>
+        /// The <see cref="SerializationFormat"/> that should be used for serialization of ForgettablePayload
+        /// </summary>
+        SerializationFormat ForgettablePayloadSerializationFormat { get; }
     }
 }

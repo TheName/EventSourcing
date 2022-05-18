@@ -50,7 +50,7 @@ namespace Bus.RabbitMQ.IntegrationTests
             
             await Publisher.PublishAsync(entry, CancellationToken.None);
 
-            Retry(TimeSpan.FromSeconds(1), () => Assert.Equal(1, SimpleEventHandler.GetNumberOfHandledEvents(simpleEvent.EventId)));
+            Retry(TimeSpan.FromSeconds(9), () => Assert.Equal(1, SimpleEventHandler.GetNumberOfHandledEvents(simpleEvent.EventId)));
         }
 
         [Theory]

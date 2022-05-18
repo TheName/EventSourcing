@@ -8,6 +8,7 @@ using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.Exceptions;
 using EventSourcing.Abstractions.Handling;
 using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.Helpers;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.Handling
@@ -35,17 +36,17 @@ namespace EventSourcing.Handling
         {
             try
             {
+                EventStreamEntryCorrelationId.Current = entry.CorrelationId;
+                EventStreamEntryCausationId.Current = entry.EntryId;
+                
                 var @event = ConvertToEvent(entry.EventDescriptor);
                 var eventMetadata = entry.ToEventMetadata();
-
-                EventStreamEntryCorrelationId.Current = eventMetadata.CorrelationId;
-                EventStreamEntryCausationId.Current = eventMetadata.EntryId;
 
                 var decoratedEventHandlers = GetDecoratedHandlersForEventType(@event.GetType());
                 var decoratedEventHandlingTasks = decoratedEventHandlers
                     .Select(decorator => decorator.HandleAsync(@event, eventMetadata, cancellationToken));
 
-                await WhenAll(decoratedEventHandlingTasks).ConfigureAwait(false);
+                await TaskHelpers.WhenAllWithAggregateException(decoratedEventHandlingTasks).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -136,29 +137,6 @@ namespace EventSourcing.Handling
                     "There was an error when trying to create entry handling exception {@EventStreamEntry}",
                     entry);
                 
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Throws an aggregate exception instead of the first one
-        /// </summary>
-        private static async Task WhenAll(IEnumerable<Task> tasks)
-        {
-            var whenAllTask = Task.WhenAll(tasks);
-
-            try
-            {
-                await whenAllTask.ConfigureAwait(false);
-            }
-            catch
-            {
-                if (whenAllTask.Exception != null)
-                {
-                    // throw aggregate exception instead of the first one
-                    throw whenAllTask.Exception;
-                }
-
                 throw;
             }
         }

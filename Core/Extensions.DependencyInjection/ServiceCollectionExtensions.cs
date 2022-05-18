@@ -42,7 +42,7 @@ namespace EventSourcing.Extensions.DependencyInjection
                 .AddTransient<IEventStreamPublisher, EventStreamPublisher>()
                 .AddTransient<IEventStreamEventConverter, EventStreamEventConverter>()
                 .AddTransient<IEventStreamEventTypeIdentifierConverter, EventStreamEventTypeIdentifierConverter>()
-                .AddTransient<IEventStreamEventTypeIdentifierConverterProvider, EventStreamEventTypeIdentifierConverterProvider>()
+                .AddSingleton<IEventStreamEventTypeIdentifierConverterProvider, EventStreamEventTypeIdentifierConverterProvider>()
                 .AddTransient<IEventHandlerProvider, EventHandlerProvider>()
                 .AddTransient<IEventHandlingExceptionsHandler, EventHandlingExceptionsHandler>()
                 .AddTransient<IEventStreamEntryDispatcher, EventStreamEntryDispatcher>()

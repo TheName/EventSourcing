@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.ForgettablePayloads</RootNamespace>
+        <AssemblyName>EventSourcing.ForgettablePayloads</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.ForgettablePayloads</Title>
+        <Description>This package contains default implementation of EventSourcing.ForgettablePayloads.Abstraction package.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.ForgettablePayloads</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.ForgettablePayloads project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.ForgettablePayloads</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\EventSourcing.Serialization\Serialization.Abstractions\Serialization.Abstractions.csproj" />
+      <ProjectReference Include="..\Persistence\ForgettablePayloads.Persistence.Abstractions\ForgettablePayloads.Persistence.Abstractions.csproj" />
+      <ProjectReference Include="..\ForgettablePayloads.Abstractions\ForgettablePayloads.Abstractions.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

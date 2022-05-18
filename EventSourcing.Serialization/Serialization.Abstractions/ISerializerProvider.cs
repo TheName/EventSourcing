@@ -24,6 +24,14 @@ namespace EventSourcing.Serialization.Abstractions
         ISerializer GetBusSerializer();
         
         /// <summary>
+        /// Gets <see cref="ISerializer"/> configured to be used for serialization of forgettable payloads
+        /// </summary>
+        /// <returns>
+        /// The <see cref="ISerializer"/>.
+        /// </returns>
+        ISerializer GetForgettablePayloadSerializer();
+        
+        /// <summary>
         /// Gets <see cref="ISerializer"/> registered for provided <paramref name="serializationFormat"/>.
         /// </summary>
         /// <param name="serializationFormat">

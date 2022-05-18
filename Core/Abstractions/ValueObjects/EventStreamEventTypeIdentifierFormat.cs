@@ -10,7 +10,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// <summary>
         /// The ClassName <see cref="EventStreamEventTypeIdentifier"/>'s format.
         /// </summary>
-        public static EventStreamEventTypeIdentifierFormat ClassName = new EventStreamEventTypeIdentifierFormat(nameof(ClassName));
+        public static EventStreamEventTypeIdentifierFormat ClassName { get; } = new EventStreamEventTypeIdentifierFormat(nameof(ClassName));
         
         /// <summary>
         /// The actual value of event type identifier format

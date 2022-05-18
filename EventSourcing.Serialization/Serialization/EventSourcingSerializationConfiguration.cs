@@ -8,5 +8,7 @@ namespace EventSourcing.Serialization
         public SerializationFormat EventContentSerializationFormat { get; set; }
         
         public SerializationFormat BusSerializationFormat { get; set; }
+        
+        public SerializationFormat ForgettablePayloadSerializationFormat { get; set; }
     }
 }

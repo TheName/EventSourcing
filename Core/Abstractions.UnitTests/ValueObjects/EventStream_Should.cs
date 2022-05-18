@@ -140,8 +140,13 @@ namespace Abstractions.UnitTests.ValueObjects
                 (currentIndex, eventMetadata) =>
                 {
                     var currentValidSequence = Convert.ToUInt32(currentIndex);
-                    Assert.NotEqual<uint>(eventMetadata.EntrySequence, currentValidSequence);
-                    return currentIndex == invalidSequenceIndex ? eventMetadata.EntrySequence : currentValidSequence;
+                    var currentInvalidSequence = eventMetadata.EntrySequence.Value;
+                    if (currentInvalidSequence == currentValidSequence)
+                    {
+                        currentInvalidSequence = currentValidSequence + 1;
+                    }
+                    
+                    return currentIndex == invalidSequenceIndex ? currentInvalidSequence : currentValidSequence;
                 });
             
             eventsWithMetadata = eventsWithMetadata

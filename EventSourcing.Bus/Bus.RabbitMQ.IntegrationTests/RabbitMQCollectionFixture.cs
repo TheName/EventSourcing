@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
+using TestHelpers.Extensions;
 using TestHelpers.Logging;
 using Xunit;
 using Xunit.Abstractions;
@@ -33,9 +34,6 @@ namespace Bus.RabbitMQ.IntegrationTests
             var serviceCollection = new ServiceCollection()
                 .AddSingleton<IConfiguration>(configuration)
                 .AddLogging(builder => builder.AddProvider(new XUnitLoggerProvider(TestOutputHelperFunc)))
-                .AddSingleton(new Mock<IEventStreamStagingWriter>().Object)
-                .AddSingleton(new Mock<IEventStreamWriter>().Object)
-                .AddSingleton(new Mock<IEventStreamReader>().Object)
                 .AddSingleton<SimpleEventHandler>()
                 .AddTransient<IEventHandler<SimpleEvent>>(provider => provider.GetRequiredService<SimpleEventHandler>())
                 .AddSingleton(provider => Host.CreateDefaultBuilder()
@@ -47,6 +45,8 @@ namespace Bus.RabbitMQ.IntegrationTests
                 .AddEventSourcing()
                 .WithRabbitMQBus()
                 .WithJsonSerialization();
+
+            serviceCollection.AddEventSourcingPersistenceMocks();
 
             _serviceProvider = serviceCollection
                 .BuildServiceProvider(new ServiceProviderOptions

@@ -204,9 +204,9 @@ namespace EventSourcing.UnitTests.Reconciliation
             [Frozen] Mock<IEventStreamStagedEntriesReconciliationService> reconciliationServiceMock,
             ReconciliationJob reconciliationJob)
         {
-            var cancellationToken = new CancellationToken(true);
+            var cancellationTokenSource = new CancellationTokenSource();
             stagingReaderMock
-                .Setup(reader => reader.ReadUnmarkedStagedEntriesAsync(cancellationToken))
+                .Setup(reader => reader.ReadUnmarkedStagedEntriesAsync(cancellationTokenSource.Token))
                 .ReturnsAsync(stagedEntriesCollection)
                 .Verifiable();
 
@@ -214,11 +214,12 @@ namespace EventSourcing.UnitTests.Reconciliation
             {
                 var stagedEntries = stagedEntriesCollection[i];
                 var reconciliationSetup = reconciliationServiceMock
-                    .Setup(service => service.TryToReconcileStagedEntriesAsync(stagedEntries, cancellationToken));
+                    .Setup(service => service.TryToReconcileStagedEntriesAsync(stagedEntries, cancellationTokenSource.Token));
 
                 if (i == indexWhenOperationCancelledExceptionIsThrown)
                 {
                     reconciliationSetup
+                        .Callback(() => cancellationTokenSource.Cancel())
                         .Throws<OperationCanceledException>()
                         .Verifiable();
                     
@@ -230,7 +231,7 @@ namespace EventSourcing.UnitTests.Reconciliation
                     .Verifiable();
             }
 
-            await Assert.ThrowsAsync<OperationCanceledException>(() => reconciliationJob.ExecuteAsync(cancellationToken));
+            await Assert.ThrowsAsync<OperationCanceledException>(() => reconciliationJob.ExecuteAsync(cancellationTokenSource.Token));
             
             stagingReaderMock.Verify();
             stagingReaderMock.VerifyNoOtherCalls();
@@ -240,13 +241,13 @@ namespace EventSourcing.UnitTests.Reconciliation
 
         [Theory]
         [AutoMoqData]
-        internal async Task TryToReconcileEveryStagedEntry_When_Executing_And_ReconciliationServiceThrowsOperationCanceledException_And_CancellationIsRequested(
+        internal async Task TryToReconcileEveryStagedEntry_When_Executing_And_ReconciliationServiceThrowsOperationCanceledException_And_CancellationIsNotRequested(
             IReadOnlyCollection<EventStreamStagedEntries> stagedEntriesCollection,
             [Frozen] Mock<IEventStreamStagingReader> stagingReaderMock,
             [Frozen] Mock<IEventStreamStagedEntriesReconciliationService> reconciliationServiceMock,
             ReconciliationJob reconciliationJob)
         {
-            var cancellationToken = new CancellationToken(true);
+            var cancellationToken = new CancellationToken(false);
             stagingReaderMock
                 .Setup(reader => reader.ReadUnmarkedStagedEntriesAsync(cancellationToken))
                 .ReturnsAsync(stagedEntriesCollection)
@@ -265,6 +266,72 @@ namespace EventSourcing.UnitTests.Reconciliation
             stagingReaderMock.Verify();
             stagingReaderMock.VerifyNoOtherCalls();
             reconciliationServiceMock.Verify();
+            reconciliationServiceMock.VerifyNoOtherCalls();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        internal async Task Throw_OperationCancelledException_When_Executing_And_CancellationIsRequested(
+            IReadOnlyCollection<EventStreamStagedEntries> stagedEntriesCollection,
+            [Frozen] Mock<IEventStreamStagingReader> stagingReaderMock,
+            [Frozen] Mock<IEventStreamStagedEntriesReconciliationService> reconciliationServiceMock,
+            ReconciliationJob reconciliationJob)
+        {
+            var cancellationToken = new CancellationToken(true);
+            stagingReaderMock
+                .Setup(reader => reader.ReadUnmarkedStagedEntriesAsync(cancellationToken))
+                .ReturnsAsync(stagedEntriesCollection)
+                .Verifiable();
+
+            await Assert.ThrowsAsync<OperationCanceledException>(() => reconciliationJob.ExecuteAsync(cancellationToken));
+            
+            stagingReaderMock.Verify();
+            stagingReaderMock.VerifyNoOtherCalls();
+            reconciliationServiceMock.VerifyNoOtherCalls();
+        }
+
+        [Theory]
+        [AutoMoqWithInlineData(0)]
+        [AutoMoqWithInlineData(1)]
+        internal async Task Throw_OperationCancelledException_When_Executing_And_CancellationIsRequestedAfterGivenStagedEntriesAreProcessed(
+            int indexAfterWhichCancellationIsRequested,
+            List<EventStreamStagedEntries> stagedEntriesCollection,
+            [Frozen] Mock<IEventStreamStagingReader> stagingReaderMock,
+            [Frozen] Mock<IEventStreamStagedEntriesReconciliationService> reconciliationServiceMock,
+            ReconciliationJob reconciliationJob)
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+            stagingReaderMock
+                .Setup(reader => reader.ReadUnmarkedStagedEntriesAsync(cancellationTokenSource.Token))
+                .ReturnsAsync(stagedEntriesCollection)
+                .Verifiable();
+
+            reconciliationServiceMock
+                .Setup(service => service.TryToReconcileStagedEntriesAsync(
+                        stagedEntriesCollection[indexAfterWhichCancellationIsRequested], cancellationTokenSource.Token))
+                .Callback(() => cancellationTokenSource.Cancel());
+
+            await Assert.ThrowsAsync<OperationCanceledException>(() => reconciliationJob.ExecuteAsync(cancellationTokenSource.Token));
+            
+            stagingReaderMock.Verify();
+            stagingReaderMock.VerifyNoOtherCalls();
+            foreach (var entries in stagedEntriesCollection)
+            {
+                if (stagedEntriesCollection.IndexOf(entries) <= indexAfterWhichCancellationIsRequested)
+                {
+                    reconciliationServiceMock
+                        .Verify(
+                            service => service.TryToReconcileStagedEntriesAsync(entries, cancellationTokenSource.Token),
+                            Times.Once);
+                }
+                else
+                {
+                    reconciliationServiceMock
+                        .Verify(
+                            service => service.TryToReconcileStagedEntriesAsync(entries, cancellationTokenSource.Token),
+                            Times.Never);
+                }
+            }
             reconciliationServiceMock.VerifyNoOtherCalls();
         }
     }

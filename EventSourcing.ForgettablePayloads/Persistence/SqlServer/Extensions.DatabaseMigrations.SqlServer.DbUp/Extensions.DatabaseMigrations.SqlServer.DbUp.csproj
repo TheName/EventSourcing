@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp</RootNamespace>
+        <AssemblyName>EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp</Title>
+        <Description>This package contains database migration DbUp scripts provider for SqlServer implementation of EventSourcing.ForgettablePayloads.Persistence package.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.ForgettablePayloads.Extensions;EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations;EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="dbup-sqlserver" Version="4.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Extensions.DatabaseMigrations.SqlServer\Extensions.DatabaseMigrations.SqlServer.csproj" />
+    </ItemGroup>
+
+</Project>
