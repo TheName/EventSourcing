@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace EventSourcing.Extensions.DependencyInjection.Persistence
 {
     /// <summary>
-    /// The <see cref="IServiceCollection"/> extensions.
+    /// The <see cref="IEventSourcingBuilder"/> extensions.
     /// </summary>
     public static class EventSourcingBuilderExtensions
     {

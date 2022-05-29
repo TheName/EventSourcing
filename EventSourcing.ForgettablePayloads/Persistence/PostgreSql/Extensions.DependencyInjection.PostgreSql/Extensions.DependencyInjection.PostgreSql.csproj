@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql</RootNamespace>
+        <AssemblyName>EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql</Title>
+        <Description>This package contains DependencyInjection extensions for PostgreSql implementation of EventSourcing.ForgettablePayloads.Persistence package.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.ForgettablePayloads.Extensions;EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\ForgettablePayloads.DependencyInjection.Persistence\ForgettablePayloads.DependencyInjection.Persistence.csproj" />
+      <ProjectReference Include="..\ForgettablePayloads.Persistence.PostgreSql\ForgettablePayloads.Persistence.PostgreSql.csproj" />
+    </ItemGroup>
+
+</Project>

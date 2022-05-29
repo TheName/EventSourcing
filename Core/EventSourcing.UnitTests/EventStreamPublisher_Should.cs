@@ -8,6 +8,7 @@ using AutoFixture.Xunit2;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Abstractions.Hooks;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Bus.Abstractions;
 using EventSourcing.Persistence.Abstractions;
@@ -26,13 +27,15 @@ namespace EventSourcing.UnitTests
         public void Throw_ArgumentNullException_When_Creating_And_EventConverterIsNull(
             IEventStreamStagingWriter stagingWriter,
             IEventStreamWriter storeWriter,
-            IEventSourcingBusPublisher busPublisher)
+            IEventSourcingBusPublisher busPublisher,
+            IEnumerable<IEventStreamEventWithMetadataPrePublishingHook> prePublishingHooks)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
                 null,
                 stagingWriter,
                 storeWriter,
-                busPublisher));
+                busPublisher,
+                prePublishingHooks));
         }
         
         [Theory]
@@ -40,13 +43,15 @@ namespace EventSourcing.UnitTests
         public void Throw_ArgumentNullException_When_Creating_And_StagingWriterIsNull(
             IEventStreamEventConverter eventConverter,
             IEventStreamWriter storeWriter,
-            IEventSourcingBusPublisher busPublisher)
+            IEventSourcingBusPublisher busPublisher,
+            IEnumerable<IEventStreamEventWithMetadataPrePublishingHook> prePublishingHooks)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
                 eventConverter,
                 null,
                 storeWriter,
-                busPublisher));
+                busPublisher,
+                prePublishingHooks));
         }
         
         [Theory]
@@ -54,13 +59,15 @@ namespace EventSourcing.UnitTests
         public void Throw_ArgumentNullException_When_Creating_And_WriterIsNull(
             IEventStreamEventConverter eventConverter,
             IEventStreamStagingWriter storeStagingWriter,
-            IEventSourcingBusPublisher busPublisher)
+            IEventSourcingBusPublisher busPublisher,
+            IEnumerable<IEventStreamEventWithMetadataPrePublishingHook> prePublishingHooks)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
                 eventConverter,
                 storeStagingWriter,
                 null,
-                busPublisher));
+                busPublisher,
+                prePublishingHooks));
         }
         
         [Theory]
@@ -68,12 +75,30 @@ namespace EventSourcing.UnitTests
         public void Throw_ArgumentNullException_When_Creating_And_BusPublisherIsNull(
             IEventStreamEventConverter eventConverter,
             IEventStreamStagingWriter storeStagingWriter,
-            IEventStreamWriter storeWriter)
+            IEventStreamWriter storeWriter,
+            IEnumerable<IEventStreamEventWithMetadataPrePublishingHook> prePublishingHooks)
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
                 eventConverter,
                 storeStagingWriter,
                 storeWriter,
+                null,
+                prePublishingHooks));
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        public void Throw_ArgumentNullException_When_Creating_And_PrePublishingHookCollectionIsNull(
+            IEventStreamEventConverter eventConverter,
+            IEventStreamStagingWriter storeStagingWriter,
+            IEventStreamWriter storeWriter,
+            IEventSourcingBusPublisher busPublisher)
+        {
+            Assert.Throws<ArgumentNullException>(() => new EventStreamPublisher(
+                eventConverter,
+                storeStagingWriter,
+                storeWriter,
+                busPublisher,
                 null));
         }
         
@@ -83,9 +108,31 @@ namespace EventSourcing.UnitTests
             IEventStreamEventConverter eventConverter,
             IEventStreamStagingWriter storeStagingWriter,
             IEventStreamWriter storeWriter,
+            IEventSourcingBusPublisher busPublisher,
+            IEnumerable<IEventStreamEventWithMetadataPrePublishingHook> prePublishingHooks)
+        {
+            _ = new EventStreamPublisher(
+                eventConverter,
+                storeStagingWriter,
+                storeWriter,
+                busPublisher,
+                prePublishingHooks);
+        }
+        
+        [Theory]
+        [AutoMoqData]
+        public void NotThrow_When_Creating_And_PrePublishingHookCollectionIsEmpty(
+            IEventStreamEventConverter eventConverter,
+            IEventStreamStagingWriter storeStagingWriter,
+            IEventStreamWriter storeWriter,
             IEventSourcingBusPublisher busPublisher)
         {
-            _ = new EventStreamPublisher(eventConverter, storeStagingWriter, storeWriter, busPublisher);
+            _ = new EventStreamPublisher(
+                eventConverter,
+                storeStagingWriter,
+                storeWriter,
+                busPublisher,
+                new List<IEventStreamEventWithMetadataPrePublishingHook>());
         }
 
         [Theory]
@@ -109,6 +156,120 @@ namespace EventSourcing.UnitTests
             
             storeStagingWriterMock.VerifyNoOtherCalls();
             storeWriterMock.VerifyNoOtherCalls();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        internal async Task CallAllPrePublishingHooksWithAllEventsBeforeConvertingEvents_When_Publishing(
+            EventStreamId eventStreamId,
+            List<object> eventsToAppend,
+            [Frozen] Mock<IEventStreamEventConverter> eventStreamEventConverterMock,
+            IEventStreamStagingWriter stagingWriter,
+            IEventStreamWriter streamWriter,
+            IEventSourcingBusPublisher busPublisher,
+            List<Mock<IEventStreamEventWithMetadataPrePublishingHook>> prePublishingHookMocks)
+        {
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventToAppend in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventToAppend);
+            }
+
+            foreach (var prePublishingModifierMock in prePublishingHookMocks)
+            {
+                foreach (var eventStreamEventWithMetadata in appendableStream.EventsWithMetadataToAppend)
+                {
+                    prePublishingModifierMock
+                        .Setup(modifier =>
+                            modifier.PreEventStreamEventWithMetadataPublishHookAsync(eventStreamEventWithMetadata, It.IsAny<CancellationToken>()))
+                        .Returns(() =>
+                        {
+                            eventStreamEventConverterMock.VerifyNoOtherCalls();
+                            return Task.CompletedTask;
+                        })
+                        .Verifiable();
+                }
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
+
+            var publisher = new EventStreamPublisher(
+                eventStreamEventConverterMock.Object,
+                stagingWriter,
+                streamWriter,
+                busPublisher,
+                prePublishingHookMocks.Select(mock => mock.Object));
+
+            await PublishAndIgnoreExceptionsAsync(publisher, stream);
+
+            foreach (var prePublishingModifierMock in prePublishingHookMocks)
+            {
+                prePublishingModifierMock.Verify();
+                prePublishingModifierMock.VerifyNoOtherCalls();
+            }
+            
+            foreach (var eventToAppend in eventsToAppend)
+            {
+                eventStreamEventConverterMock.Verify(converter => converter.ToEventDescriptor(eventToAppend), Times.Once);
+            }
+        }
+
+        [Theory]
+        [AutoMoqWithInlineData(0)]
+        [AutoMoqWithInlineData(1)]
+        [AutoMoqWithInlineData(2)]
+        internal async Task NotCallConverter_When_And_AtLeastOneOfPrePublishingHooksThrows(
+            int indexOfThrowingModifier,
+            Exception thrownException,
+            EventStreamId eventStreamId,
+            List<object> eventsToAppend,
+            [Frozen] Mock<IEventStreamEventConverter> eventStreamEventConverterMock,
+            IEventStreamStagingWriter stagingWriter,
+            IEventStreamWriter streamWriter,
+            IEventSourcingBusPublisher busPublisher,
+            List<Mock<IEventStreamEventWithMetadataPrePublishingHook>> prePublishingHookMocks)
+        {
+            var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
+            foreach (var eventToAppend in eventsToAppend)
+            {
+                appendableStream.AppendEventWithMetadata(eventToAppend);
+            }
+
+            for (var i = 0; i < prePublishingHookMocks.Count; i++)
+            {
+                var mock = prePublishingHookMocks[i];
+                var modifierMockSetup = mock
+                    .Setup(modifier =>
+                        modifier.PreEventStreamEventWithMetadataPublishHookAsync(It.IsAny<EventStreamEventWithMetadata>(), It.IsAny<CancellationToken>()));
+
+                modifierMockSetup
+                    .Returns(i == indexOfThrowingModifier
+                        ? Task.FromException(thrownException)
+                        : Task.CompletedTask)
+                    .Verifiable();
+            }
+
+            var stream = new PublishableEventStream(appendableStream);
+
+            var publisher = new EventStreamPublisher(
+                eventStreamEventConverterMock.Object,
+                stagingWriter,
+                streamWriter,
+                busPublisher,
+                prePublishingHookMocks.Select(mock => mock.Object));
+
+            var aggregateException = await Assert.ThrowsAsync<AggregateException>(() => publisher.PublishAsync(stream, CancellationToken.None));
+
+            Assert.Equal(eventsToAppend.Count, aggregateException.InnerExceptions.Count);
+            Assert.All(aggregateException.InnerExceptions, exception => Assert.Equal(thrownException, exception));
+
+            foreach (var prePublishingModifierMock in prePublishingHookMocks)
+            {
+                prePublishingModifierMock.Verify();
+                prePublishingModifierMock.VerifyNoOtherCalls();
+            }
+            
+            eventStreamEventConverterMock.VerifyNoOtherCalls();
         }
 
         [Theory]

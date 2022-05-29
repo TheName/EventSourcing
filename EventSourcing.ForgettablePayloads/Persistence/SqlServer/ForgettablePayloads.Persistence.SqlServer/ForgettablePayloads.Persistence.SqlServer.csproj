@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>EventSourcing.ForgettablePayloads.Persistence.SqlServer</RootNamespace>
+        <AssemblyName>EventSourcing.ForgettablePayloads.Persistence.SqlServer</AssemblyName>
+    </PropertyGroup>
+
+    <!-- NuGet metadata -->
+    <PropertyGroup>
+        <Title>EventSourcing.ForgettablePayloads.Persistence.SqlServer</Title>
+        <Description>This package contains SqlServer implementation of EventSourcing.ForgettablePayloads.Persistence package.</Description>
+        <Authors>Dawid Szmidka</Authors>
+        <PackageId>EventSourcing.ForgettablePayloads.Persistence.SqlServer</PackageId>
+        <Version>0.1.0-alpha</Version>
+        <PackageReleaseNotes>
+            - Initial version of EventSourcing.ForgettablePayloads.Persistence.SqlServer project
+        </PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageTags>EventSourcing;EventSourcing.ForgettablePayloads.Persistence.SqlServer</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <IncludeSource>true</IncludeSource>
+        <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\..\ForgettablePayloads.Persistence\ForgettablePayloads.Persistence.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+    </ItemGroup>
+
+</Project>

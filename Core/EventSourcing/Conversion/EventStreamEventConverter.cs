@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using EventSourcing.Abstractions.Conversion;
+using EventSourcing.Abstractions.Hooks;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Serialization.Abstractions;
 
@@ -8,13 +10,16 @@ namespace EventSourcing.Conversion
     internal class EventStreamEventConverter : IEventStreamEventConverter
     {
         private readonly ISerializerProvider _serializerProvider;
+        private readonly IEnumerable<IEventStreamEventDescriptorPostDeserializationHook> _postDeserializationHooks;
         private readonly IEventStreamEventTypeIdentifierConverterProvider _typeIdentifierConverterProvider;
 
         public EventStreamEventConverter(
             ISerializerProvider serializerProvider,
+            IEnumerable<IEventStreamEventDescriptorPostDeserializationHook> postDeserializationHooks,
             IEventStreamEventTypeIdentifierConverterProvider typeIdentifierConverterProvider)
         {
             _serializerProvider = serializerProvider ?? throw new ArgumentNullException(nameof(serializerProvider));
+            _postDeserializationHooks = postDeserializationHooks ?? throw new ArgumentNullException(nameof(postDeserializationHooks));
             _typeIdentifierConverterProvider = typeIdentifierConverterProvider ?? throw new ArgumentNullException(nameof(typeIdentifierConverterProvider));
         }
         
@@ -47,7 +52,14 @@ namespace EventSourcing.Conversion
             var typeIdentifierConverter = _typeIdentifierConverterProvider.GetConverter(eventStreamEventDescriptor.EventTypeIdentifierFormat);
             var eventType = typeIdentifierConverter.FromTypeIdentifier(eventStreamEventDescriptor.EventTypeIdentifier);
             var serializer = _serializerProvider.GetSerializer(eventStreamEventDescriptor.EventContentSerializationFormat);
-            return serializer.Deserialize(eventStreamEventDescriptor.EventContent, eventType);
+            var deserializedEvent = serializer.Deserialize(eventStreamEventDescriptor.EventContent, eventType);
+
+            foreach (var eventStreamEventPostConversionModifier in _postDeserializationHooks)
+            {
+                eventStreamEventPostConversionModifier.PostEventDeserializationHook(deserializedEvent);
+            }
+
+            return deserializedEvent;
         }
     }
 }

@@ -59,6 +59,16 @@ namespace EventSourcing.Serialization
             return _serializers.Values.Single();
         }
 
+        public ISerializer GetForgettablePayloadSerializer()
+        {
+            if (_serializationConfiguration.ForgettablePayloadSerializationFormat != null)
+            {
+                return GetSerializer(_serializationConfiguration.ForgettablePayloadSerializationFormat);
+            }
+
+            return _serializers.Values.Single();
+        }
+
         public ISerializer GetSerializer(SerializationFormat serializationFormat)
         {
             if (_serializers.TryGetValue(serializationFormat, out var serializer))

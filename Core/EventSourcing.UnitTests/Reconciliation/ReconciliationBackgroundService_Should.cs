@@ -136,7 +136,7 @@ namespace EventSourcing.UnitTests.Reconciliation
             ReconciliationBackgroundService reconciliationService)
         {
             var cancellationToken = CancellationToken.None;
-            var jobExecutionInterval = TimeSpan.FromMilliseconds(50);
+            var jobExecutionInterval = TimeSpan.FromMilliseconds(150);
             configurationMock
                 .SetupGet(configuration => configuration.ReconciliationJobInterval)
                 .Returns(jobExecutionInterval)
@@ -156,7 +156,7 @@ namespace EventSourcing.UnitTests.Reconciliation
             
             configurationMock.Verify();
             configurationMock.VerifyNoOtherCalls();
-            reconciliationJobMock.Verify(job => job.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Exactly(expectedNumberOfReconciliationJobInvocations));
+            reconciliationJobMock.Verify(job => job.ExecuteAsync(It.IsAny<CancellationToken>()), Times.AtLeast(expectedNumberOfReconciliationJobInvocations));
         }
         
         [Theory]
@@ -168,7 +168,7 @@ namespace EventSourcing.UnitTests.Reconciliation
             ReconciliationBackgroundService reconciliationService)
         {
             var cancellationToken = CancellationToken.None;
-            var jobExecutionInterval = TimeSpan.FromMilliseconds(50);
+            var jobExecutionInterval = TimeSpan.FromMilliseconds(150);
             configurationMock
                 .SetupGet(configuration => configuration.ReconciliationJobInterval)
                 .Returns(jobExecutionInterval)
@@ -182,7 +182,7 @@ namespace EventSourcing.UnitTests.Reconciliation
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * (expectedNumberOfReconciliationJobInvocations + 1) + jobExecutionInterval / 2,
+                jobExecutionInterval * expectedNumberOfReconciliationJobInvocations + jobExecutionInterval / 2,
                 cancellationToken);
 
             await reconciliationService.StopAsync(cancellationToken);

@@ -91,7 +91,7 @@ namespace EventSourcing.UnitTests.Handling
 
         [Theory]
         [AutoMoqData]
-        internal async Task InvokeAllHandlers_When_DispatchingAnEntry(
+        internal async Task InvokeAllEventHandlers_When_DispatchingAnEntry(
             object @event,
             EventStreamEntry entry,
             CancellationToken cancellationToken, 
@@ -122,7 +122,7 @@ namespace EventSourcing.UnitTests.Handling
 
         [Theory]
         [AutoMoqData]
-        internal async Task SetCorrelationIdFromEventMetadataSoThatHandlersCouldUseId(
+        internal async Task SetCorrelationIdFromEventMetadataSoThatEventHandlersCouldUseIt(
             object @event,
             EventStreamEntry entry,
             CancellationToken cancellationToken, 
@@ -159,7 +159,7 @@ namespace EventSourcing.UnitTests.Handling
 
         [Theory]
         [AutoMoqData]
-        internal async Task SetCausationIdFromEventEntryIdSoThatHandlersCouldUseId(
+        internal async Task SetCausationIdFromEventEntryIdSoThatEventHandlersCouldUseIt(
             object @event,
             EventStreamEntry entry,
             CancellationToken cancellationToken, 
@@ -259,7 +259,7 @@ namespace EventSourcing.UnitTests.Handling
 
         [Theory]
         [AutoMoqData]
-        internal async Task CallExceptionsHandler_When_Dispatching_And_HandlerProviderThrowsException(
+        internal async Task CallExceptionsHandler_When_Dispatching_And_EventHandlerProviderThrowsException(
             EventStreamEntry entry,
             CancellationToken cancellationToken,
             Exception exception,

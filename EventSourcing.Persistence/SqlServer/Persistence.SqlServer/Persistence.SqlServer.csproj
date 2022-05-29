@@ -11,7 +11,7 @@
     <!-- NuGet metadata -->
     <PropertyGroup>
         <Title>EventSourcing.Persistence.SqlServer</Title>
-        <Description>This package contains SqlServer implementation of EventSourcing.Persistence.Abstraction package.</Description>
+        <Description>This package contains SqlServer implementation of EventSourcing.Persistence package.</Description>
         <Authors>Dawid Szmidka</Authors>
         <PackageId>EventSourcing.Persistence.SqlServer</PackageId>
         <Version>0.1.0-alpha</Version>

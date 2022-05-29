@@ -36,6 +36,8 @@ namespace EventSourcing.Reconciliation
             // That's why we try to reconcile each entry sequentially instead of doing it in parallel.
             foreach (var unmarkedStagedEntry in unmarkedStagedEntries)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 try
                 {
                     await _reconciliationService.TryToReconcileStagedEntriesAsync(

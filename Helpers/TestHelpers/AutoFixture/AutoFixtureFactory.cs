@@ -5,12 +5,23 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
 using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
 using EventSourcing.Persistence.Abstractions.ValueObjects;
 
 namespace TestHelpers.AutoFixture
 {
     internal static class AutoFixtureFactory
     {
+        private static readonly Random Random = new();
+
+        private static readonly IReadOnlyList<ForgettablePayloadState> ValidForgettablePayloadStates =
+            new List<ForgettablePayloadState>
+            {
+                ForgettablePayloadState.Created,
+                ForgettablePayloadState.CreatedAndClaimed,
+                ForgettablePayloadState.Forgotten
+            };
+
         public static IFixture Create()
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization {ConfigureMembers = true});
@@ -28,8 +39,18 @@ namespace TestHelpers.AutoFixture
             fixture.Register<ISpecimenBuilder, EventStreamId>(builder => builder.Create<Guid>());
             fixture.Register<ISpecimenBuilder, EventStreamStagingId>(builder => builder.Create<Guid>());
             fixture.Register<ISpecimenBuilder, SerializationFormat>(builder => builder.Create<string>());
+            fixture.Register(CreateForgettablePayloadState);
+            fixture.Register<ISpecimenBuilder, ForgettablePayloadLastModifiedTime>(builder => new DateTime(builder.Create<DateTime>().Ticks, DateTimeKind.Utc));
+            fixture.Register<ISpecimenBuilder, ForgettablePayloadContent>(builder => builder.Create<string>());
+            fixture.Register<ISpecimenBuilder, ForgettablePayloadTypeIdentifier>(builder => builder.Create<string>());
+            fixture.Register<ISpecimenBuilder, ForgettablePayloadTypeIdentifierFormat>(builder => builder.Create<string>());
 
             return fixture;
+        }
+
+        private static ForgettablePayloadState CreateForgettablePayloadState()
+        {
+            return ValidForgettablePayloadStates[Random.Next(0, ValidForgettablePayloadStates.Count)];
         }
 
         private static EventStream CreateEventStream(ISpecimenBuilder builder)

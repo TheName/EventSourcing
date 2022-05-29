@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Abstractions.Hooks;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Bus.Abstractions;
 using EventSourcing.Extensions;
+using EventSourcing.Helpers;
 using EventSourcing.Persistence.Abstractions;
 using EventSourcing.Persistence.Abstractions.Enums;
 
@@ -21,17 +23,20 @@ namespace EventSourcing
         private readonly IEventStreamStagingWriter _stagingWriter;
         private readonly IEventStreamWriter _streamWriter;
         private readonly IEventSourcingBusPublisher _busPublisher;
+        private readonly IEnumerable<IEventStreamEventWithMetadataPrePublishingHook> _prePublishingHooks;
 
         public EventStreamPublisher(
             IEventStreamEventConverter eventConverter,
             IEventStreamStagingWriter stagingWriter,
             IEventStreamWriter streamWriter,
-            IEventSourcingBusPublisher busPublisher)
+            IEventSourcingBusPublisher busPublisher,
+            IEnumerable<IEventStreamEventWithMetadataPrePublishingHook> prePublishingHooks)
         {
             _eventConverter = eventConverter ?? throw new ArgumentNullException(nameof(eventConverter));
             _stagingWriter = stagingWriter ?? throw new ArgumentNullException(nameof(stagingWriter));
             _streamWriter = streamWriter ?? throw new ArgumentNullException(nameof(streamWriter));
             _busPublisher = busPublisher ?? throw new ArgumentNullException(nameof(busPublisher));
+            _prePublishingHooks = prePublishingHooks ?? throw new ArgumentNullException(nameof(prePublishingHooks));
         }
 
         public async Task PublishAsync(PublishableEventStream stream, CancellationToken cancellationToken)
@@ -42,6 +47,12 @@ namespace EventSourcing
                 return;
             }
 
+            await TaskHelpers.WhenAllWithAggregateException(
+                    _prePublishingHooks
+                        .SelectMany(modifier => eventsToAppend
+                            .Select(eventWithMetadata => modifier.PreEventStreamEventWithMetadataPublishHookAsync(eventWithMetadata, cancellationToken))))
+                .ConfigureAwait(false);
+            
             var entriesToAppend = ConvertToEntries(eventsToAppend);
             var stagingId = await _stagingWriter.WriteAsync(entriesToAppend, cancellationToken).ConfigureAwait(false);
             var writeResult = await _streamWriter.WriteAsync(entriesToAppend, cancellationToken).ConfigureAwait(false);

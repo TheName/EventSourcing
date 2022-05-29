@@ -23,7 +23,23 @@ namespace EventSourcing.Conversion
                 throw new ArgumentNullException(nameof(eventTypeIdentifierConverters));
             }
 
-            _converters = eventTypeIdentifierConverters.ToDictionary(converter => converter.TypeIdentifierFormat, converter => converter);
+            var convertersDict = new Dictionary<EventStreamEventTypeIdentifierFormat, IEventStreamEventTypeIdentifierConverter>();
+            foreach (var convertersGroup in eventTypeIdentifierConverters.GroupBy(converter => converter.TypeIdentifierFormat))
+            {
+                var typeIdentifierFormat = convertersGroup.Key;
+                var typeIdentifierFormatConverters = convertersGroup.ToList();
+
+                if (typeIdentifierFormatConverters.Count > 1)
+                {
+                    throw new ArgumentException(
+                        $"Provided collection of {typeof(IEventStreamEventTypeIdentifierConverter)} contains {typeIdentifierFormatConverters.Count} instances handling same type identifier format ({typeIdentifierFormat}). Please provide only one instance per type identifier format.",
+                        nameof(eventTypeIdentifierConverters));
+                }
+                
+                convertersDict.Add(typeIdentifierFormat, typeIdentifierFormatConverters.Single());
+            }
+
+            _converters = convertersDict;
             if (_typeConversionConfiguration.EventTypeIdentifierFormat != null)
             {
                 if (!_converters.ContainsKey(_typeConversionConfiguration.EventTypeIdentifierFormat))
