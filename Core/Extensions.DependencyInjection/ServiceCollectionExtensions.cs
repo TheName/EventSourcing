@@ -55,7 +55,19 @@ namespace EventSourcing.Extensions.DependencyInjection
                 .BindConfiguration(nameof(EventSourcingConfiguration))
                 .Validate(
                     configuration => !string.IsNullOrWhiteSpace(configuration.BoundedContext),
-                    "BoundedContext cannot be empty.");
+                    "BoundedContext cannot be empty.")
+                .PostConfigure(configuration =>
+                {
+                    if (configuration.ReconciliationJobInterval == TimeSpan.Zero)
+                    {
+                        configuration.ReconciliationJobInterval = TimeSpan.FromSeconds(30);
+                    }
+
+                    if (configuration.ReconciliationJobGracePeriodAfterStagingTime == TimeSpan.Zero)
+                    {
+                        configuration.ReconciliationJobGracePeriodAfterStagingTime = TimeSpan.FromSeconds(15);
+                    }
+                });
 
             serviceCollection
                 .TryAddTransient<IEventSourcingConfiguration>(provider =>
