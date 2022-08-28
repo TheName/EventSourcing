@@ -1,4 +1,6 @@
 ﻿using System;
+using EventSourcing.Aggregates;
+using EventSourcing.Aggregates.Abstractions;
 using EventSourcing.Aggregates.Abstractions.Builders;
 using EventSourcing.Aggregates.Abstractions.Conversion;
 using EventSourcing.Aggregates.Abstractions.Factories;
@@ -42,7 +44,8 @@ namespace EventSourcing.Extensions.DependencyInjection.Aggregates
                 .AddTransient<IEventStreamAggregateConverter, EventStreamAggregateConverter>()
                 .AddTransient<IEventStreamAggregateFactory, EventStreamAggregateFactory>()
                 .AddTransient<IEventStreamAggregatePublisher, EventStreamAggregatePublisher>()
-                .AddTransient<IEventStreamAggregateRetriever, EventStreamAggregateRetriever>();
+                .AddTransient<IEventStreamAggregateRetriever, EventStreamAggregateRetriever>()
+                .AddTransient<IAggregateEventStore, AggregateEventStore>();
 
             return eventSourcingBuilder;
         }
