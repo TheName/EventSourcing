@@ -55,7 +55,19 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection
 
             builder.Services
                 .AddConfiguration<IForgettablePayloadTypeConversionConfiguration, ForgettablePayloadTypeConversionConfiguration>()
-                .AddConfiguration<IForgettablePayloadConfiguration, ForgettablePayloadConfiguration>();
+                .AddConfiguration<IForgettablePayloadConfiguration, ForgettablePayloadConfiguration>()
+                .PostConfigure<ForgettablePayloadConfiguration>(configuration =>
+                {
+                    if (configuration.UnclaimedForgettablePayloadsCleanupTimeout == TimeSpan.Zero)
+                    {
+                        configuration.UnclaimedForgettablePayloadsCleanupTimeout = TimeSpan.FromDays(5);
+                    }
+
+                    if (configuration.UnclaimedForgettablePayloadsCleanupJobInterval == TimeSpan.Zero)
+                    {
+                        configuration.UnclaimedForgettablePayloadsCleanupJobInterval = TimeSpan.FromHours(1);
+                    }
+                });
 
             return builder;
         }
