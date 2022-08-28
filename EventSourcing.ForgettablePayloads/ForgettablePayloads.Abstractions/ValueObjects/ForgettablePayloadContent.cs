@@ -15,7 +15,16 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// </summary>
         public string Value { get; }
 
-        private ForgettablePayloadContent(string value)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ForgettablePayloadContentDescriptor"/> class.
+        /// </summary>
+        /// <param name="value">
+        /// The actual value of forgettable payload content.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="value"/> is null or whitespace.
+        /// </exception>
+        public ForgettablePayloadContent(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

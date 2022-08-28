@@ -23,7 +23,16 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// </returns>
         public static ForgettingPayloadTime Now() => DateTime.UtcNow;
 
-        private ForgettingPayloadTime(DateTime value)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ForgettingPayloadTime"/> class.
+        /// </summary>
+        /// <param name="value">
+        /// The actual value of forgetting time
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="value"/> is DateTime.MinValue or DateTime.MaxValue or Kind is different than UTC
+        /// </exception>
+        public ForgettingPayloadTime(DateTime value)
         {
             if (value == DateTime.MinValue)
             {

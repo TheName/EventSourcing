@@ -23,7 +23,16 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// </returns>
         public static ForgettablePayloadCreationTime Now() => DateTime.UtcNow;
 
-        private ForgettablePayloadCreationTime(DateTime value)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ForgettablePayloadCreationTime"/> class.
+        /// </summary>
+        /// <param name="value">
+        /// The actual value of creation time
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="value"/> is null
+        /// </exception>
+        public ForgettablePayloadCreationTime(DateTime value)
         {
             if (value == DateTime.MinValue)
             {

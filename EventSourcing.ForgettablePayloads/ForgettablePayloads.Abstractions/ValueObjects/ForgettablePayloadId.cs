@@ -20,7 +20,16 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// </summary>
         public Guid Value { get; }
 
-        private ForgettablePayloadId(Guid value)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ForgettablePayloadId"/> class.
+        /// </summary>
+        /// <param name="value">
+        /// The actual value of forgettable payload id
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="value"/> is an empty guid
+        /// </exception>
+        public ForgettablePayloadId(Guid value)
         {
             if (value == Guid.Empty)
             {
