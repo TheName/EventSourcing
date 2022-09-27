@@ -122,12 +122,15 @@ namespace ForgettablePayloads.UnitTests.Hooks
         [AutoMoqWithInlineData(0)]
         [AutoMoqWithInlineData(1)]
         [AutoMoqWithInlineData(2)]
-        internal async Task Throw_AggregateException_When_PreEventStreamEventWithMetadataPublishHookAsyncIsCalled_And_FinderReturnsCollectionWithAtLeastOneForgettablePayloadThatWasNotCreated(
+        internal async Task InsertAllPayloadsThatWereCreatedAndNotThrow_When_PreEventStreamEventWithMetadataPublishHookAsyncIsCalled_And_FinderReturnsCollectionWithAtLeastOneForgettablePayloadThatWasNotCreated(
             int indexAtWhichNotCreatedForgettablePayloadShouldBeInserted,
             EventStreamEventWithMetadata eventWithMetadata,
             List<object> payloads,
             ForgettablePayload notCreatedForgettablePayload,
+            List<ForgettablePayloadContentDescriptor> contentDescriptors,
             [Frozen] Mock<IForgettablePayloadFinder> finderMock,
+            [Frozen] Mock<IForgettablePayloadContentConverter> contentConverterMock,
+            [Frozen] Mock<IForgettablePayloadStorageWriter> storageWriterMock,
             StoreForgettablePayloadsPrePublishingHook hook)
         {
             // Arrange
@@ -142,15 +145,50 @@ namespace ForgettablePayloads.UnitTests.Hooks
                 .Returns(forgettablePayloads)
                 .Verifiable();
 
+            for (var i = 0; i < payloads.Count; i++)
+            {
+                contentConverterMock
+                    .Setup(converter => converter.ToPayloadContentDescriptor(payloads[i]))
+                    .Returns(contentDescriptors[i])
+                    .Verifiable();
+            }
+
             // Act
-            var aggregateException = await Assert.ThrowsAsync<AggregateException>(() =>
-                hook.PreEventStreamEventWithMetadataPublishHookAsync(eventWithMetadata, CancellationToken.None));
+            await hook.PreEventStreamEventWithMetadataPublishHookAsync(eventWithMetadata, CancellationToken.None);
 
             // Assert
-            var singleInnerException = Assert.Single(aggregateException.InnerExceptions);
-            Assert.IsType<InvalidOperationException>(singleInnerException);
+            var contentDescriptorsIndex = 0;
+            for (var i = 0; i < forgettablePayloads.Count; i++)
+            {
+                if (i == indexAtWhichNotCreatedForgettablePayloadShouldBeInserted)
+                {
+                    var notCreatedResult = forgettablePayloads[i].TryCreateMetadataForEventStreamIdAndEntryId(
+                        eventWithMetadata.EventMetadata.StreamId,
+                        eventWithMetadata.EventMetadata.EntryId,
+                        out var notCreatedMetadata);
+                    
+                    Assert.False(notCreatedResult);
+                    Assert.Null(notCreatedMetadata);
+                    
+                    continue;
+                }
+                
+                var result = forgettablePayloads[i].TryCreateMetadataForEventStreamIdAndEntryId(
+                    eventWithMetadata.EventMetadata.StreamId,
+                    eventWithMetadata.EventMetadata.EntryId,
+                    out var metadata);
+                
+                Assert.True(result);
+                var contentDescriptor = contentDescriptors[contentDescriptorsIndex++];
+                var descriptor = ForgettablePayloadDescriptor.CreateFromMetadataAndContentDescriptor(metadata, contentDescriptor);
 
+                storageWriterMock
+                    .Verify(writer => writer.InsertAsync(descriptor, It.IsAny<CancellationToken>()), Times.Once);
+            }
+            
+            storageWriterMock.VerifyNoOtherCalls();
             finderMock.Verify();
+            contentConverterMock.Verify();
         }
 
         [Theory]
@@ -222,10 +260,12 @@ namespace ForgettablePayloads.UnitTests.Hooks
                     .Returns(contentDescriptors[i])
                     .Verifiable();
                 
-                var metadata = forgettablePayloads[i].CreateMetadataForEventStreamIdAndEntryId(
+                var result = forgettablePayloads[i].TryCreateMetadataForEventStreamIdAndEntryId(
                     eventWithMetadata.EventMetadata.StreamId,
-                    eventWithMetadata.EventMetadata.EntryId);
-
+                    eventWithMetadata.EventMetadata.EntryId,
+                    out var metadata);
+                
+                Assert.True(result);
                 var contentDescriptor = contentDescriptors[i];
                 var descriptor = ForgettablePayloadDescriptor.CreateFromMetadataAndContentDescriptor(metadata, contentDescriptor);
 
@@ -286,10 +326,12 @@ namespace ForgettablePayloads.UnitTests.Hooks
             // Assert
             for (var i = 0; i < payloads.Count; i++)
             {
-                var metadata = forgettablePayloads[i].CreateMetadataForEventStreamIdAndEntryId(
+                var result = forgettablePayloads[i].TryCreateMetadataForEventStreamIdAndEntryId(
                     eventWithMetadata.EventMetadata.StreamId,
-                    eventWithMetadata.EventMetadata.EntryId);
+                    eventWithMetadata.EventMetadata.EntryId,
+                    out var metadata);
 
+                Assert.True(result);
                 var contentDescriptor = contentDescriptors[i];
                 var descriptor = ForgettablePayloadDescriptor.CreateFromMetadataAndContentDescriptor(metadata, contentDescriptor);
 

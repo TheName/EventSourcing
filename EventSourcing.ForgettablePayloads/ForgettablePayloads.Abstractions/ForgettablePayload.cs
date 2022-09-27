@@ -246,32 +246,18 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
             return _payload;
         }
 
-        /// <summary>
-        /// Creates a new metadata object for provided stream id and entry id
-        /// </summary>
-        /// <param name="eventStreamId">
-        /// The <see cref="EventStreamId"/>
-        /// </param>
-        /// <param name="eventStreamEntryId">
-        /// The <see cref="EventStreamEntryId"/>
-        /// </param>
-        /// <returns>
-        /// The <see cref="ForgettablePayloadMetadata"/>
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if this instance has not been created but loaded (and thus already stored and assigned to other stream id and entry id)
-        /// </exception>
-        public ForgettablePayloadMetadata CreateMetadataForEventStreamIdAndEntryId(
+        public bool TryCreateMetadataForEventStreamIdAndEntryId(
             EventStreamId eventStreamId,
-            EventStreamEntryId eventStreamEntryId)
+            EventStreamEntryId eventStreamEntryId,
+            out ForgettablePayloadMetadata payloadMetadata)
         {
             if (!WasCreated)
             {
-                throw new InvalidOperationException(
-                    $"This instance of {nameof(ForgettablePayload)} was not created; cannot create a new metadata for a loaded one. Payload Id: {PayloadId}");
+                payloadMetadata = null;
+                return false;
             }
 
-            return new ForgettablePayloadMetadata(
+            payloadMetadata = new ForgettablePayloadMetadata(
                 eventStreamId,
                 eventStreamEntryId,
                 PayloadId,
@@ -279,6 +265,8 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
                 _payloadCreationTime,
                 new ForgettablePayloadLastModifiedTime(_payloadCreationTime.Value),
                 new ForgettablePayloadSequence(0));
+
+            return true;
         }
 
         /// <summary>

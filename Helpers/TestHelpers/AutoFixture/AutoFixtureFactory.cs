@@ -40,6 +40,8 @@ namespace TestHelpers.AutoFixture
             fixture.Register<ISpecimenBuilder, EventStreamStagingId>(builder => builder.Create<Guid>());
             fixture.Register<ISpecimenBuilder, SerializationFormat>(builder => builder.Create<string>());
             fixture.Register(CreateForgettablePayloadState);
+            fixture.Register<ISpecimenBuilder, ForgettingPayloadTime>(builder => new DateTime(builder.Create<DateTime>().Ticks, DateTimeKind.Utc));
+            fixture.Register<ISpecimenBuilder, ForgettablePayloadCreationTime>(builder => new DateTime(builder.Create<DateTime>().Ticks, DateTimeKind.Utc));
             fixture.Register<ISpecimenBuilder, ForgettablePayloadLastModifiedTime>(builder => new DateTime(builder.Create<DateTime>().Ticks, DateTimeKind.Utc));
             fixture.Register<ISpecimenBuilder, ForgettablePayloadContent>(builder => builder.Create<string>());
             fixture.Register<ISpecimenBuilder, ForgettablePayloadTypeIdentifier>(builder => builder.Create<string>());

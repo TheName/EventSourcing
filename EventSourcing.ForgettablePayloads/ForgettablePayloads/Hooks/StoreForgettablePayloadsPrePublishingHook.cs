@@ -65,9 +65,15 @@ namespace EventSourcing.ForgettablePayloads.Hooks
             EventStreamEventMetadata eventMetadata,
             CancellationToken cancellationToken)
         {
-            var payloadMetadata = forgettablePayload.CreateMetadataForEventStreamIdAndEntryId(
-                eventMetadata.StreamId,
-                eventMetadata.EntryId);
+            if (!forgettablePayload.TryCreateMetadataForEventStreamIdAndEntryId(
+                    eventMetadata.StreamId,
+                    eventMetadata.EntryId,
+                    out var payloadMetadata))
+            {
+                // this ForgettablePayload instance was not created; must've been reused
+                
+                return;
+            }
 
             var actualPayload = await forgettablePayload.GetPayloadAsync(cancellationToken).ConfigureAwait(false);
             var payloadContentDescriptor = _forgettablePayloadConverter.ToPayloadContentDescriptor(actualPayload);

@@ -75,43 +75,47 @@ namespace ForgettablePayloads.Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CallingCreateMetadataForEventStreamIdAndEntryIdWithNullEventStreamId_After_CreatedNewGeneric(
+        public void Throw_ArgumentNullException_When_CallingTryCreateMetadataForEventStreamIdAndEntryIdWithNullEventStreamId_After_CreatedNewGeneric(
             object payload,
             EventStreamEntryId entryId)
         {
             var forgettablePayload = ForgettablePayload.CreateNew<object>(payload);
 
-            Assert.Throws<ArgumentNullException>(() => forgettablePayload.CreateMetadataForEventStreamIdAndEntryId(
+            Assert.Throws<ArgumentNullException>(() => forgettablePayload.TryCreateMetadataForEventStreamIdAndEntryId(
                 null,
-                entryId));
+                entryId,
+                out _));
         }
 
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CallingCreateMetadataForEventStreamIdAndEntryIdWithNullEventStreamEntryId_After_CreatedNewGeneric(
+        public void Throw_ArgumentNullException_When_CallingTryCreateMetadataForEventStreamIdAndEntryIdWithNullEventStreamEntryId_After_CreatedNewGeneric(
             object payload,
             EventStreamId eventStreamId)
         {
             var forgettablePayload = ForgettablePayload.CreateNew<object>(payload);
 
-            Assert.Throws<ArgumentNullException>(() => forgettablePayload.CreateMetadataForEventStreamIdAndEntryId(
+            Assert.Throws<ArgumentNullException>(() => forgettablePayload.TryCreateMetadataForEventStreamIdAndEntryId(
                 eventStreamId,
-                null));
+                null,
+                out _));
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnNewMetadata_When_CallingCreateMetadataForEventStreamIdAndEntryIdWithNonNullParameters_After_CreatedNewGeneric(
+        public void ReturnTrueAndNewMetadata_When_CallingTryCreateMetadataForEventStreamIdAndEntryIdWithNonNullParameters_After_CreatedNewGeneric(
             object payload,
             EventStreamId eventStreamId,
             EventStreamEntryId entryId)
         {
             var forgettablePayload = ForgettablePayload.CreateNew<object>(payload);
 
-            var metadata = forgettablePayload.CreateMetadataForEventStreamIdAndEntryId(
+            var result = forgettablePayload.TryCreateMetadataForEventStreamIdAndEntryId(
                 eventStreamId,
-                entryId);
+                entryId,
+                out var metadata);
 
+            Assert.True(result);
             Assert.NotNull(metadata);
             Assert.Equal(eventStreamId, metadata.EventStreamId);
             Assert.Equal(entryId, metadata.EventStreamEntryId);
@@ -212,43 +216,47 @@ namespace ForgettablePayloads.Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CallingCreateMetadataForEventStreamIdAndEntryIdWithNullEventStreamId_After_CreatedNew(
+        public void Throw_ArgumentNullException_When_CallingTryCreateMetadataForEventStreamIdAndEntryIdWithNullEventStreamId_After_CreatedNew(
             object payload,
             EventStreamEntryId entryId)
         {
             var forgettablePayload = ForgettablePayload.CreateNew(payload);
 
-            Assert.Throws<ArgumentNullException>(() => forgettablePayload.CreateMetadataForEventStreamIdAndEntryId(
+            Assert.Throws<ArgumentNullException>(() => forgettablePayload.TryCreateMetadataForEventStreamIdAndEntryId(
                 null,
-                entryId));
+                entryId,
+                out _));
         }
 
         [Theory]
         [AutoMoqData]
-        public void Throw_ArgumentNullException_When_CallingCreateMetadataForEventStreamIdAndEntryIdWithNullEventStreamEntryId_After_CreatedNew(
+        public void Throw_ArgumentNullException_When_CallingTryCreateMetadataForEventStreamIdAndEntryIdWithNullEventStreamEntryId_After_CreatedNew(
             object payload,
             EventStreamId eventStreamId)
         {
             var forgettablePayload = ForgettablePayload.CreateNew(payload);
 
-            Assert.Throws<ArgumentNullException>(() => forgettablePayload.CreateMetadataForEventStreamIdAndEntryId(
+            Assert.Throws<ArgumentNullException>(() => forgettablePayload.TryCreateMetadataForEventStreamIdAndEntryId(
                 eventStreamId,
-                null));
+                null,
+                out _));
         }
 
         [Theory]
         [AutoMoqData]
-        public void ReturnNewMetadata_When_CallingCreateMetadataForEventStreamIdAndEntryIdWithNonNullParameters_After_CreatedNew(
+        public void ReturnTrueAndNewMetadata_When_CallingTryCreateMetadataForEventStreamIdAndEntryIdWithNonNullParameters_After_CreatedNew(
             object payload,
             EventStreamId eventStreamId,
             EventStreamEntryId entryId)
         {
             var forgettablePayload = ForgettablePayload.CreateNew(payload);
 
-            var metadata = forgettablePayload.CreateMetadataForEventStreamIdAndEntryId(
+            var result = forgettablePayload.TryCreateMetadataForEventStreamIdAndEntryId(
                 eventStreamId,
-                entryId);
+                entryId,
+                out var metadata);
 
+            Assert.True(result);
             Assert.NotNull(metadata);
             Assert.Equal(eventStreamId, metadata.EventStreamId);
             Assert.Equal(entryId, metadata.EventStreamEntryId);
@@ -841,14 +849,17 @@ namespace ForgettablePayloads.Abstractions.UnitTests
 
         [Theory]
         [AutoMoqData]
-        public void Throw_InvalidOperationException_When_CallingCreateMetadataForEventStreamIdAndEntryId(
+        public void ReturnFalse_When_CallingTryCreateMetadataForEventStreamIdAndEntryId(
             ForgettablePayload forgettablePayload,
             EventStreamId eventStreamId,
             EventStreamEntryId entryId)
         {
-            Assert.Throws<InvalidOperationException>(() => forgettablePayload.CreateMetadataForEventStreamIdAndEntryId(
+            var result = forgettablePayload.TryCreateMetadataForEventStreamIdAndEntryId(
                 eventStreamId,
-                entryId));
+                entryId,
+                out _);
+
+            Assert.False(result);
         }
 
         [Theory]
