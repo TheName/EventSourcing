@@ -191,7 +191,7 @@ namespace EventSourcing.Persistence.PostgreSql
 
         private static (string Command, List<NpgsqlParameter> Parameters) PrepareSelectCommand(EventStreamId streamId)
         {
-            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CreationTimeNanoSeconds, CorrelationId FROM {TableName} WHERE StreamId = @StreamId";
+            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CreationTimeNanoSeconds, CorrelationId FROM {TableName} WHERE StreamId = @StreamId ORDER BY EntrySequence ASC";
             var parameters = new List<NpgsqlParameter>
             {
                 new NpgsqlParameter("@StreamId", NpgsqlDbType.Uuid)
@@ -208,7 +208,7 @@ namespace EventSourcing.Persistence.PostgreSql
             EventStreamEntrySequence minimumSequence,
             EventStreamEntrySequence maximumSequence)
         {
-            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CreationTimeNanoSeconds, CorrelationId FROM {TableName} WHERE StreamId = @StreamId AND EntrySequence >= @MinimumSequence AND EntrySequence <= @MaximumSequence";
+            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CreationTimeNanoSeconds, CorrelationId FROM {TableName} WHERE StreamId = @StreamId AND EntrySequence >= @MinimumSequence AND EntrySequence <= @MaximumSequence ORDER BY EntrySequence ASC";
             var parameters = new List<NpgsqlParameter>
             {
                 new NpgsqlParameter("@StreamId", NpgsqlDbType.Uuid)

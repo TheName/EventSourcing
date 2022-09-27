@@ -10,7 +10,8 @@
     CreationTime                        TIMESTAMP               NOT NULL,
     CreationTimeNanoSeconds             BIGINT                  NOT NULL,
     CorrelationId                       UUID                    NOT NULL,
-    PRIMARY KEY (StreamId, EntrySequence)        
+    PRIMARY KEY (StreamId, EntrySequence)
 );
 
 CREATE INDEX IDX_StreamId ON EventStream (StreamId);
+CREATE INDEX IDX_StreamId_EntrySequence ON EventStream (StreamId, EntrySequence ASC);

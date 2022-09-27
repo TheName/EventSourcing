@@ -9,7 +9,8 @@
     CausationId                         UNIQUEIDENTIFIER        NOT NULL,
     CreationTime                        DATETIMEOFFSET          NOT NULL,
     CorrelationId                       UNIQUEIDENTIFIER        NOT NULL,
-    PRIMARY KEY (StreamId, EntrySequence)        
+    PRIMARY KEY (StreamId, EntrySequence)
 );
 
 CREATE INDEX IDX_StreamId ON EventStream (StreamId);
+CREATE INDEX IDX_StreamId_EntrySequence ON EventStream (StreamId, EntrySequence ASC);

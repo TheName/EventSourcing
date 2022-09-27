@@ -193,7 +193,7 @@ namespace EventSourcing.Persistence.SqlServer
 
         private static (string Command, List<SqlParameter> Parameters) PrepareSelectCommand(EventStreamId streamId)
         {
-            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CorrelationId FROM {TableName} WHERE StreamId = @StreamId";
+            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CorrelationId FROM {TableName} WHERE StreamId = @StreamId ORDER BY EntrySequence ASC";
             var parameters = new List<SqlParameter>
             {
                 new SqlParameter("@StreamId", SqlDbType.UniqueIdentifier)
@@ -210,7 +210,7 @@ namespace EventSourcing.Persistence.SqlServer
             EventStreamEntrySequence minimumSequence,
             EventStreamEntrySequence maximumSequence)
         {
-            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CorrelationId FROM {TableName} WHERE StreamId = @StreamId AND EntrySequence >= @MinimumSequence AND EntrySequence <= @MaximumSequence";
+            var command = $"SELECT StreamId, EntryId, EntrySequence, EventContent, EventContentSerializationFormat, EventTypeIdentifier, EventTypeIdentifierFormat, CausationId, CreationTime, CorrelationId FROM {TableName} WHERE StreamId = @StreamId AND EntrySequence >= @MinimumSequence AND EntrySequence <= @MaximumSequence ORDER BY EntrySequence ASC";
             var parameters = new List<SqlParameter>
             {
                 new SqlParameter("@StreamId", SqlDbType.UniqueIdentifier)
