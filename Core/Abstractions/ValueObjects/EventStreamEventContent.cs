@@ -15,7 +15,16 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// </summary>
         public string Value { get; }
 
-        private EventStreamEventContent(string value)
+        /// <summary>
+        /// Creates a new instance of <see cref="EventStreamEventContent"/>
+        /// </summary>
+        /// <param name="value">
+        /// The <see cref="string"/> representing <see cref="EventStreamEventContent"/>
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="value"/> is null or whitespace
+        /// </exception>
+        public EventStreamEventContent(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

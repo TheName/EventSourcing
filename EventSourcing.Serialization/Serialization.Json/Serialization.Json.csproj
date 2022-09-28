@@ -30,7 +30,7 @@
       <ProjectReference Include="..\Serialization.Abstractions\Serialization.Abstractions.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="System.Text.Json" Version="5.0.2" />
+      <PackageReference Include="System.Text.Json" Version="6.0.6" />
     </ItemGroup>
 
 </Project>

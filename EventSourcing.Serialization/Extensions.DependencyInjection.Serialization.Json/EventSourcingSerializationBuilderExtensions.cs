@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Text.Json;
 using EventSourcing.Serialization.Abstractions;
-using EventSourcing.Serialization.Json;
 using Microsoft.Extensions.DependencyInjection;
+using JsonSerializer = EventSourcing.Serialization.Json.JsonSerializer;
 
 namespace EventSourcing.Extensions.DependencyInjection.Serialization.Json
 {
@@ -16,21 +17,29 @@ namespace EventSourcing.Extensions.DependencyInjection.Serialization.Json
         /// <param name="eventSourcingSerializationBuilder">
         /// The <see cref="IEventSourcingSerializationBuilder"/>.
         /// </param>
+        /// <param name="configureJsonSerializerOptions">
+        /// The action that allows to modify <see cref="JsonSerializerOptions"/>
+        /// </param>
         /// <returns>
         /// The <see cref="IEventSourcingSerializationBuilder"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="eventSourcingSerializationBuilder"/> is null.
         /// </exception>
-        public static IEventSourcingSerializationBuilder AddJsonSerializer(this IEventSourcingSerializationBuilder eventSourcingSerializationBuilder)
+        public static IEventSourcingSerializationBuilder AddJsonSerializer(
+            this IEventSourcingSerializationBuilder eventSourcingSerializationBuilder,
+            Action<JsonSerializerOptions> configureJsonSerializerOptions = null)
         {
             if (eventSourcingSerializationBuilder == null)
             {
                 throw new ArgumentNullException(nameof(eventSourcingSerializationBuilder));
             }
+
+            var jsonSerializerOptions = JsonSerializer.DefaultJsonSerializerOptions;
+            configureJsonSerializerOptions?.Invoke(jsonSerializerOptions);
             
             eventSourcingSerializationBuilder.Services
-                .AddTransient<ISerializer, JsonSerializer>();
+                .AddTransient<ISerializer>(_ => new JsonSerializer(jsonSerializerOptions));
 
             return eventSourcingSerializationBuilder;
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Serialization.Abstractions;
-using EventSourcing.Serialization.NewtonsoftJson.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -11,31 +10,28 @@ namespace EventSourcing.Serialization.NewtonsoftJson
 {
     internal class NewtonsoftJsonSerializer : ISerializer
     {
-        private static readonly JsonSerializerSettings DefaultSerializerSettings = new JsonSerializerSettings
+        public static readonly JsonSerializerSettings DefaultSerializerSettings = new JsonSerializerSettings
         {
             Converters = new List<JsonConverter>
             {
-                new StringEnumConverter(),
-                new EventStreamEntryCausationIdConverter(),
-                new EventStreamEntryCorrelationIdConverter(),
-                new EventStreamEntryCreationTimeConverter(),
-                new EventStreamEntryIdConverter(),
-                new EventStreamEntrySequenceConverter(),
-                new EventStreamEventContentConverter(),
-                new EventStreamEventTypeIdentifierConverter(),
-                new EventStreamIdConverter(),
-                new SerializationFormatConverter(),
-                new EventStreamEventTypeIdentifierFormatConverter()
+                new StringEnumConverter()
             }
         };
         
         private static readonly SerializationFormat JsonSerializationFormat = SerializationFormat.Json;
+        
+        private readonly JsonSerializerSettings _jsonSerializerSettings;
 
         public SerializationFormat SerializationFormat => JsonSerializationFormat;
 
+        public NewtonsoftJsonSerializer(JsonSerializerSettings jsonSerializerSettings)
+        {
+            _jsonSerializerSettings = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
+        }
+
         public string Serialize(object @object)
         {
-            return JsonConvert.SerializeObject(@object, DefaultSerializerSettings);
+            return JsonConvert.SerializeObject(@object, _jsonSerializerSettings);
         }
 
         public byte[] SerializeToUtf8Bytes(object @object)
@@ -46,7 +42,7 @@ namespace EventSourcing.Serialization.NewtonsoftJson
 
         public object Deserialize(string serializedObject, Type objectType)
         {
-            return JsonConvert.DeserializeObject(serializedObject, objectType, DefaultSerializerSettings);
+            return JsonConvert.DeserializeObject(serializedObject, objectType, _jsonSerializerSettings);
         }
 
         public object DeserializeFromUtf8Bytes(byte[] serializedObject, Type objectType)

@@ -17,7 +17,16 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// </summary>
         public string Value { get; }
 
-        private SerializationFormat(string value)
+        /// <summary>
+        /// Creates a new instance of <see cref="SerializationFormat"/>
+        /// </summary>
+        /// <param name="value">
+        /// The <see cref="string"/> representing <see cref="SerializationFormat"/>
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="value"/> is null or whitespace
+        /// </exception>
+        public SerializationFormat(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {

@@ -60,7 +60,16 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// </summary>
         public Guid Value { get; }
 
-        private EventStreamEntryCausationId(Guid value)
+        /// <summary>
+        /// Creates a new instance of <see cref="EventStreamEntryCausationId"/>
+        /// </summary>
+        /// <param name="value">
+        /// The <see cref="Guid"/> representing <see cref="EventStreamEntryCausationId"/>
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="value"/> is an empty guid
+        /// </exception>
+        public EventStreamEntryCausationId(Guid value)
         {
             if (value == Guid.Empty)
             {

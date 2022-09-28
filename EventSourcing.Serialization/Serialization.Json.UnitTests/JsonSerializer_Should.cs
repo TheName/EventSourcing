@@ -10,11 +10,13 @@ namespace Serialization.Json.UnitTests
 {
     public class JsonSerializer_Should
     {
+        private readonly JsonSerializer _serializer = new(JsonSerializer.DefaultJsonSerializerOptions);
+        
         [Theory]
         [AutoMoqData]
-        internal void SerializeEventStreamEntryCorrectly(EventStreamEntry entry, JsonSerializer serializer)
+        internal void SerializeEventStreamEntryCorrectly(EventStreamEntry entry)
         {
-            var result = serializer.Serialize(entry);
+            var result = _serializer.Serialize(entry);
 
             var expectedString = GetExpectedSerializedString(entry);
             Assert.Equal(expectedString, result);
@@ -22,9 +24,9 @@ namespace Serialization.Json.UnitTests
         
         [Theory]
         [AutoMoqData]
-        internal void SerializeEventStreamEntryToUtf8BytesCorrectly(EventStreamEntry entry, JsonSerializer serializer)
+        internal void SerializeEventStreamEntryToUtf8BytesCorrectly(EventStreamEntry entry)
         {
-            var result = serializer.SerializeToUtf8Bytes(entry);
+            var result = _serializer.SerializeToUtf8Bytes(entry);
 
             var expectedString = GetExpectedSerializedString(entry);
             var expectedBytes = Encoding.UTF8.GetBytes(expectedString);
@@ -34,33 +36,33 @@ namespace Serialization.Json.UnitTests
         
         [Theory]
         [AutoMoqData]
-        internal void DeserializeEventStreamEntryCorrectly(EventStreamEntry entry, JsonSerializer serializer)
+        internal void DeserializeEventStreamEntryCorrectly(EventStreamEntry entry)
         {
             var serializedString = GetExpectedSerializedString(entry);
 
-            var result = serializer.Deserialize(serializedString, typeof(EventStreamEntry));
+            var result = _serializer.Deserialize(serializedString, typeof(EventStreamEntry));
 
             Assert.Equal(entry, result);
         }
         
         [Theory]
         [AutoMoqData]
-        internal void DeserializeEventStreamEntryFromUtf8BytesCorrectly(EventStreamEntry entry, JsonSerializer serializer)
+        internal void DeserializeEventStreamEntryFromUtf8BytesCorrectly(EventStreamEntry entry)
         {
             var serializedString = GetExpectedSerializedString(entry);
             var serializedBytes = Encoding.UTF8.GetBytes(serializedString);
 
-            var result = serializer.DeserializeFromUtf8Bytes(serializedBytes, typeof(EventStreamEntry));
+            var result = _serializer.DeserializeFromUtf8Bytes(serializedBytes, typeof(EventStreamEntry));
 
             Assert.Equal(entry, result);
         }
         
         [Theory]
         [AutoMoqData]
-        internal void SerializeClassWithEnumsCorrectly(IFixture fixture, JsonSerializer serializer)
+        internal void SerializeClassWithEnumsCorrectly(IFixture fixture)
         {
             var objectToSerialize = fixture.Create<ClassWithEnums>();
-            var result = serializer.Serialize(objectToSerialize);
+            var result = _serializer.Serialize(objectToSerialize);
 
             var expectedString = GetExpectedSerializedString(objectToSerialize);
             Assert.Equal(expectedString, result);
@@ -68,10 +70,10 @@ namespace Serialization.Json.UnitTests
         
         [Theory]
         [AutoMoqData]
-        internal void SerializeClassWithEnumsToUtf8BytesCorrectly(IFixture fixture, JsonSerializer serializer)
+        internal void SerializeClassWithEnumsToUtf8BytesCorrectly(IFixture fixture)
         {
             var objectToSerialize = fixture.Create<ClassWithEnums>();
-            var result = serializer.SerializeToUtf8Bytes(objectToSerialize);
+            var result = _serializer.SerializeToUtf8Bytes(objectToSerialize);
 
             var expectedString = GetExpectedSerializedString(objectToSerialize);
             var expectedBytes = Encoding.UTF8.GetBytes(expectedString);
@@ -81,12 +83,12 @@ namespace Serialization.Json.UnitTests
         
         [Theory]
         [AutoMoqData]
-        internal void DeserializeClassWithEnumsCorrectly(IFixture fixture, JsonSerializer serializer)
+        internal void DeserializeClassWithEnumsCorrectly(IFixture fixture)
         {
             var objectToSerialize = fixture.Create<ClassWithEnums>();
             var serializedString = GetExpectedSerializedString(objectToSerialize);
 
-            var result = serializer.Deserialize(serializedString, typeof(ClassWithEnums));
+            var result = _serializer.Deserialize(serializedString, typeof(ClassWithEnums));
 
             var resultAsClassWithEnums = Assert.IsType<ClassWithEnums>(result);
             Assert.Equal(objectToSerialize.StringValue, resultAsClassWithEnums.StringValue);
@@ -97,13 +99,13 @@ namespace Serialization.Json.UnitTests
         
         [Theory]
         [AutoMoqData]
-        internal void DeserializeClassWithEnumsFromUtf8BytesCorrectly(IFixture fixture, JsonSerializer serializer)
+        internal void DeserializeClassWithEnumsFromUtf8BytesCorrectly(IFixture fixture)
         {
             var objectToSerialize = fixture.Create<ClassWithEnums>();
             var serializedString = GetExpectedSerializedString(objectToSerialize);
             var serializedBytes = Encoding.UTF8.GetBytes(serializedString);
 
-            var result = serializer.DeserializeFromUtf8Bytes(serializedBytes, typeof(ClassWithEnums));
+            var result = _serializer.DeserializeFromUtf8Bytes(serializedBytes, typeof(ClassWithEnums));
 
             var resultAsClassWithEnums = Assert.IsType<ClassWithEnums>(result);
             Assert.Equal(objectToSerialize.StringValue, resultAsClassWithEnums.StringValue);
@@ -115,7 +117,7 @@ namespace Serialization.Json.UnitTests
         private static string GetExpectedSerializedString(EventStreamEntry entry)
         {
             return
-                $"{{\"StreamId\":\"{entry.StreamId}\",\"EntryId\":\"{entry.EntryId}\",\"EntrySequence\":{entry.EntrySequence},\"EventDescriptor\":{{\"EventContent\":\"{entry.EventDescriptor.EventContent}\",\"EventContentSerializationFormat\":\"{entry.EventDescriptor.EventContentSerializationFormat}\",\"EventTypeIdentifier\":\"{entry.EventDescriptor.EventTypeIdentifier}\",\"EventTypeIdentifierFormat\":\"{entry.EventDescriptor.EventTypeIdentifierFormat}\"}},\"CausationId\":\"{entry.CausationId}\",\"CreationTime\":\"{entry.CreationTime}\",\"CorrelationId\":\"{entry.CorrelationId}\"}}";
+                $"{{\"StreamId\":{{\"Value\":\"{entry.StreamId}\"}},\"EntryId\":{{\"Value\":\"{entry.EntryId}\"}},\"EntrySequence\":{{\"Value\":{entry.EntrySequence}}},\"EventDescriptor\":{{\"EventContent\":{{\"Value\":\"{entry.EventDescriptor.EventContent}\"}},\"EventContentSerializationFormat\":{{\"Value\":\"{entry.EventDescriptor.EventContentSerializationFormat}\"}},\"EventTypeIdentifier\":{{\"Value\":\"{entry.EventDescriptor.EventTypeIdentifier}\"}},\"EventTypeIdentifierFormat\":{{\"Value\":\"{entry.EventDescriptor.EventTypeIdentifierFormat}\"}}}},\"CausationId\":{{\"Value\":\"{entry.CausationId}\"}},\"CreationTime\":{{\"Value\":\"{entry.CreationTime}\"}},\"CorrelationId\":{{\"Value\":\"{entry.CorrelationId}\"}}}}";
         }
 
         private static string GetExpectedSerializedString(ClassWithEnums classWithEnums)

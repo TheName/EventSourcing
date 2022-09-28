@@ -9,46 +9,45 @@ namespace EventSourcing.Serialization.Json
 {
     internal class JsonSerializer : ISerializer
     {
-        private static readonly JsonSerializerOptions JsonSerializerOptions;
+        public static readonly JsonSerializerOptions DefaultJsonSerializerOptions = CreateDefaultJsonSerializerOptions(); 
         private static readonly SerializationFormat JsonSerializationFormat = SerializationFormat.Json;
+        
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         public SerializationFormat SerializationFormat => JsonSerializationFormat;
         
-        static JsonSerializer()
+        public JsonSerializer(JsonSerializerOptions jsonSerializerOptions)
         {
-            JsonSerializerOptions = new JsonSerializerOptions();
-            JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            JsonSerializerOptions.Converters.Add(new EventStreamEntryCausationIdConverter());
-            JsonSerializerOptions.Converters.Add(new EventStreamEntryCorrelationIdConverter());
-            JsonSerializerOptions.Converters.Add(new EventStreamEntryCreationTimeConverter());
-            JsonSerializerOptions.Converters.Add(new EventStreamEntryIdConverter());
-            JsonSerializerOptions.Converters.Add(new EventStreamEntrySequenceConverter());
-            JsonSerializerOptions.Converters.Add(new EventStreamEventContentConverter());
-            JsonSerializerOptions.Converters.Add(new EventStreamEventTypeIdentifierConverter());
-            JsonSerializerOptions.Converters.Add(new EventStreamIdConverter());
-            JsonSerializerOptions.Converters.Add(new SerializationFormatConverter());
-            JsonSerializerOptions.Converters.Add(new EventStreamEventTypeIdentifierFormatConverter());
-            JsonSerializerOptions.Converters.Add(new TypeConverter());
+            _jsonSerializerOptions = jsonSerializerOptions ?? throw new ArgumentNullException(nameof(jsonSerializerOptions));
         }
 
         public string Serialize(object @object)
         {
-            return System.Text.Json.JsonSerializer.Serialize(@object, JsonSerializerOptions);
+            return System.Text.Json.JsonSerializer.Serialize(@object, _jsonSerializerOptions);
         }
 
         public byte[] SerializeToUtf8Bytes(object @object)
         {
-            return System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(@object, JsonSerializerOptions);
+            return System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(@object, _jsonSerializerOptions);
         }
 
         public object Deserialize(string serializedObject, Type objectType)
         {
-            return System.Text.Json.JsonSerializer.Deserialize(serializedObject, objectType, JsonSerializerOptions);
+            return System.Text.Json.JsonSerializer.Deserialize(serializedObject, objectType, _jsonSerializerOptions);
         }
 
         public object DeserializeFromUtf8Bytes(byte[] serializedObject, Type objectType)
         {
-            return System.Text.Json.JsonSerializer.Deserialize(serializedObject, objectType, JsonSerializerOptions);
+            return System.Text.Json.JsonSerializer.Deserialize(serializedObject, objectType, _jsonSerializerOptions);
+        }
+        
+        private static JsonSerializerOptions CreateDefaultJsonSerializerOptions()
+        {
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new JsonStringEnumConverter());
+            options.Converters.Add(new TypeConverter());
+
+            return options;
         }
     }
 }

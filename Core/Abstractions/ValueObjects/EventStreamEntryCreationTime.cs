@@ -23,7 +23,16 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// </returns>
         public static EventStreamEntryCreationTime Now() => DateTime.UtcNow;
 
-        private EventStreamEntryCreationTime(DateTime value)
+        /// <summary>
+        /// Creates a new instance of <see cref="EventStreamEntryCreationTime"/>
+        /// </summary>
+        /// <param name="value">
+        /// The <see cref="DateTime"/> representing <see cref="EventStreamEntryCreationTime"/>
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="value"/> is a MinValue, MaxValue or when kind is different than Utc
+        /// </exception>
+        public EventStreamEntryCreationTime(DateTime value)
         {
             if (value == DateTime.MinValue)
             {

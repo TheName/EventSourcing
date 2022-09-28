@@ -13,7 +13,13 @@
         /// </summary>
         public uint Value { get; }
 
-        private EventStreamEntrySequence(uint value)
+        /// <summary>
+        /// Creates a new instance of <see cref="EventStreamEntrySequence"/>
+        /// </summary>
+        /// <param name="value">
+        /// The <see cref="uint"/> representing <see cref="EventStreamEntrySequence"/>
+        /// </param>
+        public EventStreamEntrySequence(uint value)
         {
             Value = value;
         }
