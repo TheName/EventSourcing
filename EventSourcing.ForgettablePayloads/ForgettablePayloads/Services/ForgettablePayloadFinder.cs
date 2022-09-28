@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,8 +10,8 @@ namespace EventSourcing.ForgettablePayloads.Services
 {
     internal class ForgettablePayloadFinder : IForgettablePayloadFinder
     {
-        private static readonly Dictionary<Type, IReadOnlyCollection<Func<object, IEnumerable<ForgettablePayload>>>> ForgettablePayloadFetchingFunctionsByType =
-                new Dictionary<Type, IReadOnlyCollection<Func<object, IEnumerable<ForgettablePayload>>>>();
+        private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<Func<object, IEnumerable<ForgettablePayload>>>> ForgettablePayloadFetchingFunctionsByType =
+                new ConcurrentDictionary<Type, IReadOnlyCollection<Func<object, IEnumerable<ForgettablePayload>>>>();
 
         public IReadOnlyCollection<ForgettablePayload> Find(object @event)
         {
@@ -33,7 +34,7 @@ namespace EventSourcing.ForgettablePayloads.Services
             }
 
             var result = FindForgettablePayloadRetrieversForType(type);
-            ForgettablePayloadFetchingFunctionsByType.Add(type, result);
+            ForgettablePayloadFetchingFunctionsByType.TryAdd(type, result);
 
             return result;
         }
