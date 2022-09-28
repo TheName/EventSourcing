@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace EventSourcing.Extensions.DependencyInjection.Serialization.NewtonsoftJson
 {
@@ -14,13 +15,18 @@ namespace EventSourcing.Extensions.DependencyInjection.Serialization.NewtonsoftJ
         /// <param name="eventSourcingBuilder">
         /// The <see cref="IEventSourcingBuilder"/>.
         /// </param>
+        /// <param name="configureJsonSerializerSettings">
+        /// The action that allows to modify <see cref="JsonSerializerSettings"/>
+        /// </param>
         /// <returns>
         /// The <see cref="IEventSourcingSerializationBuilder"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="eventSourcingBuilder"/> is null.
         /// </exception>
-        public static IEventSourcingSerializationBuilder WithNewtonsoftJsonSerialization(this IEventSourcingBuilder eventSourcingBuilder)
+        public static IEventSourcingSerializationBuilder WithNewtonsoftJsonSerialization(
+            this IEventSourcingBuilder eventSourcingBuilder,
+            Action<JsonSerializerSettings> configureJsonSerializerSettings = null)
         {
             if (eventSourcingBuilder == null)
             {
@@ -29,7 +35,7 @@ namespace EventSourcing.Extensions.DependencyInjection.Serialization.NewtonsoftJ
 
             return eventSourcingBuilder
                 .WithSerialization()
-                .AddNewtonsoftJsonSerializer();
+                .AddNewtonsoftJsonSerializer(configureJsonSerializerSettings);
         }
     }
 }

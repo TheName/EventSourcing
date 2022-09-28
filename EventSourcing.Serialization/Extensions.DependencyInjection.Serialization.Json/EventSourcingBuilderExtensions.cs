@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EventSourcing.Extensions.DependencyInjection.Serialization.Json
@@ -14,13 +15,18 @@ namespace EventSourcing.Extensions.DependencyInjection.Serialization.Json
         /// <param name="eventSourcingBuilder">
         /// The <see cref="IEventSourcingBuilder"/>.
         /// </param>
+        /// <param name="configureJsonSerializerOptions">
+        /// The action that allows to modify <see cref="JsonSerializerOptions"/>
+        /// </param>
         /// <returns>
         /// The <see cref="IEventSourcingSerializationBuilder"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="eventSourcingBuilder"/> is null.
         /// </exception>
-        public static IEventSourcingSerializationBuilder WithJsonSerialization(this IEventSourcingBuilder eventSourcingBuilder)
+        public static IEventSourcingSerializationBuilder WithJsonSerialization(
+            this IEventSourcingBuilder eventSourcingBuilder,
+            Action<JsonSerializerOptions> configureJsonSerializerOptions = null)
         {
             if (eventSourcingBuilder == null)
             {
@@ -29,7 +35,7 @@ namespace EventSourcing.Extensions.DependencyInjection.Serialization.Json
 
             return eventSourcingBuilder
                 .WithSerialization()
-                .AddJsonSerializer();
+                .AddJsonSerializer(configureJsonSerializerOptions);
         }
     }
 }
