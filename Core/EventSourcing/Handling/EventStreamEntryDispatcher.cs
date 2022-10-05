@@ -80,7 +80,7 @@ namespace EventSourcing.Handling
         private IReadOnlyList<EventHandlerDecorator> GetDecoratedHandlersForEventType(Type eventType)
         {
             var eventHandlers = GetHandlersForEventType(eventType);
-            return DecorateEventHandlers(eventType, eventHandlers);
+            return DecorateEventHandlers(eventType, eventHandlers, _logger);
         }
 
         private IReadOnlyList<object> GetHandlersForEventType(Type eventType)
@@ -100,12 +100,15 @@ namespace EventSourcing.Handling
             }
         }
 
-        private IReadOnlyList<EventHandlerDecorator> DecorateEventHandlers(Type eventType, IEnumerable<object> eventHandlers)
+        private IReadOnlyList<EventHandlerDecorator> DecorateEventHandlers(
+            Type eventType,
+            IEnumerable<object> eventHandlers,
+            ILogger logger)
         {
             try
             {
                 return eventHandlers
-                    .Select(handler => new EventHandlerDecorator(handler))
+                    .Select(handler => new EventHandlerDecorator(handler, logger))
                     .ToList();
             }
             catch (Exception e)
@@ -144,10 +147,12 @@ namespace EventSourcing.Handling
         private class EventHandlerDecorator
         {
             private readonly object _eventHandler;
+            private readonly ILogger _logger;
 
-            public EventHandlerDecorator(object eventHandler)
+            public EventHandlerDecorator(object eventHandler, ILogger logger)
             {
                 _eventHandler = eventHandler ?? throw new ArgumentNullException(nameof(eventHandler));
+                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
 
             public async Task HandleAsync(
@@ -162,6 +167,12 @@ namespace EventSourcing.Handling
                     throw new Exception("Could not get HandleAsync method info.");
                 }
 
+                _logger.LogInformation(
+                    "Invoking handler {HandlerName} in order to handle event {Event} with metadata {Metadata}",
+                    _eventHandler.GetType(),
+                    @event,
+                    eventMetadata);
+                
                 try
                 {
                     await (Task) handleAsyncMethodInfo.Invoke(_eventHandler, new[] {@event, eventMetadata, cancellationToken});
@@ -170,11 +181,31 @@ namespace EventSourcing.Handling
                 {
                     if (e.InnerException != null)
                     {
+                        _logger.LogError(
+                            e.InnerException,
+                            "Handler {HandlerName} failed to handle event {Event} with metadata {Metadata}",
+                            _eventHandler.GetType(),
+                            @event,
+                            eventMetadata);
+                        
                         throw e.InnerException;
                     }
 
+                    _logger.LogError(
+                        e,
+                        "Handler {HandlerName} failed to handle event {Event} with metadata {Metadata}",
+                        _eventHandler.GetType(),
+                        @event,
+                        eventMetadata);
+                    
                     throw;
                 }
+                
+                _logger.LogInformation(
+                    "Handler {HandlerName} has successfully handled event {Event} with metadata {Metadata}",
+                    _eventHandler.GetType(),
+                    @event,
+                    eventMetadata);
             }
         }
     }
