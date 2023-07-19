@@ -60,12 +60,12 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection
                 {
                     if (configuration.UnclaimedForgettablePayloadsCleanupTimeout == TimeSpan.Zero)
                     {
-                        configuration.UnclaimedForgettablePayloadsCleanupTimeout = TimeSpan.FromDays(5);
+                        configuration.UnclaimedForgettablePayloadsCleanupTimeout = TimeSpan.MaxValue;
                     }
 
                     if (configuration.UnclaimedForgettablePayloadsCleanupJobInterval == TimeSpan.Zero)
                     {
-                        configuration.UnclaimedForgettablePayloadsCleanupJobInterval = TimeSpan.FromHours(1);
+                        configuration.UnclaimedForgettablePayloadsCleanupJobInterval = TimeSpan.FromDays(1);
                     }
                 });
 
