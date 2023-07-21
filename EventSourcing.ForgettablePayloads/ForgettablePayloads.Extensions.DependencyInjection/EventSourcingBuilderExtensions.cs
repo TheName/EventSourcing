@@ -1,6 +1,6 @@
 ﻿using System;
 using EventSourcing.Abstractions.Hooks;
-using EventSourcing.Extensions.DependencyInjection;
+using EventSourcing.DependencyInjection;
 using EventSourcing.ForgettablePayloads.Abstractions.Cleanup;
 using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
 using EventSourcing.ForgettablePayloads.Abstractions.Conversion;

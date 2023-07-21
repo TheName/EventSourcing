@@ -1,4 +1,6 @@
-﻿namespace EventSourcing.Extensions.DependencyInjection.Bus
+﻿using EventSourcing.DependencyInjection;
+
+namespace EventSourcing.Extensions.DependencyInjection.Bus
 {
     /// <summary>
     /// Builder for EventSourcing Bus

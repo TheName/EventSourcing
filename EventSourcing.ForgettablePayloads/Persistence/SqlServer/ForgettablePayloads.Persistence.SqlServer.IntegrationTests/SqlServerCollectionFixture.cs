@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using DbUp;
-using EventSourcing.Extensions.DependencyInjection;
+using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Serialization.Json;
 using EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.SqlServer;

@@ -27,7 +27,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Core\Extensions.DependencyInjection\Extensions.DependencyInjection.csproj" />
         <ProjectReference Include="..\Extensions.DependencyInjection.Serialization\Extensions.DependencyInjection.Serialization.csproj" />
         <ProjectReference Include="..\Serialization.Abstractions\Serialization.Abstractions.csproj" />
         <ProjectReference Include="..\Serialization.Json\Serialization.Json.csproj" />

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions.Handling;
-using EventSourcing.Extensions.DependencyInjection;
+using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ;
 using EventSourcing.Extensions.DependencyInjection.Serialization.Json;
-using EventSourcing.Persistence.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Moq;
 using TestHelpers.Extensions;
 using TestHelpers.Logging;
 using Xunit;

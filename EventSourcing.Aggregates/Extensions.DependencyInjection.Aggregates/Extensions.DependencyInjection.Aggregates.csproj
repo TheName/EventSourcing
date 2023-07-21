@@ -27,7 +27,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\Extensions.DependencyInjection\Extensions.DependencyInjection.csproj" />
+      <ProjectReference Include="..\..\Core\EventSourcing\EventSourcing.csproj" />
       <ProjectReference Include="..\Aggregates\Aggregates.csproj" />
     </ItemGroup>
 

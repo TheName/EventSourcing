@@ -31,7 +31,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\..\Core\Extensions.DependencyInjection\Extensions.DependencyInjection.csproj" />
+      <ProjectReference Include="..\..\Core\EventSourcing\EventSourcing.csproj" />
       <ProjectReference Include="..\Bus\Bus.csproj" />
     </ItemGroup>
     

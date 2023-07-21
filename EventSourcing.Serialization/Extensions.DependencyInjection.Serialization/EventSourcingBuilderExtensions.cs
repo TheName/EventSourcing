@@ -1,4 +1,5 @@
 ﻿using System;
+using EventSourcing.DependencyInjection;
 using EventSourcing.Serialization;
 using EventSourcing.Serialization.Abstractions;
 using Microsoft.Extensions.DependencyInjection;

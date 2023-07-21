@@ -1,5 +1,5 @@
 ﻿using EventSourcing.Bus.Abstractions;
-using EventSourcing.Extensions.DependencyInjection;
+using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Bus;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
