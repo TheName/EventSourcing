@@ -1,6 +1,7 @@
 ﻿using System;
 using EventSourcing.Bus;
 using EventSourcing.Bus.Abstractions;
+using EventSourcing.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;

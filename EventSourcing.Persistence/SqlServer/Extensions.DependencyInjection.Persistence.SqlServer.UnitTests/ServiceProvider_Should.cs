@@ -1,4 +1,4 @@
-﻿using EventSourcing.Extensions.DependencyInjection;
+﻿using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using EventSourcing.DependencyInjection;
 using EventSourcing.Persistence;
 using EventSourcing.Persistence.SqlServer;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-﻿using EventSourcing.Extensions.DependencyInjection;
+﻿using EventSourcing.DependencyInjection;
 
 namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection
 {

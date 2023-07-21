@@ -6,13 +6,14 @@ using EventSourcing.Abstractions.Handling;
 using EventSourcing.Abstractions.Reconciliation;
 using EventSourcing.Configurations;
 using EventSourcing.Conversion;
+using EventSourcing.DependencyInjection;
 using EventSourcing.Handling;
 using EventSourcing.Reconciliation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace EventSourcing.Extensions.DependencyInjection
+namespace EventSourcing.Extensions
 {
     /// <summary>
     /// The <see cref="IServiceCollection"/> extensions.

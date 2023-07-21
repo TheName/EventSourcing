@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using EventSourcing.DependencyInjection;
 using EventSourcing.Persistence;
 using EventSourcing.Persistence.PostgreSql;
 using Microsoft.Extensions.DependencyInjection;

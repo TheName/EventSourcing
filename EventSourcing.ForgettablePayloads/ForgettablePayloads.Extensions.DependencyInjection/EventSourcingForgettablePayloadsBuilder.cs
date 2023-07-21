@@ -1,5 +1,5 @@
 ﻿using System;
-using EventSourcing.Extensions.DependencyInjection;
+using EventSourcing.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection

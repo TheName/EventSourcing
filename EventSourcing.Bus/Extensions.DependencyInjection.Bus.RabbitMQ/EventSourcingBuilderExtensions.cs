@@ -1,4 +1,5 @@
 ﻿using System;
+using EventSourcing.DependencyInjection;
 
 namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
 {

@@ -3,7 +3,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using DbUp;
-using EventSourcing.Extensions.DependencyInjection;
+using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Serialization.Json;
 using EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql;

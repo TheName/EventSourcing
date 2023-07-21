@@ -1,4 +1,4 @@
-﻿using EventSourcing.Extensions.DependencyInjection;
+﻿using EventSourcing.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection;
 using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence;
 using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql;

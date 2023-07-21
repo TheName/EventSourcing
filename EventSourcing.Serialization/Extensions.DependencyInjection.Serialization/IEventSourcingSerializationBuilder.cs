@@ -1,4 +1,6 @@
-﻿namespace EventSourcing.Extensions.DependencyInjection.Serialization
+﻿using EventSourcing.DependencyInjection;
+
+namespace EventSourcing.Extensions.DependencyInjection.Serialization
 {
     /// <summary>
     /// Builder for EventSourcing Serialization

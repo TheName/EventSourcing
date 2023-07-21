@@ -1,4 +1,4 @@
-﻿using EventSourcing.Extensions.DependencyInjection;
+﻿using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Bus;
 using EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;

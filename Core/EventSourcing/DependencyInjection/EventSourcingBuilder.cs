@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcing.Extensions.DependencyInjection
+namespace EventSourcing.DependencyInjection
 {
     internal class EventSourcingBuilder : IEventSourcingBuilder
     {

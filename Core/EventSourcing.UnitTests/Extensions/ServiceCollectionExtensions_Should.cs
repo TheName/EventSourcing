@@ -1,14 +1,14 @@
-﻿using EventSourcing.Extensions.DependencyInjection;
+﻿using EventSourcing.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
 
-namespace Extensions.DependencyInjection.UnitTests
+namespace EventSourcing.UnitTests.Extensions
 {
-    public class ServiceProvider_Should
+    public class ServiceCollectionExtensions_Should
     {
         [Fact]
-        public void BuildWithoutErrors_When_AddingEventSourcingAndExternalDependencies()
+        public void MakeServiceCollectionEligibleToBuildServiceProviderWithoutErrors_When_AddingEventSourcingAndExternalDependencies()
         {
             var serviceCollection = new ServiceCollection();
                 

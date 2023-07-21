@@ -1,4 +1,4 @@
-﻿using EventSourcing.Extensions.DependencyInjection;
+﻿using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Persistence;
 using EventSourcing.Persistence;
 using Microsoft.Extensions.DependencyInjection;

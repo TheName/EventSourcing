@@ -1,5 +1,5 @@
 ﻿using System;
-using EventSourcing.Extensions.DependencyInjection;
+using EventSourcing.DependencyInjection;
 
 namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.SqlServer
 {
