@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.Extensions.DependencyInjection.Bus
+﻿namespace EventSourcing.Bus.Abstractions
 {
     /// <summary>
     /// Options related to event sourcing builder for bus registrations

@@ -1,16 +1,16 @@
 ﻿using EventSourcing.Bus.Abstractions;
+using EventSourcing.Bus.Extensions;
 using EventSourcing.Extensions;
-using EventSourcing.Extensions.DependencyInjection.Bus;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
 
-namespace Extensions.DependencyInjection.Bus.UnitTests
+namespace Bus.UnitTests.Extensions
 {
-    public class ServiceProvider_Should
+    public class EventSourcingBuilderExtensions_Should
     {
         [Fact]
-        public void BuildWithoutErrors_When_AddingEventSourcingWithBusAndExternalDependenciesAndRequiredBusImplementation_And_UsingDefaults()
+        public void MakeServiceCollectionEligibleToBuildServiceProviderWithoutErrors_When_AddingEventSourcingWithBusAndExternalDependenciesAndRequiredBusImplementation_And_UsingDefaults()
         {
             var serviceCollection = new ServiceCollection();
                 
@@ -35,7 +35,7 @@ namespace Extensions.DependencyInjection.Bus.UnitTests
         }
         
         [Fact]
-        public void BuildWithoutErrors_When_AddingEventSourcingWithBusAndExternalDependenciesAndBusImplementation_And_OptionsWithConsumer()
+        public void MakeServiceCollectionEligibleToBuildServiceProviderWithoutErrors_When_AddingEventSourcingWithBusAndExternalDependenciesAndBusImplementation_And_OptionsWithConsumer()
         {
             var serviceCollection = new ServiceCollection();
                 
@@ -60,7 +60,7 @@ namespace Extensions.DependencyInjection.Bus.UnitTests
         }
         
         [Fact]
-        public void BuildWithoutErrors_When_AddingEventSourcingWithBusAndExternalDependenciesAndBusImplementation_And_OptionsWithoutConsumer()
+        public void MakeServiceCollectionEligibleToBuildServiceProviderWithoutErrors_When_AddingEventSourcingWithBusAndExternalDependenciesAndBusImplementation_And_OptionsWithoutConsumer()
         {
             var serviceCollection = new ServiceCollection();
                 

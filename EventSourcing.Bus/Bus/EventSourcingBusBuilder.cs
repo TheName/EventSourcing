@@ -1,8 +1,9 @@
 ﻿using System;
 using EventSourcing.Abstractions.DependencyInjection;
+using EventSourcing.Bus.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcing.Extensions.DependencyInjection.Bus
+namespace EventSourcing.Bus
 {
     internal class EventSourcingBusBuilder : IEventSourcingBusBuilder
     {
