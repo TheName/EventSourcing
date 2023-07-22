@@ -1,12 +1,11 @@
 ﻿using System;
 using EventSourcing.Bus.Abstractions;
-using EventSourcing.Bus.RabbitMQ;
 using EventSourcing.Bus.RabbitMQ.Configurations;
 using EventSourcing.Bus.RabbitMQ.Transport;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ
+namespace EventSourcing.Bus.RabbitMQ.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingBusBuilder"/> extensions.

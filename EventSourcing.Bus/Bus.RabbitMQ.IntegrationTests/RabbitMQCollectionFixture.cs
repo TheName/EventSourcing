@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions.Handling;
+using EventSourcing.Bus.Extensions;
+using EventSourcing.Bus.RabbitMQ.Extensions;
 using EventSourcing.Extensions;
-using EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ;
 using EventSourcing.Extensions.DependencyInjection.Serialization.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,7 +42,8 @@ namespace Bus.RabbitMQ.IntegrationTests
 
             serviceCollection
                 .AddEventSourcing()
-                .WithRabbitMQBus()
+                .WithBus()
+                .UsingRabbitMQ()
                 .WithJsonSerialization();
 
             serviceCollection.AddEventSourcingPersistenceMocks();
