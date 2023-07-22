@@ -24,8 +24,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.Json\Extensions.DependencyInjection.Serialization.Json.csproj" />
-      <ProjectReference Include="..\Extensions.DependencyInjection.Bus.RabbitMQ\Extensions.DependencyInjection.Bus.RabbitMQ.csproj" />
       <ProjectReference Include="..\..\Helpers\TestHelpers\TestHelpers.csproj" />
+      <ProjectReference Include="..\Bus.RabbitMQ\Bus.RabbitMQ.csproj" />
+      <ProjectReference Include="..\Bus\Bus.csproj" />
     </ItemGroup>
 
     <ItemGroup>
