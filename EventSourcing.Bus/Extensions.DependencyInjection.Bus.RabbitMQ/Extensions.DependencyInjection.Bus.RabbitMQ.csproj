@@ -28,7 +28,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\Bus.RabbitMQ\Bus.RabbitMQ.csproj" />
-      <ProjectReference Include="..\Extensions.DependencyInjection.Bus\Extensions.DependencyInjection.Bus.csproj" />
+      <ProjectReference Include="..\Bus\Bus.csproj" />
     </ItemGroup>
 
     <ItemGroup>

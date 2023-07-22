@@ -1,12 +1,11 @@
 ﻿using System;
 using EventSourcing.Abstractions.DependencyInjection;
-using EventSourcing.Bus;
 using EventSourcing.Bus.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace EventSourcing.Extensions.DependencyInjection.Bus
+namespace EventSourcing.Bus.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingBuilder"/> extensions.

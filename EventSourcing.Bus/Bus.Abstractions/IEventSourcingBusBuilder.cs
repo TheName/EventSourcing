@@ -1,6 +1,6 @@
 ﻿using EventSourcing.Abstractions.DependencyInjection;
 
-namespace EventSourcing.Extensions.DependencyInjection.Bus
+namespace EventSourcing.Bus.Abstractions
 {
     /// <summary>
     /// Builder for EventSourcing Bus

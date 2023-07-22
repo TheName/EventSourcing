@@ -1,5 +1,6 @@
-﻿using EventSourcing.Extensions;
-using EventSourcing.Extensions.DependencyInjection.Bus;
+﻿using EventSourcing.Bus.Abstractions;
+using EventSourcing.Bus.Extensions;
+using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Bus.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
