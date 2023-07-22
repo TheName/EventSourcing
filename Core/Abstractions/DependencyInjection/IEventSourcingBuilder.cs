@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcing.DependencyInjection
+namespace EventSourcing.Abstractions.DependencyInjection
 {
     /// <summary>
     /// Builder for EventSourcing

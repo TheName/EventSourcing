@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EventSourcing.Abstractions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EventSourcing.DependencyInjection
 {

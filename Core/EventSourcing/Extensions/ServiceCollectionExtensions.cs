@@ -2,6 +2,7 @@
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Configurations;
 using EventSourcing.Abstractions.Conversion;
+using EventSourcing.Abstractions.DependencyInjection;
 using EventSourcing.Abstractions.Handling;
 using EventSourcing.Abstractions.Reconciliation;
 using EventSourcing.Configurations;

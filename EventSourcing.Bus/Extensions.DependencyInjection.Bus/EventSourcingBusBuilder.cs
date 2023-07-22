@@ -1,5 +1,5 @@
 ﻿using System;
-using EventSourcing.DependencyInjection;
+using EventSourcing.Abstractions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EventSourcing.Extensions.DependencyInjection.Bus
@@ -7,9 +7,10 @@ namespace EventSourcing.Extensions.DependencyInjection.Bus
     internal class EventSourcingBusBuilder : IEventSourcingBusBuilder
     {
         private readonly IEventSourcingBuilder _eventSourcingBuilder;
-        public IServiceCollection Services => _eventSourcingBuilder.Services;
-        
+
         public EventSourcingBusBuilderOptions BusBuilderOptions { get; }
+
+        public IServiceCollection Services => _eventSourcingBuilder.Services;
 
         public EventSourcingBusBuilder(
             IEventSourcingBuilder eventSourcingBuilder,

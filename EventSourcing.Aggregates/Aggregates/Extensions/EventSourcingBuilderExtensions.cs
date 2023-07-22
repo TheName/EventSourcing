@@ -1,5 +1,5 @@
 ﻿using System;
-using EventSourcing.Aggregates;
+using EventSourcing.Abstractions.DependencyInjection;
 using EventSourcing.Aggregates.Abstractions;
 using EventSourcing.Aggregates.Abstractions.Builders;
 using EventSourcing.Aggregates.Abstractions.Conversion;
@@ -11,10 +11,9 @@ using EventSourcing.Aggregates.Conversion;
 using EventSourcing.Aggregates.Factories;
 using EventSourcing.Aggregates.Publishers;
 using EventSourcing.Aggregates.Retrievers;
-using EventSourcing.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcing.Extensions.DependencyInjection.Aggregates
+namespace EventSourcing.Aggregates.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingBuilder"/> extensions.
