@@ -1,4 +1,4 @@
-﻿using EventSourcing.DependencyInjection;
+﻿using EventSourcing.Abstractions.DependencyInjection;
 
 namespace EventSourcing.Extensions.DependencyInjection.Serialization
 {

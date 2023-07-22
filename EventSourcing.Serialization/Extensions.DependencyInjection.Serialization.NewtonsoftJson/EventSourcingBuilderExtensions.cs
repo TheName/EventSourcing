@@ -1,5 +1,5 @@
 ﻿using System;
-using EventSourcing.DependencyInjection;
+using EventSourcing.Abstractions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
