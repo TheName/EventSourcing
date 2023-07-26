@@ -1,6 +1,6 @@
 ﻿using EventSourcing.Abstractions.DependencyInjection;
 
-namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection
+namespace EventSourcing.ForgettablePayloads.Abstractions.DependencyInjection
 {
     /// <summary>
     /// Builder for EventSourcing.ForgettablePayloads

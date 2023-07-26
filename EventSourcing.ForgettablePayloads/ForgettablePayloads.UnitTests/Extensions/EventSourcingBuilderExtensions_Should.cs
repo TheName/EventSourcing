@@ -1,13 +1,13 @@
 ﻿using EventSourcing.Extensions;
-using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection;
+using EventSourcing.ForgettablePayloads.Extensions;
 using EventSourcing.ForgettablePayloads.Persistence.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
 
-namespace ForgettablePayloads.Extensions.DependencyInjection.UnitTests
+namespace ForgettablePayloads.UnitTests.Extensions
 {
-    public class ServiceProvider_Should
+    public class EventSourcingBuilderExtensions_Should
     {
         [Fact]
         public void BuildWithoutErrors_When_AddingEventSourcingAndExternalDependenciesAndRequiredForgettablePayloadsImplementation()

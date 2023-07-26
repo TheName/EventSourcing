@@ -1,5 +1,5 @@
 ﻿using EventSourcing.Extensions;
-using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection;
+using EventSourcing.ForgettablePayloads.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence;
 using EventSourcing.ForgettablePayloads.Persistence;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,29 +19,6 @@ namespace ForgettablePayloads.DependencyInjection.Persistence.UnitTests
                 .AddEventSourcing()
                 .WithForgettablePayloads()
                 .WithForgettablePayloadsPersistence();
-            
-            // Required EventSourcing.ForgettablePayloads.Persistence implementations
-            serviceCollection.AddMock<IForgettablePayloadStorageRepository>();
-            
-            // External dependencies
-            serviceCollection
-                .AddEventSourcingSerializationMocks()
-                .AddEventSourcingPersistenceMocks()
-                .AddEventSourcingBusMocks()
-                .AddMicrosoftLoggerMock();
-
-            serviceCollection.BuildServiceProvider(
-                new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
-        }
-        
-        [Fact]
-        public void BuildWithoutErrors_When_AddingEventSourcingAndExternalDependenciesAndRequiredForgettablePayloadsPersistenceImplementation()
-        {
-            var serviceCollection = new ServiceCollection();
-
-            serviceCollection
-                .AddEventSourcing()
-                .WithForgettablePayloadsAndPersistence();
             
             // Required EventSourcing.ForgettablePayloads.Persistence implementations
             serviceCollection.AddMock<IForgettablePayloadStorageRepository>();
