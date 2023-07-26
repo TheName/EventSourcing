@@ -4,17 +4,19 @@ using EventSourcing.Abstractions.Hooks;
 using EventSourcing.ForgettablePayloads.Abstractions.Cleanup;
 using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
 using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
+using EventSourcing.ForgettablePayloads.Abstractions.DependencyInjection;
 using EventSourcing.ForgettablePayloads.Abstractions.Services;
 using EventSourcing.ForgettablePayloads.Cleanup;
 using EventSourcing.ForgettablePayloads.Configurations;
 using EventSourcing.ForgettablePayloads.Conversion;
+using EventSourcing.ForgettablePayloads.DependencyInjection;
 using EventSourcing.ForgettablePayloads.Hooks;
 using EventSourcing.ForgettablePayloads.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection
+namespace EventSourcing.ForgettablePayloads.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingBuilder"/> extensions.

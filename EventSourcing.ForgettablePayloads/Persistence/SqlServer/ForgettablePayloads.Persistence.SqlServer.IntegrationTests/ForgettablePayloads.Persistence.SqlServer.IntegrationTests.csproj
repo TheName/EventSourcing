@@ -27,6 +27,7 @@
       <ProjectReference Include="..\..\..\..\EventSourcing.Persistence\SqlServer\Extensions.DependencyInjection.Persistence.SqlServer\Extensions.DependencyInjection.Persistence.SqlServer.csproj" />
       <ProjectReference Include="..\..\..\..\EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.Json\Extensions.DependencyInjection.Serialization.Json.csproj" />
       <ProjectReference Include="..\..\..\..\Helpers\TestHelpers\TestHelpers.csproj" />
+      <ProjectReference Include="..\..\..\ForgettablePayloads\ForgettablePayloads.csproj" />
       <ProjectReference Include="..\..\ForgettablePayloads.Persistence.IntegrationTests.Base\ForgettablePayloads.Persistence.IntegrationTests.Base.csproj" />
       <ProjectReference Include="..\Extensions.DatabaseMigrations.SqlServer.DbUp\Extensions.DatabaseMigrations.SqlServer.DbUp.csproj" />
       <ProjectReference Include="..\Extensions.DependencyInjection.SqlServer\Extensions.DependencyInjection.SqlServer.csproj" />

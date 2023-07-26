@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DbUp;
 using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Serialization.Json;
+using EventSourcing.ForgettablePayloads.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql;
 using EventSourcing.ForgettablePayloads.Persistence.PostgreSql;
@@ -47,7 +48,8 @@ namespace ForgettablePayloads.Persistence.PostgreSql.IntegrationTests
 
             serviceCollection
                 .AddEventSourcing()
-                .WithForgettablePayloadsUsingPostgreSqlPersistence()
+                .WithForgettablePayloads()
+                .WithForgettablePayloadsPostgreSqlPersistence()
                 .WithJsonSerialization();
 
             serviceCollection

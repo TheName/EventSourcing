@@ -21,7 +21,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\Core\EventSourcing\EventSourcing.csproj" />
         <ProjectReference Include="..\..\..\Helpers\TestHelpers\TestHelpers.csproj" />
+        <ProjectReference Include="..\..\ForgettablePayloads\ForgettablePayloads.csproj" />
         <ProjectReference Include="..\ForgettablePayloads.DependencyInjection.Persistence\ForgettablePayloads.DependencyInjection.Persistence.csproj" />
     </ItemGroup>
 

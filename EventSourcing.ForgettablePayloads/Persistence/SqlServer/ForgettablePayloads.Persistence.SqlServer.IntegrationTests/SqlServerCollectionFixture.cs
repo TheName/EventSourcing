@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DbUp;
 using EventSourcing.Extensions;
 using EventSourcing.Extensions.DependencyInjection.Serialization.Json;
+using EventSourcing.ForgettablePayloads.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.SqlServer;
 using EventSourcing.ForgettablePayloads.Persistence.SqlServer;
@@ -45,7 +46,8 @@ namespace ForgettablePayloads.Persistence.SqlServer.IntegrationTests
 
             serviceCollection
                 .AddEventSourcing()
-                .WithForgettablePayloadsUsingSqlServerPersistence()
+                .WithForgettablePayloads()
+                .WithForgettablePayloadsSqlServerPersistence()
                 .WithJsonSerialization();
 
             serviceCollection

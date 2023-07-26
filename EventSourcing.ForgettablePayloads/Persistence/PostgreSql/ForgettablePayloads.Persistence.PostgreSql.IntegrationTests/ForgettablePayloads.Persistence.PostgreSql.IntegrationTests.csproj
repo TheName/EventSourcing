@@ -26,6 +26,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\..\EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.Json\Extensions.DependencyInjection.Serialization.Json.csproj" />
       <ProjectReference Include="..\..\..\..\Helpers\TestHelpers\TestHelpers.csproj" />
+      <ProjectReference Include="..\..\..\ForgettablePayloads\ForgettablePayloads.csproj" />
       <ProjectReference Include="..\..\ForgettablePayloads.Persistence.IntegrationTests.Base\ForgettablePayloads.Persistence.IntegrationTests.Base.csproj" />
       <ProjectReference Include="..\Extensions.DatabaseMigrations.PostgreSql.DbUp\Extensions.DatabaseMigrations.PostgreSql.DbUp.csproj" />
       <ProjectReference Include="..\Extensions.DependencyInjection.PostgreSql\Extensions.DependencyInjection.PostgreSql.csproj" />

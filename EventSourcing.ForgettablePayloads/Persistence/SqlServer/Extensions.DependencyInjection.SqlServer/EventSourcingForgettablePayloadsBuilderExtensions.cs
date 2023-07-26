@@ -1,4 +1,5 @@
 ﻿using System;
+using EventSourcing.ForgettablePayloads.Abstractions.DependencyInjection;
 
 namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.SqlServer
 {
