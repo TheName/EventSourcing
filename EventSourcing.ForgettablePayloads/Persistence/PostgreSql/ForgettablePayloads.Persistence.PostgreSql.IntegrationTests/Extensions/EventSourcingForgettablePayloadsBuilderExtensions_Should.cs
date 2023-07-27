@@ -1,13 +1,13 @@
 ﻿using EventSourcing.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions;
-using EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql;
+using EventSourcing.ForgettablePayloads.Persistence.PostgreSql.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
 
-namespace Extensions.DependencyInjection.PostgreSql.UnitTests
+namespace ForgettablePayloads.Persistence.PostgreSql.IntegrationTests.Extensions
 {
-    public class ServiceProvider_Should
+    public class EventSourcingForgettablePayloadsBuilderExtensions_Should
     {
         [Fact]
         public void BuildWithoutErrors_When_AddingEventSourcingAndExternalDependenciesAndForgettablePayloadsUsingSeparateBuilders()
