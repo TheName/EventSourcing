@@ -29,7 +29,7 @@
       <ProjectReference Include="..\..\..\ForgettablePayloads\ForgettablePayloads.csproj" />
       <ProjectReference Include="..\..\ForgettablePayloads.Persistence.IntegrationTests.Base\ForgettablePayloads.Persistence.IntegrationTests.Base.csproj" />
       <ProjectReference Include="..\Extensions.DatabaseMigrations.PostgreSql.DbUp\Extensions.DatabaseMigrations.PostgreSql.DbUp.csproj" />
-      <ProjectReference Include="..\Extensions.DependencyInjection.PostgreSql\Extensions.DependencyInjection.PostgreSql.csproj" />
+      <ProjectReference Include="..\ForgettablePayloads.Persistence.PostgreSql\ForgettablePayloads.Persistence.PostgreSql.csproj" />
     </ItemGroup>
 
     <ItemGroup>

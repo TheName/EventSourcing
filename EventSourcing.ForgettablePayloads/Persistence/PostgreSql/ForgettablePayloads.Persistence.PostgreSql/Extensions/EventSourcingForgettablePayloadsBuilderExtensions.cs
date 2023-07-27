@@ -2,7 +2,7 @@
 using EventSourcing.ForgettablePayloads.Abstractions.DependencyInjection;
 using EventSourcing.ForgettablePayloads.Persistence.Extensions;
 
-namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.PostgreSql
+namespace EventSourcing.ForgettablePayloads.Persistence.PostgreSql.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingForgettablePayloadsBuilder"/> extensions.
