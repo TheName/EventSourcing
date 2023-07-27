@@ -1,10 +1,11 @@
 ﻿using System;
 using EventSourcing.ForgettablePayloads.Abstractions.DependencyInjection;
-using EventSourcing.ForgettablePayloads.Persistence;
 using EventSourcing.ForgettablePayloads.Persistence.Abstractions;
+using EventSourcing.ForgettablePayloads.Persistence.Abstractions.DependencyInjection;
+using EventSourcing.ForgettablePayloads.Persistence.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence
+namespace EventSourcing.ForgettablePayloads.Persistence.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingForgettablePayloadsBuilder"/> extensions.

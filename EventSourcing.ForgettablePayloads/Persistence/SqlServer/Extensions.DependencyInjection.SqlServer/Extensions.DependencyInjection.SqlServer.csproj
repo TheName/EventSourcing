@@ -31,7 +31,6 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\..\ForgettablePayloads.DependencyInjection.Persistence\ForgettablePayloads.DependencyInjection.Persistence.csproj" />
       <ProjectReference Include="..\ForgettablePayloads.Persistence.SqlServer\ForgettablePayloads.Persistence.SqlServer.csproj" />
     </ItemGroup>
 

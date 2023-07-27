@@ -1,5 +1,6 @@
 ﻿using System;
 using EventSourcing.ForgettablePayloads.Persistence;
+using EventSourcing.ForgettablePayloads.Persistence.Abstractions.DependencyInjection;
 using EventSourcing.ForgettablePayloads.Persistence.SqlServer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

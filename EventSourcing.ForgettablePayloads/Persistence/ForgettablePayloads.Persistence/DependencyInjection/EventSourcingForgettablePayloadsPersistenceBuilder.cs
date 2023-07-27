@@ -1,8 +1,9 @@
 ﻿using System;
 using EventSourcing.ForgettablePayloads.Abstractions.DependencyInjection;
+using EventSourcing.ForgettablePayloads.Persistence.Abstractions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence
+namespace EventSourcing.ForgettablePayloads.Persistence.DependencyInjection
 {
     internal class EventSourcingForgettablePayloadsPersistenceBuilder : IEventSourcingForgettablePayloadsPersistenceBuilder
     {
