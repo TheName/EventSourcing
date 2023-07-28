@@ -1,12 +1,10 @@
 ﻿using System;
-using EventSourcing.ForgettablePayloads.Persistence;
 using EventSourcing.ForgettablePayloads.Persistence.Abstractions.DependencyInjection;
-using EventSourcing.ForgettablePayloads.Persistence.SqlServer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace EventSourcing.ForgettablePayloads.Extensions.DependencyInjection.Persistence.SqlServer
+namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingForgettablePayloadsPersistenceBuilder"/> extensions.
