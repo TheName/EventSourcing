@@ -86,8 +86,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.PostgreSql", "EventSourcing.Persistence\PostgreSql\Persistence.PostgreSql\Persistence.PostgreSql.csproj", "{97B81C83-4D70-4B5D-98E9-D3E8590AF674}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Persistence.PostgreSql", "EventSourcing.Persistence\PostgreSql\Extensions.DependencyInjection.Persistence.PostgreSql\Extensions.DependencyInjection.Persistence.PostgreSql.csproj", "{BDC961B4-EFF6-4250-BA81-5C35B5B5AF82}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.PostgreSql", "EventSourcing.Persistence\PostgreSql\Extensions.DatabaseMigrations.Persistence.PostgreSql\Extensions.DatabaseMigrations.Persistence.PostgreSql.csproj", "{47C655D7-5BB0-4159-93A1-0F3F3A823378}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp", "EventSourcing.Persistence\PostgreSql\Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp\Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp.csproj", "{B9719B28-3265-4232-AB7E-04BB1CA55DA1}"
@@ -97,8 +95,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.IntegrationTests.Base", "EventSourcing.Persistence\Persistence.IntegrationTests.Base\Persistence.IntegrationTests.Base.csproj", "{DC12019B-B5C2-4AB1-A0B1-89372FC05C48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Persistence.UnitTests", "EventSourcing.Persistence\Extensions.DependencyInjection.Persistence.UnitTests\Extensions.DependencyInjection.Persistence.UnitTests.csproj", "{28083AC4-9515-45C8-8AD1-2FD780FBBDF0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Persistence.PostgreSql.UnitTests", "EventSourcing.Persistence\PostgreSql\Extensions.DependencyInjection.Persistence.PostgreSql.UnitTests\Extensions.DependencyInjection.Persistence.PostgreSql.UnitTests.csproj", "{AC8A184F-4052-4B21-8D9E-92EB780CF497}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Persistence.SqlServer.UnitTests", "EventSourcing.Persistence\SqlServer\Extensions.DependencyInjection.Persistence.SqlServer.UnitTests\Extensions.DependencyInjection.Persistence.SqlServer.UnitTests.csproj", "{DEE57E75-2CF4-4CB9-B22A-283544BD17A8}"
 EndProject
@@ -296,10 +292,6 @@ Global
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BDC961B4-EFF6-4250-BA81-5C35B5B5AF82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BDC961B4-EFF6-4250-BA81-5C35B5B5AF82}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BDC961B4-EFF6-4250-BA81-5C35B5B5AF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BDC961B4-EFF6-4250-BA81-5C35B5B5AF82}.Release|Any CPU.Build.0 = Release|Any CPU
 		{47C655D7-5BB0-4159-93A1-0F3F3A823378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{47C655D7-5BB0-4159-93A1-0F3F3A823378}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47C655D7-5BB0-4159-93A1-0F3F3A823378}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -320,10 +312,6 @@ Global
 		{28083AC4-9515-45C8-8AD1-2FD780FBBDF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28083AC4-9515-45C8-8AD1-2FD780FBBDF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28083AC4-9515-45C8-8AD1-2FD780FBBDF0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC8A184F-4052-4B21-8D9E-92EB780CF497}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC8A184F-4052-4B21-8D9E-92EB780CF497}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC8A184F-4052-4B21-8D9E-92EB780CF497}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC8A184F-4052-4B21-8D9E-92EB780CF497}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DEE57E75-2CF4-4CB9-B22A-283544BD17A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DEE57E75-2CF4-4CB9-B22A-283544BD17A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEE57E75-2CF4-4CB9-B22A-283544BD17A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -447,13 +435,11 @@ Global
 		{844B3E44-E5CA-41FF-9EA1-214236504B06} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
 		{8B8FC55F-39CF-431D-AF1B-D67A24CB4071} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
-		{BDC961B4-EFF6-4250-BA81-5C35B5B5AF82} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{47C655D7-5BB0-4159-93A1-0F3F3A823378} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{B9719B28-3265-4232-AB7E-04BB1CA55DA1} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{246BB686-60C1-45E2-B435-719C55015E6F} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{DC12019B-B5C2-4AB1-A0B1-89372FC05C48} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
 		{28083AC4-9515-45C8-8AD1-2FD780FBBDF0} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
-		{AC8A184F-4052-4B21-8D9E-92EB780CF497} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{DEE57E75-2CF4-4CB9-B22A-283544BD17A8} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
 		{C92098C2-9DEB-466E-9AFB-D0F6700CDD85} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{F65145F4-5FE1-4A39-8710-9A1417BA5001} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
