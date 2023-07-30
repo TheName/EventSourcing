@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Reflection;
 using EventSourcing.Abstractions.DependencyInjection;
-using EventSourcing.Persistence;
-using EventSourcing.Persistence.PostgreSql;
+using EventSourcing.Extensions.DependencyInjection.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Npgsql;
 
-namespace EventSourcing.Extensions.DependencyInjection.Persistence.PostgreSql
+namespace EventSourcing.Persistence.PostgreSql.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingBuilder"/> extensions.

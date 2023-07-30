@@ -1,12 +1,12 @@
 ﻿using EventSourcing.Extensions;
-using EventSourcing.Extensions.DependencyInjection.Persistence.PostgreSql;
+using EventSourcing.Persistence.PostgreSql.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
 
-namespace Extensions.DependencyInjection.Persistence.PostgreSql.UnitTests
+namespace Persistence.PostgreSql.IntegrationTests.Extensions
 {
-    public class ServiceProvider_Should
+    public class EventSourcingBuilderExtensions_Should
     {
         [Fact]
         public void BuildWithoutErrors_When_AddingEventSourcingWithPostgreSqlPersistenceAndExternalDependencies()

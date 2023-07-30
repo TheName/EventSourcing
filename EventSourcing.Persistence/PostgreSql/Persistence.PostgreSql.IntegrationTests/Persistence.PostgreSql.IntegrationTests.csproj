@@ -28,7 +28,7 @@
       <ProjectReference Include="..\..\..\EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.NewtonsoftJson\Extensions.DependencyInjection.Serialization.NewtonsoftJson.csproj" />
       <ProjectReference Include="..\..\Persistence.IntegrationTests.Base\Persistence.IntegrationTests.Base.csproj" />
       <ProjectReference Include="..\Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp\Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp.csproj" />
-      <ProjectReference Include="..\Extensions.DependencyInjection.Persistence.PostgreSql\Extensions.DependencyInjection.Persistence.PostgreSql.csproj" />
+      <ProjectReference Include="..\Persistence.PostgreSql\Persistence.PostgreSql.csproj" />
     </ItemGroup>
 
     <ItemGroup>
