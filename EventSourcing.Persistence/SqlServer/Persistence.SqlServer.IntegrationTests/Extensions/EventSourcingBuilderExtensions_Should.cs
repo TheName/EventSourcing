@@ -1,12 +1,12 @@
 ﻿using EventSourcing.Extensions;
-using EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer;
+using EventSourcing.Persistence.SqlServer.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
 
-namespace Extensions.DependencyInjection.Persistence.SqlServer.UnitTests
+namespace Persistence.SqlServer.IntegrationTests.Extensions
 {
-    public class ServiceProvider_Should
+    public class EventSourcingBuilderExtensions_Should
     {
         [Fact]
         public void BuildWithoutErrors_When_AddingEventSourcingWithSqlServerPersistenceAndExternalDependencies()

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Data.SqlClient;
 using EventSourcing.Abstractions.DependencyInjection;
-using EventSourcing.Persistence;
-using EventSourcing.Persistence.SqlServer;
+using EventSourcing.Extensions.DependencyInjection.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace EventSourcing.Extensions.DependencyInjection.Persistence.SqlServer
+namespace EventSourcing.Persistence.SqlServer.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingBuilder"/> extensions.

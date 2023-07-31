@@ -24,7 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\..\EventSourcing.Persistence\SqlServer\Extensions.DependencyInjection.Persistence.SqlServer\Extensions.DependencyInjection.Persistence.SqlServer.csproj" />
       <ProjectReference Include="..\..\..\..\EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.Json\Extensions.DependencyInjection.Serialization.Json.csproj" />
       <ProjectReference Include="..\..\..\..\Helpers\TestHelpers\TestHelpers.csproj" />
       <ProjectReference Include="..\..\..\ForgettablePayloads\ForgettablePayloads.csproj" />
