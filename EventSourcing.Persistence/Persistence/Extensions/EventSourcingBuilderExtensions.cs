@@ -1,10 +1,9 @@
 ﻿using System;
 using EventSourcing.Abstractions.DependencyInjection;
-using EventSourcing.Persistence;
 using EventSourcing.Persistence.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcing.Extensions.DependencyInjection.Persistence
+namespace EventSourcing.Persistence.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingBuilder"/> extensions.
