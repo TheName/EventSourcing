@@ -1,13 +1,13 @@
 ﻿using EventSourcing.Extensions;
-using EventSourcing.Extensions.DependencyInjection.Persistence;
 using EventSourcing.Persistence;
+using EventSourcing.Persistence.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
 
-namespace Extensions.DependencyInjection.Persistence.UnitTests
+namespace Persistence.IntegrationTests.Base.Extensions
 {
-    public class ServiceProvider_Should
+    public class EventSourcingBuilderExtensions_Should
     {
         [Fact]
         public void BuildWithoutErrors_When_AddingEventSourcingAndExternalDependenciesAndRequiredPersistenceImplementation()
