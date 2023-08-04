@@ -1,6 +1,6 @@
 ﻿using EventSourcing.Abstractions.DependencyInjection;
 
-namespace EventSourcing.Extensions.DependencyInjection.Serialization
+namespace EventSourcing.Serialization.Abstractions.DependencyInjection
 {
     /// <summary>
     /// Builder for EventSourcing Serialization

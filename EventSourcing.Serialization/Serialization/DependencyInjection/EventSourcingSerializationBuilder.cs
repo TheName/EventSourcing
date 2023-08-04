@@ -1,8 +1,9 @@
 ﻿using System;
 using EventSourcing.Abstractions.DependencyInjection;
+using EventSourcing.Serialization.Abstractions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcing.Extensions.DependencyInjection.Serialization
+namespace EventSourcing.Serialization.DependencyInjection
 {
     internal class EventSourcingSerializationBuilder : IEventSourcingSerializationBuilder
     {
