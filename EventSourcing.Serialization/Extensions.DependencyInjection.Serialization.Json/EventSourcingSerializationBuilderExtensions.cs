@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using EventSourcing.Serialization.Abstractions;
+using EventSourcing.Serialization.Abstractions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using JsonSerializer = EventSourcing.Serialization.Json.JsonSerializer;
 

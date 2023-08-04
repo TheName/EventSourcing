@@ -1,5 +1,6 @@
 ﻿using System;
 using EventSourcing.Serialization.Abstractions;
+using EventSourcing.Serialization.Abstractions.DependencyInjection;
 using EventSourcing.Serialization.NewtonsoftJson;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;

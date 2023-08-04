@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Core\EventSourcing\EventSourcing.csproj" />
         <ProjectReference Include="..\..\Helpers\TestHelpers\TestHelpers.csproj" />
         <ProjectReference Include="..\Extensions.DependencyInjection.Serialization.Json\Extensions.DependencyInjection.Serialization.Json.csproj" />
     </ItemGroup>

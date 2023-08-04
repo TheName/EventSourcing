@@ -1,12 +1,13 @@
 ﻿using System;
 using EventSourcing.Abstractions.DependencyInjection;
-using EventSourcing.Serialization;
 using EventSourcing.Serialization.Abstractions;
+using EventSourcing.Serialization.Abstractions.DependencyInjection;
+using EventSourcing.Serialization.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace EventSourcing.Extensions.DependencyInjection.Serialization
+namespace EventSourcing.Serialization.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingBuilder"/> extensions.
