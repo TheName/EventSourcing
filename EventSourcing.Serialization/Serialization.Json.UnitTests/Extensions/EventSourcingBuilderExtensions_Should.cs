@@ -1,12 +1,12 @@
 ﻿using EventSourcing.Extensions;
-using EventSourcing.Extensions.DependencyInjection.Serialization.Json;
+using EventSourcing.Serialization.Json.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
 
-namespace Extensions.DependencyInjection.Serialization.Json.UnitTests
+namespace Serialization.Json.UnitTests.Extensions
 {
-    public class ServiceProvider_Should
+    public class EventSourcingBuilderExtensions_Should
     {
         [Fact]
         public void BuildWithoutErrors_When_AddingEventSourcingWithJsonSerializationAndExternalDependencies()

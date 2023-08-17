@@ -52,8 +52,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.NewtonsoftJso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.Json.UnitTests", "EventSourcing.Serialization\Serialization.Json.UnitTests\Serialization.Json.UnitTests.csproj", "{13597722-393F-4D4A-B4D3-1776F758E21D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Serialization.Json", "EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.Json\Extensions.DependencyInjection.Serialization.Json.csproj", "{7A91861A-7599-4D5C-B8CF-19A615BD0B3C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Serialization.NewtonsoftJson", "EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.NewtonsoftJson\Extensions.DependencyInjection.Serialization.NewtonsoftJson.csproj", "{BCA46D03-E139-4130-BACA-F0D64B4E9D81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bus", "EventSourcing.Bus\Bus\Bus.csproj", "{5C79662F-970A-47CA-B0BA-2E2B451B3E41}"
@@ -87,8 +85,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.PostgreSql.IntegrationTests", "EventSourcing.Persistence\PostgreSql\Persistence.PostgreSql.IntegrationTests\Persistence.PostgreSql.IntegrationTests.csproj", "{246BB686-60C1-45E2-B435-719C55015E6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.IntegrationTests.Base", "EventSourcing.Persistence\Persistence.IntegrationTests.Base\Persistence.IntegrationTests.Base.csproj", "{DC12019B-B5C2-4AB1-A0B1-89372FC05C48}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Serialization.Json.UnitTests", "EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.Json.UnitTests\Extensions.DependencyInjection.Serialization.Json.UnitTests.csproj", "{F65145F4-5FE1-4A39-8710-9A1417BA5001}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DependencyInjection.Serialization.NewtonsoftJson.UnitTests", "EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.NewtonsoftJson.UnitTests\Extensions.DependencyInjection.Serialization.NewtonsoftJson.UnitTests.csproj", "{6520A5D9-FD64-48E8-95B4-A047D543BBF1}"
 EndProject
@@ -226,10 +222,6 @@ Global
 		{13597722-393F-4D4A-B4D3-1776F758E21D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13597722-393F-4D4A-B4D3-1776F758E21D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13597722-393F-4D4A-B4D3-1776F758E21D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A91861A-7599-4D5C-B8CF-19A615BD0B3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A91861A-7599-4D5C-B8CF-19A615BD0B3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A91861A-7599-4D5C-B8CF-19A615BD0B3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A91861A-7599-4D5C-B8CF-19A615BD0B3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCA46D03-E139-4130-BACA-F0D64B4E9D81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCA46D03-E139-4130-BACA-F0D64B4E9D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCA46D03-E139-4130-BACA-F0D64B4E9D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -286,10 +278,6 @@ Global
 		{DC12019B-B5C2-4AB1-A0B1-89372FC05C48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC12019B-B5C2-4AB1-A0B1-89372FC05C48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC12019B-B5C2-4AB1-A0B1-89372FC05C48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F65145F4-5FE1-4A39-8710-9A1417BA5001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F65145F4-5FE1-4A39-8710-9A1417BA5001}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F65145F4-5FE1-4A39-8710-9A1417BA5001}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F65145F4-5FE1-4A39-8710-9A1417BA5001}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6520A5D9-FD64-48E8-95B4-A047D543BBF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6520A5D9-FD64-48E8-95B4-A047D543BBF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6520A5D9-FD64-48E8-95B4-A047D543BBF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -385,7 +373,6 @@ Global
 		{E7C12395-6A77-44BC-89F3-62B9E0BB4690} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{4DCA9DC7-3FDB-4057-91BB-50D54AC4920F} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{13597722-393F-4D4A-B4D3-1776F758E21D} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
-		{7A91861A-7599-4D5C-B8CF-19A615BD0B3C} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{BCA46D03-E139-4130-BACA-F0D64B4E9D81} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{5C79662F-970A-47CA-B0BA-2E2B451B3E41} = {3829A2ED-C973-4C40-89B2-276296AC020A}
 		{58D0D31D-E0C4-49BE-A374-1607E3C2DD29} = {3829A2ED-C973-4C40-89B2-276296AC020A}
@@ -406,7 +393,6 @@ Global
 		{B9719B28-3265-4232-AB7E-04BB1CA55DA1} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{246BB686-60C1-45E2-B435-719C55015E6F} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{DC12019B-B5C2-4AB1-A0B1-89372FC05C48} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
-		{F65145F4-5FE1-4A39-8710-9A1417BA5001} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{6520A5D9-FD64-48E8-95B4-A047D543BBF1} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{74365D15-F56D-4410-BF63-D12D63694EDA} = {082DB854-6B33-49C4-A6FE-FDE3E5862FD8}
 		{F92D73BF-C48C-4C9C-89B2-AFF1C0C9AE28} = {082DB854-6B33-49C4-A6FE-FDE3E5862FD8}
