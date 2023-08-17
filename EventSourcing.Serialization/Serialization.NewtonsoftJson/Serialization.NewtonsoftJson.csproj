@@ -28,6 +28,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
       <ProjectReference Include="..\Serialization.Abstractions\Serialization.Abstractions.csproj" />
+      <ProjectReference Include="..\Serialization\Serialization.csproj" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

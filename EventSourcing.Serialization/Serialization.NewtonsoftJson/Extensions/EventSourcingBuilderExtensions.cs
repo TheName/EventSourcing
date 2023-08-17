@@ -5,7 +5,7 @@ using EventSourcing.Serialization.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
-namespace EventSourcing.Extensions.DependencyInjection.Serialization.NewtonsoftJson
+namespace EventSourcing.Serialization.NewtonsoftJson.Extensions
 {
     /// <summary>
     /// The <see cref="IServiceCollection"/> extensions.

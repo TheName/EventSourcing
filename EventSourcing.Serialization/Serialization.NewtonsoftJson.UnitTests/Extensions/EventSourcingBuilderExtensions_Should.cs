@@ -1,12 +1,12 @@
 ﻿using EventSourcing.Extensions;
-using EventSourcing.Extensions.DependencyInjection.Serialization.NewtonsoftJson;
+using EventSourcing.Serialization.NewtonsoftJson.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
 
-namespace Extensions.DependencyInjection.Serialization.NewtonsoftJson.UnitTests
+namespace Serialization.NewtonsoftJson.UnitTests.Extensions
 {
-    public class ServiceProvider_Should
+    public class EventSourcingBuilderExtensions_Should
     {
         [Fact]
         public void BuildWithoutErrors_When_AddingEventSourcingWithNewtonsoftJsonSerializationAndExternalDependencies()

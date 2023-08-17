@@ -25,7 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\EventSourcing.Bus\Bus.Abstractions\Bus.Abstractions.csproj" />
-      <ProjectReference Include="..\..\..\EventSourcing.Serialization\Extensions.DependencyInjection.Serialization.NewtonsoftJson\Extensions.DependencyInjection.Serialization.NewtonsoftJson.csproj" />
+      <ProjectReference Include="..\..\..\EventSourcing.Serialization\Serialization.NewtonsoftJson\Serialization.NewtonsoftJson.csproj" />
       <ProjectReference Include="..\..\Persistence.IntegrationTests.Base\Persistence.IntegrationTests.Base.csproj" />
       <ProjectReference Include="..\Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp\Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp.csproj" />
       <ProjectReference Include="..\Persistence.PostgreSql\Persistence.PostgreSql.csproj" />
