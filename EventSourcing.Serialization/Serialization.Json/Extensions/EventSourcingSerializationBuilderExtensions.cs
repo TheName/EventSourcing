@@ -3,9 +3,8 @@ using System.Text.Json;
 using EventSourcing.Serialization.Abstractions;
 using EventSourcing.Serialization.Abstractions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using JsonSerializer = EventSourcing.Serialization.Json.JsonSerializer;
 
-namespace EventSourcing.Extensions.DependencyInjection.Serialization.Json
+namespace EventSourcing.Serialization.Json.Extensions
 {
     /// <summary>
     /// The <see cref="IEventSourcingSerializationBuilder"/> extensions.

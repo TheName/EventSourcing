@@ -5,7 +5,7 @@ using EventSourcing.Serialization.Abstractions.DependencyInjection;
 using EventSourcing.Serialization.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EventSourcing.Extensions.DependencyInjection.Serialization.Json
+namespace EventSourcing.Serialization.Json.Extensions
 {
     /// <summary>
     /// The <see cref="IServiceCollection"/> extensions.
