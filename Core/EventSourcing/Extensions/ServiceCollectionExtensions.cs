@@ -2,12 +2,10 @@
 using EventSourcing.Abstractions;
 using EventSourcing.Abstractions.Configurations;
 using EventSourcing.Abstractions.Conversion;
-using EventSourcing.Abstractions.DependencyInjection;
 using EventSourcing.Abstractions.Handling;
 using EventSourcing.Abstractions.Reconciliation;
 using EventSourcing.Configurations;
 using EventSourcing.Conversion;
-using EventSourcing.DependencyInjection;
 using EventSourcing.Handling;
 using EventSourcing.Reconciliation;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,18 +20,18 @@ namespace EventSourcing.Extensions
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds default implementation for EventSourcing.Abstractions library.
+        /// Adds default implementation for EventSourcing library.
         /// </summary>
         /// <param name="serviceCollection">
         /// The <see cref="IServiceCollection"/>.
         /// </param>
         /// <returns>
-        /// The <see cref="IEventSourcingBuilder"/>.
+        /// The <see cref="IServiceCollection"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="serviceCollection"/> is null.
         /// </exception>
-        public static IEventSourcingBuilder AddEventSourcing(this IServiceCollection serviceCollection)
+        public static IServiceCollection AddEventSourcing(this IServiceCollection serviceCollection)
         {
             if (serviceCollection == null)
             {
@@ -85,7 +83,7 @@ namespace EventSourcing.Extensions
 
             serviceCollection.AddHostedService<ReconciliationBackgroundService>();
 
-            return new EventSourcingBuilder(serviceCollection);
+            return serviceCollection;
         }
     }
 }
