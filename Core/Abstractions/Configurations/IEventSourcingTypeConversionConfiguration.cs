@@ -1,6 +1,6 @@
-﻿using EventSourcing.Abstractions.ValueObjects;
+﻿using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions.Configurations
+namespace EventSourcing.Configurations
 {
     /// <summary>
     /// Configuration for type conversion of EventSourcing

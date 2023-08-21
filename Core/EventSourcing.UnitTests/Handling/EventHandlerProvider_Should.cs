@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using EventSourcing.Abstractions.Handling;
 using EventSourcing.Handling;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Attributes;
@@ -49,7 +48,7 @@ namespace EventSourcing.UnitTests.Handling
             var serviceProvider = new ServiceCollection()
                 .AddTransient(_ => eventHandler)
                 .BuildServiceProvider();
-            
+
             var handlerProvider = new EventHandlerProvider(serviceProvider);
 
             var result = handlerProvider.GetHandlersForType(typeof(object));
@@ -68,9 +67,9 @@ namespace EventSourcing.UnitTests.Handling
             {
                 serviceCollection.AddTransient(_ => eventHandler);
             }
-            
+
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            
+
             var handlerProvider = new EventHandlerProvider(serviceProvider);
 
             var result = handlerProvider.GetHandlersForType(typeof(object));

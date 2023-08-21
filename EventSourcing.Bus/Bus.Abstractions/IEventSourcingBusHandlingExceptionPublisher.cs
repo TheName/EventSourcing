@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Exceptions;
 
-namespace EventSourcing.Bus.Abstractions
+namespace EventSourcing.Bus
 {
     /// <summary>
     /// Publishes event stream entry handling exception to the event sourcing bus error queue.

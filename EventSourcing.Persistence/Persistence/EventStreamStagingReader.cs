@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Persistence.Abstractions;
-using EventSourcing.Persistence.Abstractions.ValueObjects;
+using EventSourcing.Persistence.ValueObjects;
 
 namespace EventSourcing.Persistence
 {

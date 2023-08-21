@@ -1,6 +1,6 @@
-﻿using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+﻿using EventSourcing.ForgettablePayloads.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.Conversion
+namespace EventSourcing.ForgettablePayloads.Conversion
 {
     /// <summary>
     /// Provides instances of <see cref="IForgettablePayloadTypeIdentifierConverter"/>.
@@ -14,7 +14,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.Conversion
         /// The <see cref="IForgettablePayloadTypeIdentifierConverter"/>.
         /// </returns>
         IForgettablePayloadTypeIdentifierConverter GetForgettablePayloadTypeIdentifierConverter();
-        
+
         /// <summary>
         /// Gets <see cref="IForgettablePayloadTypeIdentifierConverter"/> registered for provided <paramref name="forgettablePayloadTypeIdentifierFormat"/>.
         /// </summary>

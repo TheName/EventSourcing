@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Persistence.Abstractions.ValueObjects
+namespace EventSourcing.Persistence.ValueObjects
 {
     /// <summary>
     /// The event stream staged entries value object.

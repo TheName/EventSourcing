@@ -1,10 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions.Enums;
+using EventSourcing.Persistence.Enums;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Persistence.Abstractions
+namespace EventSourcing.Persistence
 {
     /// <summary>
     /// The event stream writer used to modify event source.

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.Services
+namespace EventSourcing.ForgettablePayloads.Services
 {
     /// <summary>
     /// Finds instances of <see cref="ForgettablePayload"/> in provided event
@@ -14,7 +14,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.Services
         /// The event object
         /// </param>
         /// <returns>
-        /// The collection of <see cref="ForgettablePayload"/> found in the provided event 
+        /// The collection of <see cref="ForgettablePayload"/> found in the provided event
         /// </returns>
         IReadOnlyCollection<ForgettablePayload> Find(object @event);
     }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions.Extensions;
-using EventSourcing.Aggregates.Abstractions.Retrievers;
+using EventSourcing.Aggregates.Extensions;
+using EventSourcing.Aggregates.Retrievers;
+using EventSourcing.ValueObjects;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;

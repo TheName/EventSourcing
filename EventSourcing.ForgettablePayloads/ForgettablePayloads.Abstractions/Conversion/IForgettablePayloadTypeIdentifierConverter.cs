@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.Conversion
+namespace EventSourcing.ForgettablePayloads.Conversion
 {
     /// <summary>
     /// Converts <see cref="ForgettablePayloadTypeIdentifier"/> to <see cref="Type"/> and <see cref="Type"/> to <see cref="ForgettablePayloadTypeIdentifier"/>.
@@ -12,7 +12,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.Conversion
         /// The <see cref="ForgettablePayloadTypeIdentifierFormat"/> used by this instance of serializer.
         /// </summary>
         ForgettablePayloadTypeIdentifierFormat TypeIdentifierFormat { get; }
-        
+
         /// <summary>
         /// Converts <paramref name="type"/> to <see cref="ForgettablePayloadTypeIdentifier"/>.
         /// </summary>
@@ -23,7 +23,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.Conversion
         /// The <see cref="ForgettablePayloadTypeIdentifier"/> that uniquely identifies the <see cref="Type"/> of an event.
         /// </returns>
         ForgettablePayloadTypeIdentifier ToTypeIdentifier(Type type);
-        
+
         /// <summary>
         /// Converts <paramref name="identifier"/> to <see cref="Type"/>.
         /// </summary>

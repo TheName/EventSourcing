@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.Abstractions.ValueObjects
+﻿namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// The event stream entry sequence value object.
@@ -36,7 +36,7 @@
         /// The <see cref="uint"/>.
         /// </returns>
         public static implicit operator uint(EventStreamEntrySequence sequence) => sequence.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="uint"/> to <see cref="EventStreamEntrySequence"/>.
         /// </summary>

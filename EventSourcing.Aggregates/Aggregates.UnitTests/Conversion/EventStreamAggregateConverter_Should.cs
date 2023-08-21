@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions;
+using EventSourcing.Aggregates;
 using EventSourcing.Aggregates.Conversion;
+using EventSourcing.ValueObjects;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;
@@ -18,7 +18,7 @@ namespace Aggregates.UnitTests.Conversion
         {
             Assert.Throws<NotSupportedException>(() => converter.ToPublishableEventStream(aggregate));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void Throw_NotSupportedException_When_TryingToConvertClassNotImplementingIEventStreamAggregateToPublishableEventStream(
@@ -55,12 +55,12 @@ namespace Aggregates.UnitTests.Conversion
 
             Assert.Equal(publishableEventStream, result);
         }
-        
+
         private class NotImplementingIEventStreamAggregate
         {
         }
-        
-        private class ImplementingIEventStreamAggregate : IEventStreamAggregate 
+
+        private class ImplementingIEventStreamAggregate : IEventStreamAggregate
         {
             public PublishableEventStream PublishableEventStream { get; }
 
@@ -68,7 +68,7 @@ namespace Aggregates.UnitTests.Conversion
             {
                 PublishableEventStream = publishableEventStream;
             }
-            
+
             public void ReplayEventStream(EventStream eventStream)
             {
                 throw new NotImplementedException();

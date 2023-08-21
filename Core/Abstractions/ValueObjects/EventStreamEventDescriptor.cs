@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
-    /// Represents a serialized event with type information. 
+    /// Represents a serialized event with type information.
     /// </summary>
     public class EventStreamEventDescriptor
     {

@@ -1,5 +1,4 @@
 ﻿using System;
-using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
 
 namespace EventSourcing.ForgettablePayloads.Configurations
 {

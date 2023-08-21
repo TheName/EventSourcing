@@ -1,10 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions.ValueObjects;
+using EventSourcing.Persistence.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Persistence.Abstractions
+namespace EventSourcing.Persistence
 {
     /// <summary>
     /// The event stream staging writer used to modify staged events.

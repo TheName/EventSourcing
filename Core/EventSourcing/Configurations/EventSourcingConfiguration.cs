@@ -1,5 +1,4 @@
 ﻿using System;
-using EventSourcing.Abstractions.Configurations;
 
 namespace EventSourcing.Configurations
 {

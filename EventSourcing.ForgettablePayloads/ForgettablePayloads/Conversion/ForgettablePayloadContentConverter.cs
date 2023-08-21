@@ -1,7 +1,6 @@
 ﻿using System;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
-using EventSourcing.Serialization.Abstractions;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.Serialization;
 
 namespace EventSourcing.ForgettablePayloads.Conversion
 {
@@ -24,21 +23,21 @@ namespace EventSourcing.ForgettablePayloads.Conversion
             {
                 throw new ArgumentNullException(nameof(payload));
             }
-            
+
             var typeIdentifierConverter = _typeIdentifierConverterProvider.GetForgettablePayloadTypeIdentifierConverter();
             if (typeIdentifierConverter == null)
             {
                 throw new InvalidOperationException(
                     $"{nameof(IForgettablePayloadTypeIdentifierConverterProvider)} of type {_typeIdentifierConverterProvider.GetType()} has returned null when called {nameof(IForgettablePayloadTypeIdentifierConverterProvider.GetForgettablePayloadTypeIdentifierConverter)}");
             }
-            
+
             var serializer = _serializerProvider.GetForgettablePayloadSerializer();
             if (serializer == null)
             {
                 throw new InvalidOperationException(
                     $"{nameof(ISerializerProvider)} of type {_serializerProvider.GetType()} has returned null when called {nameof(ISerializerProvider.GetForgettablePayloadSerializer)}");
             }
-            
+
             return new ForgettablePayloadContentDescriptor(
                 serializer.Serialize(payload),
                 serializer.SerializationFormat,
@@ -52,14 +51,14 @@ namespace EventSourcing.ForgettablePayloads.Conversion
             {
                 throw new ArgumentNullException(nameof(payloadContentDescriptor));
             }
-            
+
             var typeIdentifierConverter = _typeIdentifierConverterProvider.GetConverter(payloadContentDescriptor.PayloadTypeIdentifierFormat);
             if (typeIdentifierConverter == null)
             {
                 throw new InvalidOperationException(
                     $"{nameof(IForgettablePayloadTypeIdentifierConverterProvider)} of type {_typeIdentifierConverterProvider.GetType()} has returned null when called {nameof(IForgettablePayloadTypeIdentifierConverterProvider.GetConverter)} for {payloadContentDescriptor.PayloadTypeIdentifierFormat}");
             }
-            
+
             var payloadType = typeIdentifierConverter.FromTypeIdentifier(payloadContentDescriptor.PayloadTypeIdentifier);
             var serializer = _serializerProvider.GetSerializer(payloadContentDescriptor.PayloadContentSerializationFormat);
             if (serializer == null)

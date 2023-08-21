@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.Configurations;
+using EventSourcing.ForgettablePayloads.ValueObjects;
 
 namespace EventSourcing.ForgettablePayloads.Conversion
 {

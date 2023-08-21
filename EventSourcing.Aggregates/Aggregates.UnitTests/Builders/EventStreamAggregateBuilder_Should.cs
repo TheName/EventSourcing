@@ -1,9 +1,9 @@
 ﻿using System;
 using AutoFixture.Xunit2;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions;
-using EventSourcing.Aggregates.Abstractions.Factories;
+using EventSourcing.Aggregates;
 using EventSourcing.Aggregates.Builders;
+using EventSourcing.Aggregates.Factories;
+using EventSourcing.ValueObjects;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;
@@ -17,7 +17,7 @@ namespace Aggregates.UnitTests.Builders
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamAggregateBuilder(null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNotNullArguments(IEventStreamAggregateFactory aggregateFactory)
@@ -86,7 +86,7 @@ namespace Aggregates.UnitTests.Builders
                 .Returns(aggregateMockReturnedByFactory.Object);
 
             var result = aggregateBuilder.Build(aggregateType, eventStream);
-            
+
             Assert.Equal(aggregateMockReturnedByFactory.Object, result);
             aggregateMockReturnedByFactory.Verify(aggregate => aggregate.ReplayEventStream(eventStream));
             aggregateMockReturnedByFactory.VerifyNoOtherCalls();

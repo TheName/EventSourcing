@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.Abstractions.Hooks
+﻿namespace EventSourcing.Hooks
 {
     /// <summary>
     /// A hook invoked after event descriptor deserialization

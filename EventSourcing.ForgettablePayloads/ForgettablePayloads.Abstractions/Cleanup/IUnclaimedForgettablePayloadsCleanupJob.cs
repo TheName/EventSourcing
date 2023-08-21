@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.Cleanup
+namespace EventSourcing.ForgettablePayloads.Cleanup
 {
     /// <summary>
     /// A cleanup job that forgets payloads that were not claimed for too long

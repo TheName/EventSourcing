@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Handling;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
 using EventSourcing.ForgettablePayloads.Helpers;
+using EventSourcing.ForgettablePayloads.Services;
+using EventSourcing.Handling;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.ForgettablePayloads.Handlers
 {
@@ -32,7 +32,7 @@ namespace EventSourcing.ForgettablePayloads.Handlers
             {
                 throw new ArgumentNullException(nameof(eventMetadata));
             }
-            
+
             var forgettablePayloadEntities = _forgettablePayloadFinder.Find(@event);
             if (forgettablePayloadEntities == null)
             {

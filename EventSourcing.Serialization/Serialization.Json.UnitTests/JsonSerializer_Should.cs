@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Text;
 using AutoFixture;
-using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Serialization.Json;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 

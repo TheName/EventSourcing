@@ -1,6 +1,6 @@
-﻿using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+﻿using EventSourcing.ForgettablePayloads.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.Conversion
+namespace EventSourcing.ForgettablePayloads.Conversion
 {
     /// <summary>
     /// Converts objects to <see cref="ForgettablePayloadContentDescriptor"/> and <see cref="ForgettablePayloadContentDescriptor"/> to objects.

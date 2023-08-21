@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Aggregates.Abstractions.UnitTests.Extensions;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions;
+using EventSourcing;
+using EventSourcing.Aggregates;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -16,7 +16,7 @@ namespace Aggregates.Abstractions.UnitTests
         public void CreateEmptyEventStream_When_CreatingNewAggregate()
         {
             var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
-            
+
             Assert.Empty(aggregate.GetAppendableEventStream().EventsWithMetadata);
             Assert.Empty(aggregate.GetAppendableEventStream().EventsWithMetadataToAppend);
             Assert.Empty(aggregate.GetPublishableEventStream().EventsWithMetadata);
@@ -28,7 +28,7 @@ namespace Aggregates.Abstractions.UnitTests
         public void CreateEmptyEventStreamWithProvidedStreamId_When_CreatingNewAggregateUsingConstructorThatAcceptsStreamId(EventStreamId streamId)
         {
             var aggregate = new TestAggregate(streamId);
-            
+
             Assert.Equal(streamId, aggregate.GetAppendableEventStream().StreamId);
             Assert.Equal(streamId, aggregate.GetPublishableEventStream().StreamId);
         }
@@ -38,7 +38,7 @@ namespace Aggregates.Abstractions.UnitTests
         public void ReturnEventStreamId_When_GettingStreamId(EventStreamId streamId)
         {
             var aggregate = new TestAggregate(streamId);
-            
+
             Assert.Equal(streamId, aggregate.GetEventStreamId());
         }
 
@@ -47,7 +47,7 @@ namespace Aggregates.Abstractions.UnitTests
         public void HaveDefaultValueOfShouldIgnoreMissingHandlersSetToTrue(EventStreamId streamId)
         {
             var aggregate = new TestAggregate(streamId);
-            
+
             Assert.True(aggregate.GetShouldIgnoreMissingHandlers());
         }
 
@@ -58,7 +58,7 @@ namespace Aggregates.Abstractions.UnitTests
             var aggregate = new TestAggregateWithoutHandlersAndIgnoringMissingHandlers();
 
             aggregate.ReplayEventStream(eventStream);
-            
+
             Assert.Equal(eventStream.StreamId, aggregate.GetAppendableEventStream().StreamId);
             Assert.Equal(eventStream.EventsWithMetadata, aggregate.GetAppendableEventStream().EventsWithMetadata);
             Assert.Equal<EventStreamEntrySequence>(eventStream.MaxSequence + 1, aggregate.GetAppendableEventStream().NextSequence);
@@ -75,7 +75,7 @@ namespace Aggregates.Abstractions.UnitTests
             var aggregate = new TestAggregateWithEventHandlers();
 
             aggregate.ReplayEventStream(eventStream);
-            
+
             Assert.True(eventStream.EventsWithMetadata.Select(eventWithMetadata => eventWithMetadata.Event).SequenceEqual(aggregate.HandledEvents));
         }
 
@@ -86,7 +86,7 @@ namespace Aggregates.Abstractions.UnitTests
             var aggregate = new TestAggregateWithEventWithEventMetadataHandlers();
 
             aggregate.ReplayEventStream(eventStream);
-            
+
             Assert.Equal(eventStream.EventsWithMetadata.Count, aggregate.HandledEventsWithMetadata.Count);
             for (var i = 0; i < eventStream.EventsWithMetadata.Count; i++)
             {
@@ -236,41 +236,41 @@ namespace Aggregates.Abstractions.UnitTests
 
             Assert.Throws<MissingMethodException>(() => aggregate.ReplaySingleEvent(eventWithMetadata));
         }
-        
+
         private class TestAggregate : BaseEventStreamAggregate
         {
             public TestAggregate(EventStreamId streamId) : base(streamId)
             {
             }
         }
-        
+
         private class TestAggregateWithoutHandlersAndIgnoringMissingHandlers : BaseEventStreamAggregate
         {
             protected override bool ShouldIgnoreMissingHandlers => true;
         }
-        
+
         private class TestAggregateWithoutHandlersAndNotIgnoringMissingHandlers : BaseEventStreamAggregate
         {
             protected override bool ShouldIgnoreMissingHandlers => false;
         }
-        
+
         private class TestAggregateWithEventHandlers : BaseEventStreamAggregate
         {
             public List<object> HandledEvents { get; set; } = new List<object>();
-            
+
             private void Handle(object @event)
             {
                 HandledEvents.Add(@event);
             }
         }
-        
+
         private class TestAggregateWithEventWithEventMetadataHandlers : BaseEventStreamAggregate
         {
             public AppendableEventStream AppendableStream => AppendableEventStream;
-            
+
             public List<(object, EventStreamEventMetadata)> HandledEventsWithMetadata { get; set; } =
                 new List<(object, EventStreamEventMetadata)>();
-            
+
             private void Handle(object @event, EventStreamEventMetadata eventMetadata)
             {
                 HandledEventsWithMetadata.Add((@event, eventMetadata));

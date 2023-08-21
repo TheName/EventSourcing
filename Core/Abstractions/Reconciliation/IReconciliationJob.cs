@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace EventSourcing.Abstractions.Reconciliation
+namespace EventSourcing.Reconciliation
 {
     /// <summary>
     /// The reconciliation job

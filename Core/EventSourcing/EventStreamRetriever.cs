@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.Conversion;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions;
+using EventSourcing.Conversion;
+using EventSourcing.Persistence;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing
 {
@@ -22,7 +21,7 @@ namespace EventSourcing
             _eventStreamReader = eventStreamReader ?? throw new ArgumentNullException(nameof(eventStreamReader));
             _eventConverter = eventConverter ?? throw new ArgumentNullException(nameof(eventConverter));
         }
-        
+
         public async Task<EventStream> RetrieveAsync(EventStreamId streamId, CancellationToken cancellationToken)
         {
             var entries = await _eventStreamReader.ReadAsync(streamId, cancellationToken).ConfigureAwait(false);

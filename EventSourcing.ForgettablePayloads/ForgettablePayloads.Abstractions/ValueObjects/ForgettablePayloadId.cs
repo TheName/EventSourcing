@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// The forgettable payload id value object.
@@ -14,7 +14,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// Creates a new instance of <see cref="ForgettablePayloadId"/> initialized with a random <see cref="Guid"/>.
         /// </summary>
         public static ForgettablePayloadId NewForgettablePayloadId() => new ForgettablePayloadId(Guid.NewGuid());
-        
+
         /// <summary>
         /// The actual value of forgettable payload id
         /// </summary>
@@ -35,7 +35,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
             {
                 throw new ArgumentException($"{nameof(ForgettablePayloadId)} cannot be empty guid.", nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -51,7 +51,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The <see cref="Guid"/>.
         /// </returns>
         public static implicit operator Guid(ForgettablePayloadId id) => id.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="Guid"/> to <see cref="ForgettablePayloadId"/>.
         /// </summary>

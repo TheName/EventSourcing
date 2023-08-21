@@ -3,7 +3,7 @@ using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using DbUp;
-using EventSourcing.Bus.Abstractions;
+using EventSourcing.Bus;
 using EventSourcing.Extensions;
 using EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp.Extensions;
 using EventSourcing.Persistence.PostgreSql;

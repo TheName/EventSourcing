@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// The forgettable payload state value object.
@@ -15,7 +15,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
             nameof(CreatedAndClaimed),
             nameof(Forgotten)
         };
-        
+
         /// <summary>
         /// The Created state
         /// <remarks>
@@ -23,7 +23,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// </remarks>
         /// </summary>
         public static readonly ForgettablePayloadState Created = new ForgettablePayloadState(nameof(Created));
-        
+
         /// <summary>
         /// The Created and Claimed state
         /// <remarks>
@@ -32,15 +32,15 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// </remarks>
         /// </summary>
         public static readonly ForgettablePayloadState CreatedAndClaimed = new ForgettablePayloadState(nameof(CreatedAndClaimed));
-        
+
         /// <summary>
         /// The Forgotten state
         /// <remarks>
-        /// The original payload is no longer stored. 
+        /// The original payload is no longer stored.
         /// </remarks>
         /// </summary>
         public static readonly ForgettablePayloadState Forgotten = new ForgettablePayloadState(nameof(Forgotten));
-        
+
         /// <summary>
         /// The actual value of forgettable payload state.
         /// </summary>
@@ -67,7 +67,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
             {
                 throw new ArgumentException($"{nameof(ForgettablePayloadState)} cannot be \"{value}\".", nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -83,7 +83,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The <see cref="string"/>.
         /// </returns>
         public static implicit operator string(ForgettablePayloadState state) => state.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="string"/> to <see cref="ForgettablePayloadState"/>.
         /// </summary>

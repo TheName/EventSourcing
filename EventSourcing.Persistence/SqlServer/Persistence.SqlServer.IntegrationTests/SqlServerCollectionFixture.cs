@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using DbUp;
-using EventSourcing.Bus.Abstractions;
+using EventSourcing.Bus;
 using EventSourcing.Extensions;
 using EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.Extensions;
 using EventSourcing.Persistence.SqlServer;

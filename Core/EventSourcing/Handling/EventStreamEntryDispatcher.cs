@@ -4,11 +4,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Conversion;
-using EventSourcing.Abstractions.Exceptions;
 using EventSourcing.Abstractions.Handling;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.Conversion;
+using EventSourcing.Exceptions;
 using EventSourcing.Helpers;
+using EventSourcing.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.Handling

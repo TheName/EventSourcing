@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Serialization.Abstractions
+namespace EventSourcing.Serialization
 {
     /// <summary>
     /// The serializer
@@ -9,10 +9,10 @@ namespace EventSourcing.Serialization.Abstractions
     public interface ISerializer
     {
         /// <summary>
-        /// The <see cref="EventSourcing.Abstractions.ValueObjects.SerializationFormat"/> used by this instance of serializer.
+        /// The <see cref="ValueObjects.SerializationFormat"/> used by this instance of serializer.
         /// </summary>
         SerializationFormat SerializationFormat { get; }
-        
+
         /// <summary>
         /// Serializes provided object to a string representation
         /// </summary>
@@ -23,7 +23,7 @@ namespace EventSourcing.Serialization.Abstractions
         /// A serialized representation of <paramref name="object"/> in the form of string.
         /// </returns>
         string Serialize(object @object);
-        
+
         /// <summary>
         /// Serializes provided object
         /// </summary>

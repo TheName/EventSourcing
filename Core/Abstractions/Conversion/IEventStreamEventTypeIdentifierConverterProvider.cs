@@ -1,6 +1,6 @@
-﻿using EventSourcing.Abstractions.ValueObjects;
+﻿using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions.Conversion
+namespace EventSourcing.Conversion
 {
     /// <summary>
     /// Provides instances of <see cref="IEventStreamEventTypeIdentifierConverter"/>.
@@ -14,7 +14,7 @@ namespace EventSourcing.Abstractions.Conversion
         /// The <see cref="IEventStreamEventTypeIdentifierConverter"/>.
         /// </returns>
         IEventStreamEventTypeIdentifierConverter GetEventTypeIdentifierConverter();
-        
+
         /// <summary>
         /// Gets <see cref="IEventStreamEventTypeIdentifierConverter"/> registered for provided <paramref name="eventTypeIdentifierFormat"/>.
         /// </summary>

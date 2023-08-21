@@ -1,4 +1,4 @@
-﻿using EventSourcing.Abstractions.ValueObjects;
+﻿using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -19,7 +19,7 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             EventStreamEntrySequence sequence1 = value;
             EventStreamEntrySequence sequence2 = value;
-            
+
             Assert.Equal(sequence1, sequence2);
             Assert.True(sequence1 == sequence2);
             Assert.False(sequence1 != sequence2);
@@ -31,7 +31,7 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             EventStreamEntrySequence sequence1 = value;
             EventStreamEntrySequence sequence2 = otherValue;
-            
+
             Assert.NotEqual(sequence1, sequence2);
             Assert.False(sequence1 == sequence2);
             Assert.True(sequence1 != sequence2);
@@ -42,7 +42,7 @@ namespace Abstractions.UnitTests.ValueObjects
         public void ReturnValueToString_When_CallingToString(uint value)
         {
             EventStreamEntrySequence sequence = value;
-            
+
             Assert.Equal(value.ToString(), sequence.ToString());
         }
     }

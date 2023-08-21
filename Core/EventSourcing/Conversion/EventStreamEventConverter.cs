@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using EventSourcing.Abstractions.Conversion;
-using EventSourcing.Abstractions.Hooks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Serialization.Abstractions;
+using EventSourcing.Hooks;
+using EventSourcing.Serialization;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Conversion
 {

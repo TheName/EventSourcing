@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Exceptions;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
-    /// Represents a read-only collection of consecutive entries assigned to the same stream. 
+    /// Represents a read-only collection of consecutive entries assigned to the same stream.
     /// </summary>
     public class EventStreamEntries : IReadOnlyList<EventStreamEntry>
     {
@@ -18,22 +18,22 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// A read-only instance of the <see cref="EventStreamEntries"/> that contains no entries.
         /// </summary>
         public static EventStreamEntries Empty { get; } = new EventStreamEntries(Array.Empty<EventStreamEntry>());
-        
+
         /// <summary>
-        /// The minimum <see cref="EventStreamEntrySequence"/> in this collection of entries. 
+        /// The minimum <see cref="EventStreamEntrySequence"/> in this collection of entries.
         /// </summary>
         public EventStreamEntrySequence MinimumSequence { get; }
-        
+
         /// <summary>
         /// The maximum <see cref="EventStreamEntrySequence"/> in this collection of entries.
         /// </summary>
         public EventStreamEntrySequence MaximumSequence { get; }
-        
+
         /// <summary>
         /// Gets the stream id assigned to entries in this instance or null (in case there are no entries)
         /// </summary>
         public EventStreamId StreamId { get; }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStreamEntries"/> class.
         /// </summary>
@@ -44,10 +44,10 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// Thrown when <paramref name="value"/> is null.
         /// </exception>
         /// <exception cref="InvalidEventStreamEntrySequenceException">
-        /// Thrown when entries provided in <paramref name="value"/> are not ordered increasingly by sequence or the sequence is increasing by more than one. 
+        /// Thrown when entries provided in <paramref name="value"/> are not ordered increasingly by sequence or the sequence is increasing by more than one.
         /// </exception>
         /// <exception cref="InvalidEventStreamIdException">
-        /// Thrown when any of the entries provided in <paramref name="value"/> has a different stream id than others. 
+        /// Thrown when any of the entries provided in <paramref name="value"/> has a different stream id than others.
         /// </exception>
         public EventStreamEntries(IEnumerable<EventStreamEntry> value)
         {
@@ -62,7 +62,7 @@ namespace EventSourcing.Abstractions.ValueObjects
 
             MinimumSequence = Value[0].EntrySequence;
             StreamId = Value[0].StreamId;
-            
+
             var previousSequence = MinimumSequence;
             for (var i = 1; i < Value.Count; i++)
             {
@@ -127,7 +127,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         #region IReadOnlyList<EventStreamEvent> proxy
 
         /// <inheritdoc />
-        public IEnumerator<EventStreamEntry> GetEnumerator() => 
+        public IEnumerator<EventStreamEntry> GetEnumerator() =>
             Value.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() =>
@@ -140,7 +140,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// <inheritdoc />
         public EventStreamEntry this[int index] =>
             Value[index];
-        
+
         #endregion
 
         /// <inheritdoc />

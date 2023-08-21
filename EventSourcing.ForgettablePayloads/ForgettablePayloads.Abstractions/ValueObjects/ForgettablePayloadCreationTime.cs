@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// The forgettable payload creation time value object.
@@ -46,7 +46,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
                 throw new ArgumentException(
                     $"{nameof(ForgettablePayloadCreationTime)} must have a different value than {DateTime.MaxValue}.",
                     nameof(value));
-                
+
             }
 
             if (value.Kind != DateTimeKind.Utc)
@@ -55,7 +55,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
                     $"{nameof(ForgettablePayloadCreationTime)} must have {DateTimeKind.Utc} date time kind.",
                     nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -71,7 +71,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The <see cref="DateTime"/>.
         /// </returns>
         public static implicit operator DateTime(ForgettablePayloadCreationTime creationTime) => creationTime.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="DateTime"/> to <see cref="ForgettablePayloadCreationTime"/>.
         /// </summary>

@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.Xunit2;
-using EventSourcing.Abstractions.Conversion;
-using EventSourcing.Abstractions.Hooks;
-using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Conversion;
-using EventSourcing.Serialization.Abstractions;
+using EventSourcing.Hooks;
+using EventSourcing.Serialization;
+using EventSourcing.ValueObjects;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;
@@ -26,7 +25,7 @@ namespace EventSourcing.UnitTests.Conversion
                 postDeserializationHooks,
                 typeIdentifierConverterProvider));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_PostDeserializationHooksCollectionIsNull(
@@ -50,7 +49,7 @@ namespace EventSourcing.UnitTests.Conversion
                 postDeserializationHooks,
                 null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_Creating_And_AllParametersAreNotNull(
@@ -63,7 +62,7 @@ namespace EventSourcing.UnitTests.Conversion
                 postDeserializationHooks,
                 typeIdentifierConverterProvider);
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_Creating_And_PostDeserializationHooksCollectionIsEmpty(
@@ -75,7 +74,7 @@ namespace EventSourcing.UnitTests.Conversion
                 new List<IEventStreamEventDescriptorPostDeserializationHook>(),
                 typeIdentifierConverterProvider);
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void Throw_When_TryingToConvertToEventDescriptor_And_ProvidedEventIsNull(
@@ -101,7 +100,7 @@ namespace EventSourcing.UnitTests.Conversion
             serializerProviderMock
                 .Setup(provider => provider.GetEventContentSerializer())
                 .Returns(serializerMock.Object);
-            
+
             serializerMock
                 .Setup(serializer => serializer.Serialize(@event))
                 .Returns(serializedEvent);
@@ -129,7 +128,7 @@ namespace EventSourcing.UnitTests.Conversion
             Assert.Equal(typeIdentifier, result.EventTypeIdentifier);
             Assert.Equal(typeIdentifierFormat, result.EventTypeIdentifierFormat);
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void Throw_When_TryingToConvertFromEventDescriptor_And_ProvidedEventIsNull(
@@ -153,7 +152,7 @@ namespace EventSourcing.UnitTests.Conversion
             serializerProviderMock
                 .Setup(provider => provider.GetSerializer(eventDescriptor.EventContentSerializationFormat))
                 .Returns(serializerMock.Object);
-            
+
             serializerMock
                 .Setup(serializer => serializer.Deserialize(eventDescriptor.EventContent, eventType))
                 .Returns(deserializedEvent);
@@ -186,7 +185,7 @@ namespace EventSourcing.UnitTests.Conversion
             serializerProviderMock
                 .Setup(provider => provider.GetSerializer(eventDescriptor.EventContentSerializationFormat))
                 .Returns(serializerMock.Object);
-            
+
             serializerMock
                 .Setup(serializer => serializer.Deserialize(eventDescriptor.EventContent, eventType))
                 .Returns(deserializedEvent);

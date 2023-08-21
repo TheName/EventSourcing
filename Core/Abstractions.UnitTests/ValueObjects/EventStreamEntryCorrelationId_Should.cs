@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 

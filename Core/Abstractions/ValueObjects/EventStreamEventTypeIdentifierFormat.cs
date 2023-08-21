@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// Represents <see cref="EventStreamEventTypeIdentifier"/>'s format
@@ -11,7 +11,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The ClassName <see cref="EventStreamEventTypeIdentifier"/>'s format.
         /// </summary>
         public static EventStreamEventTypeIdentifierFormat ClassName { get; } = new EventStreamEventTypeIdentifierFormat(nameof(ClassName));
-        
+
         /// <summary>
         /// The actual value of event type identifier format
         /// </summary>
@@ -32,7 +32,7 @@ namespace EventSourcing.Abstractions.ValueObjects
             {
                 throw new ArgumentException($"{nameof(EventStreamEventTypeIdentifierFormat)} cannot be null or whitespace.", nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -48,7 +48,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The <see cref="string"/>.
         /// </returns>
         public static implicit operator string(EventStreamEventTypeIdentifierFormat typeIdentifierFormat) => typeIdentifierFormat.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="string"/> to <see cref="EventStreamEventTypeIdentifierFormat"/>.
         /// </summary>

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Aggregates.Abstractions.Helpers
+namespace EventSourcing.Aggregates.Helpers
 {
     internal static class BaseEventStreamAggregateMethodInvoker
     {
@@ -36,7 +36,7 @@ namespace EventSourcing.Aggregates.Abstractions.Helpers
             {
                 throw new ArgumentNullException(nameof(eventWithMetadata));
             }
-            
+
             if (!MethodTrackersByAggregateTypesDictionary.TryGetValue(aggregate.GetType(), out var tracker))
             {
                 throw new InvalidOperationException($"Did not find an aggregate of type {aggregate.GetType()}.");
@@ -53,7 +53,7 @@ namespace EventSourcing.Aggregates.Abstractions.Helpers
                 throw new MissingMethodException(
                     $"Did not find a method that would handle event of type {eventWithMetadata.Event.GetType()} in aggregate of type {aggregate.GetType()}.");
             }
-            
+
             var parameters = new List<object> {eventWithMetadata.Event};
             if (methodInfo.GetParameters().Length == 2)
             {
@@ -62,7 +62,7 @@ namespace EventSourcing.Aggregates.Abstractions.Helpers
 
             methodInfo.Invoke(aggregate, parameters.ToArray());
         }
-        
+
         private class BaseEventStreamAggregateMethodTracker
         {
             private readonly Type _aggregateType;
@@ -75,7 +75,7 @@ namespace EventSourcing.Aggregates.Abstractions.Helpers
 
                 _eventHandlingMethodInfosByEventType = aggregateType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)
                     .Where(info => !info.IsSpecialName && !info.IsAbstract)
-                    .Where(info => info.GetParameters().Length == 1 || 
+                    .Where(info => info.GetParameters().Length == 1 ||
                                    (info.GetParameters().Length == 2 && info.GetParameters()[1].ParameterType == typeof(EventStreamEventMetadata)))
                     .GroupBy(info => info.GetParameters()[0].ParameterType)
                     .ToDictionary(infos => infos.Key, infos => infos.ToList());
@@ -87,7 +87,7 @@ namespace EventSourcing.Aggregates.Abstractions.Helpers
                 {
                     return null;
                 }
-                
+
                 if (methodInfos.Count != 1)
                 {
                     throw new InvalidOperationException($"Found more than one methods handling type {eventType} in aggregate of type {_aggregateType}.");

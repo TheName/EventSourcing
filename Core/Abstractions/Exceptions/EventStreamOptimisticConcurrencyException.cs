@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions.Exceptions
+namespace EventSourcing.Exceptions
 {
     /// <summary>
     /// Appending entries to an event stream has failed due to optimistic concurrency exception.
@@ -41,7 +41,7 @@ namespace EventSourcing.Abstractions.Exceptions
             : base(message, innerException)
         {
         }
-        
+
         /// <summary>
         /// Creates a new <see cref="EventStreamOptimisticConcurrencyException"/> instance with a default message.
         /// </summary>

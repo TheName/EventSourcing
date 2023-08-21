@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Persistence
 {
@@ -14,7 +13,7 @@ namespace EventSourcing.Persistence
         {
             _eventStreamRepository = eventStreamRepository ?? throw new ArgumentNullException(nameof(eventStreamRepository));
         }
-        
+
         public async Task<EventStreamEntries> ReadAsync(EventStreamId streamId, CancellationToken cancellationToken)
         {
             return await _eventStreamRepository.ReadAsync(streamId, cancellationToken).ConfigureAwait(false);

@@ -1,6 +1,6 @@
 ﻿using EventSourcing.Extensions;
 using EventSourcing.ForgettablePayloads.Extensions;
-using EventSourcing.ForgettablePayloads.Persistence.Abstractions;
+using EventSourcing.ForgettablePayloads.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;

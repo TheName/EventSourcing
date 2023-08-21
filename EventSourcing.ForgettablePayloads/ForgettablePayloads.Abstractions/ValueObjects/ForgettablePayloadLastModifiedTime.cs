@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// The forgettable payload last modified time value object.
@@ -30,7 +30,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The actual value of last modified time
         /// </param>
         /// <exception cref="ArgumentException">
-        /// Thrown if provided value is DateTime.MinValue or DateTime.MaxValue or Kind is different than Utc 
+        /// Thrown if provided value is DateTime.MinValue or DateTime.MaxValue or Kind is different than Utc
         /// </exception>
         public ForgettablePayloadLastModifiedTime(DateTime value)
         {
@@ -46,7 +46,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
                 throw new ArgumentException(
                     $"{nameof(ForgettablePayloadLastModifiedTime)} must have a different value than {DateTime.MaxValue}.",
                     nameof(value));
-                
+
             }
 
             if (value.Kind != DateTimeKind.Utc)
@@ -55,7 +55,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
                     $"{nameof(ForgettablePayloadLastModifiedTime)} must have {DateTimeKind.Utc} date time kind.",
                     nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -71,7 +71,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The <see cref="DateTime"/>.
         /// </returns>
         public static implicit operator DateTime(ForgettablePayloadLastModifiedTime lastModifiedTime) => lastModifiedTime.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="DateTime"/> to <see cref="ForgettablePayloadLastModifiedTime"/>.
         /// </summary>

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions;
+using EventSourcing;
+using EventSourcing.Aggregates;
+using EventSourcing.ValueObjects;
 using Xunit;
 
 namespace Aggregates.Abstractions.UnitTests.Extensions
@@ -20,7 +20,7 @@ namespace Aggregates.Abstractions.UnitTests.Extensions
             Assert.NotNull(result);
             return (bool) result;
         }
-        
+
         public static AppendableEventStream GetAppendableEventStream<T>(this T aggregate)
             where T : BaseEventStreamAggregate
         {
@@ -28,7 +28,7 @@ namespace Aggregates.Abstractions.UnitTests.Extensions
             Assert.NotNull(appendableEventStreamGetter);
             return (AppendableEventStream) appendableEventStreamGetter.Invoke(aggregate, new object[0]);
         }
-        
+
         public static EventStreamId GetEventStreamId<T>(this T aggregate)
             where T : BaseEventStreamAggregate
         {
@@ -36,21 +36,21 @@ namespace Aggregates.Abstractions.UnitTests.Extensions
             Assert.NotNull(eventStreamIdGetter);
             return (EventStreamId) eventStreamIdGetter.Invoke(aggregate, new object[0]);
         }
-        
+
         public static PublishableEventStream GetPublishableEventStream<T>(this T aggregate)
             where T : BaseEventStreamAggregate
         {
             var eventStreamAggregate = aggregate as IEventStreamAggregate;
             return eventStreamAggregate.PublishableEventStream;
         }
-        
+
         public static void ReplayEventStream<T>(this T aggregate, EventStream eventStream)
             where T : BaseEventStreamAggregate
         {
             var eventStreamAggregate = aggregate as IEventStreamAggregate;
             eventStreamAggregate.ReplayEventStream(eventStream);
         }
-        
+
         public static void AppendEvent<T>(this T aggregate, object @event)
             where T : BaseEventStreamAggregate
         {
@@ -70,7 +70,7 @@ namespace Aggregates.Abstractions.UnitTests.Extensions
                 throw;
             }
         }
-        
+
         public static void ReplaySingleEvent<T>(this T aggregate, EventStreamEventWithMetadata eventWithMetadata)
             where T : BaseEventStreamAggregate
         {

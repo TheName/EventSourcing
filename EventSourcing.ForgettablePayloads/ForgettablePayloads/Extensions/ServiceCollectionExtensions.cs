@@ -1,14 +1,10 @@
 ﻿using System;
-using EventSourcing.Abstractions.Hooks;
-using EventSourcing.ForgettablePayloads.Abstractions.Cleanup;
-using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
 using EventSourcing.ForgettablePayloads.Cleanup;
 using EventSourcing.ForgettablePayloads.Configurations;
 using EventSourcing.ForgettablePayloads.Conversion;
 using EventSourcing.ForgettablePayloads.Hooks;
 using EventSourcing.ForgettablePayloads.Services;
+using EventSourcing.Hooks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;

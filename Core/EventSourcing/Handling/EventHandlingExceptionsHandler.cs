@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Exceptions;
-using EventSourcing.Abstractions.Handling;
-using EventSourcing.Bus.Abstractions;
+using EventSourcing.Bus;
+using EventSourcing.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.Handling
@@ -36,7 +35,7 @@ namespace EventSourcing.Handling
                     errorMessagePublishingCancellationTokenSource.CancelAfter(_errorMessagePublisherConfiguration.PublishingTimeout),
                 state: null,
                 useSynchronizationContext: false);
-            
+
             try
             {
                 await _errorMessagePublisher
@@ -48,7 +47,7 @@ namespace EventSourcing.Handling
                 _logger.LogError(e,
                     "An exception occurred when trying to publish entry handling exception {@EntryHandlingException}",
                     entryHandlingException);
-                
+
                 throw;
             }
 

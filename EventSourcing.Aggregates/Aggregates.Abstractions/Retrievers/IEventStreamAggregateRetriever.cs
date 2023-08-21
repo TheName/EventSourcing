@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Aggregates.Abstractions.Retrievers
+namespace EventSourcing.Aggregates.Retrievers
 {
     /// <summary>
     /// Retrieves an event stream aggregate.

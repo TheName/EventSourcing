@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions;
-using EventSourcing.Aggregates.Abstractions.Helpers;
+using EventSourcing.Aggregates;
+using EventSourcing.Aggregates.Helpers;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -18,7 +18,7 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
         {
             Assert.Throws<ArgumentNullException>(() => BaseEventStreamAggregateMethodInvoker.Invoke(null, eventWithMetadata, shouldIgnoreMissingHandlers));
         }
-        
+
         [Theory]
         [AutoMoqWithInlineData(true)]
         [AutoMoqWithInlineData(false)]
@@ -109,7 +109,7 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
             Assert.Null(aggregate.HandledTestEvent);
 
             BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, shouldIgnoreMissingHandlers);
-            
+
             Assert.Equal(eventWithMetadata.Event, aggregate.HandledTestEvent);
         }
 
@@ -126,11 +126,11 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
             Assert.Null(aggregate.HandledEventMetadata);
 
             BaseEventStreamAggregateMethodInvoker.Invoke(aggregate, eventWithMetadata, shouldIgnoreMissingHandlers);
-            
+
             Assert.Equal(eventWithMetadata.Event, aggregate.HandledTestEvent);
             Assert.Equal(eventWithMetadata.EventMetadata, aggregate.HandledEventMetadata);
         }
-        
+
         private class TestAggregateWithoutHandlingMethods : BaseEventStreamAggregate
         {
         }
@@ -139,9 +139,9 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
         {
             private static void Handle(TestEvent testEvent)
             {
-            } 
+            }
         }
-        
+
         private class TestAggregateWithMultipleHandlingMethodsForSameEventType : BaseEventStreamAggregate
         {
             private void Handle(TestEvent testEvent)
@@ -152,7 +152,7 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
             {
             }
         }
-        
+
         private class TestAggregateWithHandlingMethodsForSameEventTypeAndEventTypeWithMetadata : BaseEventStreamAggregate
         {
             private void Handle(TestEvent testEvent)
@@ -163,7 +163,7 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
             {
             }
         }
-        
+
         private class TestAggregateWithMultipleHandlingMethodsForSameEventTypeWithMetadata : BaseEventStreamAggregate
         {
             private void Handle(TestEvent testEvent, EventStreamEventMetadata eventMetadata)
@@ -174,29 +174,29 @@ namespace Aggregates.Abstractions.UnitTests.Helpers
             {
             }
         }
-        
+
         private class TestAggregateWithHandlingMethodForEventType : BaseEventStreamAggregate
         {
             public TestEvent HandledTestEvent { get; private set; }
-            
+
             private void Handle(TestEvent testEvent)
             {
                 HandledTestEvent = testEvent;
             }
         }
-        
+
         private class TestAggregateWithHandlingMethodForEventTypeWithMetadata : BaseEventStreamAggregate
         {
             public TestEvent HandledTestEvent { get; private set; }
             public EventStreamEventMetadata HandledEventMetadata { get; private set; }
-            
+
             private void Handle(TestEvent testEvent, EventStreamEventMetadata eventMetadata)
             {
                 HandledTestEvent = testEvent;
                 HandledEventMetadata = eventMetadata;
             }
         }
-        
+
         private class TestEvent
         {
         }

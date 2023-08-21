@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Handling;
 using EventSourcing.Bus.Extensions;
 using EventSourcing.Bus.RabbitMQ.Extensions;
 using EventSourcing.Extensions;
+using EventSourcing.Handling;
 using EventSourcing.Serialization.Json.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,6 +1,6 @@
-﻿using EventSourcing.Abstractions.ValueObjects;
+﻿using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Serialization.Abstractions
+namespace EventSourcing.Serialization
 {
     /// <summary>
     /// Provides instances of <see cref="ISerializer"/>.
@@ -14,7 +14,7 @@ namespace EventSourcing.Serialization.Abstractions
         /// The <see cref="ISerializer"/>.
         /// </returns>
         ISerializer GetEventContentSerializer();
-        
+
         /// <summary>
         /// Gets <see cref="ISerializer"/> configured to be used for serialization by bus package.
         /// </summary>
@@ -22,7 +22,7 @@ namespace EventSourcing.Serialization.Abstractions
         /// The <see cref="ISerializer"/>.
         /// </returns>
         ISerializer GetBusSerializer();
-        
+
         /// <summary>
         /// Gets <see cref="ISerializer"/> configured to be used for serialization of forgettable payloads
         /// </summary>
@@ -30,7 +30,7 @@ namespace EventSourcing.Serialization.Abstractions
         /// The <see cref="ISerializer"/>.
         /// </returns>
         ISerializer GetForgettablePayloadSerializer();
-        
+
         /// <summary>
         /// Gets <see cref="ISerializer"/> registered for provided <paramref name="serializationFormat"/>.
         /// </summary>

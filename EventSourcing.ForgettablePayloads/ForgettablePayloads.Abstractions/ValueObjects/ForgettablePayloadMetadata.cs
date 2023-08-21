@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// Represents forgettable payload's metadata.
@@ -39,9 +39,9 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The <see cref="ForgettablePayloadLastModifiedTime"/>
         /// </summary>
         public ForgettablePayloadLastModifiedTime PayloadLastModifiedTime { get; }
-        
+
         /// <summary>
-        /// The <see cref="ForgettablePayloadSequence"/> 
+        /// The <see cref="ForgettablePayloadSequence"/>
         /// </summary>
         public ForgettablePayloadSequence PayloadSequence { get; }
 

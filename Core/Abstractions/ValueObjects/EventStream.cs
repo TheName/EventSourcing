@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EventSourcing.Abstractions.Exceptions;
+using EventSourcing.Exceptions;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// Represents a read-only event stream.
@@ -22,17 +22,17 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// </returns>
         public static EventStream NewEventStream(EventStreamId streamId = null) =>
             new EventStream(streamId ?? EventStreamId.NewEventStreamId(), new List<EventStreamEventWithMetadata>());
-        
+
         /// <summary>
         /// The <see cref="EventStreamId"/> that identifies given stream of events.
         /// </summary>
         public EventStreamId StreamId { get; }
-        
+
         /// <summary>
         /// The <see cref="IReadOnlyList{EventStreamEventWithMetadata}"/> already persisted in the stream of events.
         /// </summary>
         public IReadOnlyList<EventStreamEventWithMetadata> EventsWithMetadata { get; }
-        
+
         /// <summary>
         /// The <see cref="EventStreamEntrySequence"/> that represents the max sequence of an event stored in this event stream.
         /// </summary>
@@ -54,7 +54,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// Thrown when provided <paramref name="streamId"/> does not match <see cref="EventStreamId"/> assigned to <paramref name="eventsWithMetadata"/>.
         /// </exception>
         /// <exception cref="InvalidEventStreamEntrySequenceException">
-        /// Thrown when provided <paramref name="eventsWithMetadata"/> has minimum <see cref="EventStreamEntrySequence"/> different than 0. 
+        /// Thrown when provided <paramref name="eventsWithMetadata"/> has minimum <see cref="EventStreamEntrySequence"/> different than 0.
         /// </exception>
         public EventStream(
             EventStreamId streamId,
@@ -62,13 +62,13 @@ namespace EventSourcing.Abstractions.ValueObjects
         {
             StreamId = streamId ?? throw new ArgumentNullException(nameof(streamId));
             EventsWithMetadata = eventsWithMetadata?.ToList().AsReadOnly() ?? throw new ArgumentNullException(nameof(eventsWithMetadata));
-            
+
             if (EventsWithMetadata.Count == 0)
             {
                 MaxSequence = 0;
                 return;
             }
-            
+
             foreach (var eventWithMetadata in EventsWithMetadata)
             {
                 if (eventWithMetadata.EventMetadata.StreamId != streamId)

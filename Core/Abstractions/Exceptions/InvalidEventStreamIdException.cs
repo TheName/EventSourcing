@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions.Exceptions
+namespace EventSourcing.Exceptions
 {
     /// <summary>
     /// Provided <see cref="EventStreamId"/> is invalid.

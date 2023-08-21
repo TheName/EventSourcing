@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// Represents an event with metadata.
@@ -16,12 +16,12 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The <see cref="object"/> representing an event.
         /// </summary>
         public object Event { get; }
-        
+
         /// <summary>
         /// The <see cref="EventStreamEventMetadata"/> representing event's metadata.
         /// </summary>
         public EventStreamEventMetadata EventMetadata { get; }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStreamEventWithMetadata"/> class.
         /// </summary>

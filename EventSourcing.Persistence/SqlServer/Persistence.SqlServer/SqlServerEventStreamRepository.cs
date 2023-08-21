@@ -5,8 +5,8 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions.Enums;
+using EventSourcing.Persistence.Enums;
+using EventSourcing.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.Persistence.SqlServer

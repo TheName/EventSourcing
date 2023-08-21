@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EventSourcing.Abstractions.Configurations;
-using EventSourcing.Abstractions.Conversion;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.Configurations;
 using EventSourcing.Conversion;
+using EventSourcing.ValueObjects;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions.Factories;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Aggregates.Factories
 {
@@ -14,7 +13,7 @@ namespace EventSourcing.Aggregates.Factories
             {
                 throw new ArgumentNullException(nameof(aggregateType));
             }
-            
+
             if (aggregateType.IsAbstract)
             {
                 throw new ArgumentException($"Provided type ({aggregateType}) is abstract.");
@@ -24,7 +23,7 @@ namespace EventSourcing.Aggregates.Factories
             {
                 throw new ArgumentException($"Provided type ({aggregateType}) is an interface.");
             }
-            
+
             var constructors = aggregateType.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if (constructors.Length == 0)
             {

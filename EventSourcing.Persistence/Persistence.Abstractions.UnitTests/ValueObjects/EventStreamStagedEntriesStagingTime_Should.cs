@@ -1,5 +1,5 @@
 ﻿using System;
-using EventSourcing.Persistence.Abstractions.ValueObjects;
+using EventSourcing.Persistence.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 

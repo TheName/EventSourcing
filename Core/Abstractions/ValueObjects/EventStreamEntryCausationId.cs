@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// The event stream entry causation id.
@@ -36,7 +36,7 @@ namespace EventSourcing.Abstractions.ValueObjects
                 {
                     AsyncLocalCausationId.Value = (Guid) EventStreamEntryCorrelationId.Current;
                 }
-                
+
                 return AsyncLocalCausationId.Value;
             }
             set
@@ -50,11 +50,11 @@ namespace EventSourcing.Abstractions.ValueObjects
                 {
                     return;
                 }
-            
+
                 AsyncLocalCausationId.Value = value;
             }
         }
-        
+
         /// <summary>
         /// The actual value of causation id
         /// </summary>
@@ -91,7 +91,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The <see cref="Guid"/>.
         /// </returns>
         public static implicit operator Guid(EventStreamEntryCausationId id) => id.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="Guid"/> to <see cref="EventStreamEntryCausationId"/>.
         /// </summary>
@@ -102,7 +102,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The <see cref="EventStreamEntryCausationId"/>.
         /// </returns>
         public static implicit operator EventStreamEntryCausationId(Guid id) => new EventStreamEntryCausationId(id);
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="EventStreamEntryId"/> to <see cref="EventStreamEntryCausationId"/>.
         /// </summary>

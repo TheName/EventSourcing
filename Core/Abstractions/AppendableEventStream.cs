@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions
+namespace EventSourcing
 {
     /// <summary>
     /// Represents an stream of events with metadata that can be modified by appending new events.
@@ -40,7 +40,7 @@ namespace EventSourcing.Abstractions
                 {
                     return 0;
                 }
-                
+
                 return _maxSequence + 1;
             }
         }
@@ -60,7 +60,7 @@ namespace EventSourcing.Abstractions
             {
                 throw new ArgumentNullException(nameof(eventStream));
             }
-            
+
             StreamId = eventStream.StreamId;
             EventsWithMetadata = eventStream.EventsWithMetadata;
             _maxSequence = eventStream.MaxSequence;
@@ -104,7 +104,7 @@ namespace EventSourcing.Abstractions
                     causationId ?? EventStreamEntryCausationId.Current,
                     creationTime ?? EventStreamEntryCreationTime.Now(),
                     correlationId ?? EventStreamEntryCorrelationId.Current));
-            
+
             _eventsWithMetadataToAppend.Add(eventWithMetadataToAppend);
             _maxSequence = eventWithMetadataToAppend.EventMetadata.EntrySequence;
             return eventWithMetadataToAppend;

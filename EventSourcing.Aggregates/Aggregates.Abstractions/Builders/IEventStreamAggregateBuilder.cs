@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Aggregates.Abstractions.Builders
+namespace EventSourcing.Aggregates.Builders
 {
     /// <summary>
     /// Builds an aggregate of provided <see cref="Type"/> and replayed <see cref="EventStream"/>.
@@ -18,7 +18,7 @@ namespace EventSourcing.Aggregates.Abstractions.Builders
         /// The <see cref="EventStream"/> to replay on the aggregate.
         /// </param>
         /// <returns>
-        /// An instance of type <paramref name="aggregateType"/> with replayed events from <paramref name="eventStream"/>. 
+        /// An instance of type <paramref name="aggregateType"/> with replayed events from <paramref name="eventStream"/>.
         /// </returns>
         object Build(Type aggregateType, EventStream eventStream);
     }

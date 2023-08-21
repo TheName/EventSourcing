@@ -1,10 +1,4 @@
 ﻿using System;
-using EventSourcing.Aggregates.Abstractions;
-using EventSourcing.Aggregates.Abstractions.Builders;
-using EventSourcing.Aggregates.Abstractions.Conversion;
-using EventSourcing.Aggregates.Abstractions.Factories;
-using EventSourcing.Aggregates.Abstractions.Publishers;
-using EventSourcing.Aggregates.Abstractions.Retrievers;
 using EventSourcing.Aggregates.Builders;
 using EventSourcing.Aggregates.Conversion;
 using EventSourcing.Aggregates.Factories;

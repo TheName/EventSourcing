@@ -1,6 +1,6 @@
 ﻿using System.Threading;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.Services;
+using EventSourcing.ForgettablePayloads.ValueObjects;
 using Moq;
 
 namespace ForgettablePayloads.Abstractions.UnitTests.Extensions

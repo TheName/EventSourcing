@@ -1,6 +1,5 @@
 ﻿using System;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -27,7 +26,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 creationTime,
                 correlationId));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEventId(
@@ -47,7 +46,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 creationTime,
                 correlationId));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEventSequence(
@@ -67,7 +66,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 creationTime,
                 correlationId));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEventDescriptor(
@@ -87,7 +86,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 creationTime,
                 correlationId));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEntryCausationId(
@@ -107,7 +106,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 creationTime,
                 correlationId));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEntryCreationTime(
@@ -127,7 +126,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 null,
                 correlationId));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEntryCorrelationId(
@@ -188,7 +187,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 causationId,
                 creationTime,
                 correlationId);
-            
+
             Assert.Equal(streamId, eventStreamEvent.StreamId);
         }
 
@@ -211,7 +210,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 causationId,
                 creationTime,
                 correlationId);
-            
+
             Assert.Equal(eventId, eventStreamEvent.EntryId);
         }
 
@@ -234,7 +233,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 causationId,
                 creationTime,
                 correlationId);
-            
+
             Assert.Equal(eventSequence, eventStreamEvent.EntrySequence);
         }
 
@@ -257,7 +256,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 causationId,
                 creationTime,
                 correlationId);
-            
+
             Assert.Equal(eventDescriptor, eventStreamEvent.EventDescriptor);
         }
 
@@ -280,7 +279,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 causationId,
                 creationTime,
                 correlationId);
-            
+
             Assert.Equal(causationId, eventStreamEvent.CausationId);
         }
 
@@ -303,7 +302,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 causationId,
                 creationTime,
                 correlationId);
-            
+
             Assert.Equal(creationTime, eventStreamEvent.CreationTime);
         }
 
@@ -326,7 +325,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 causationId,
                 creationTime,
                 correlationId);
-            
+
             Assert.Equal(correlationId, eventStreamEvent.CorrelationId);
         }
 
@@ -343,7 +342,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             var event2 = new EventStreamEntry(
                 eventStreamEvent.StreamId,
                 eventStreamEvent.EntryId,
@@ -352,7 +351,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             Assert.Equal(event1, event2);
             Assert.True(event1 == event2);
             Assert.False(event1 != event2);
@@ -372,7 +371,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             var event2 = new EventStreamEntry(
                 differentStreamId,
                 eventStreamEvent.EntryId,
@@ -381,7 +380,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             Assert.NotEqual(event1, event2);
             Assert.False(event1 == event2);
             Assert.True(event1 != event2);
@@ -401,7 +400,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             var event2 = new EventStreamEntry(
                 eventStreamEvent.StreamId,
                 differentEventId,
@@ -410,7 +409,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             Assert.NotEqual(event1, event2);
             Assert.False(event1 == event2);
             Assert.True(event1 != event2);
@@ -430,7 +429,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             var event2 = new EventStreamEntry(
                 eventStreamEvent.StreamId,
                 eventStreamEvent.EntryId,
@@ -439,7 +438,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             Assert.NotEqual(event1, event2);
             Assert.False(event1 == event2);
             Assert.True(event1 != event2);
@@ -459,7 +458,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             var event2 = new EventStreamEntry(
                 eventStreamEvent.StreamId,
                 eventStreamEvent.EntryId,
@@ -468,7 +467,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             Assert.NotEqual(event1, event2);
             Assert.False(event1 == event2);
             Assert.True(event1 != event2);
@@ -488,7 +487,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             var event2 = new EventStreamEntry(
                 eventStreamEvent.StreamId,
                 eventStreamEvent.EntryId,
@@ -497,7 +496,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 differentCausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             Assert.NotEqual(event1, event2);
             Assert.False(event1 == event2);
             Assert.True(event1 != event2);
@@ -517,7 +516,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             var event2 = new EventStreamEntry(
                 eventStreamEvent.StreamId,
                 eventStreamEvent.EntryId,
@@ -526,7 +525,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 differentCreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             Assert.NotEqual(event1, event2);
             Assert.False(event1 == event2);
             Assert.True(event1 != event2);
@@ -546,7 +545,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 eventStreamEvent.CorrelationId);
-            
+
             var event2 = new EventStreamEntry(
                 eventStreamEvent.StreamId,
                 eventStreamEvent.EntryId,
@@ -555,7 +554,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 eventStreamEvent.CausationId,
                 eventStreamEvent.CreationTime,
                 differentCorrelationId);
-            
+
             Assert.NotEqual(event1, event2);
             Assert.False(event1 == event2);
             Assert.True(event1 != event2);
@@ -567,7 +566,7 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var expectedValue =
                 $"Event Stream ID: {eventStreamEntry.StreamId}, Entry ID: {eventStreamEntry.EntryId}, Entry Sequence: {eventStreamEntry.EntrySequence}, Event Descriptor: {eventStreamEntry.EventDescriptor}, Causation ID: {eventStreamEntry.CausationId}, Creation Time: {eventStreamEntry.CreationTime}, Correlation ID: {eventStreamEntry.CorrelationId}";
-            
+
             Assert.Equal(expectedValue, eventStreamEntry.ToString());
         }
 
@@ -576,7 +575,7 @@ namespace Abstractions.UnitTests.ValueObjects
         public void ReturnMetadataWithSameValues(EventStreamEntry eventStreamEntry)
         {
             var result = eventStreamEntry.ToEventMetadata();
-            
+
             Assert.Equal(eventStreamEntry.StreamId, result.StreamId);
             Assert.Equal(eventStreamEntry.EntryId, result.EntryId);
             Assert.Equal(eventStreamEntry.EntrySequence, result.EntrySequence);

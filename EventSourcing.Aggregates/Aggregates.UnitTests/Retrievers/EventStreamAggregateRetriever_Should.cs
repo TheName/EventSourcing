@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions.Builders;
+using EventSourcing;
+using EventSourcing.Aggregates.Builders;
 using EventSourcing.Aggregates.Retrievers;
+using EventSourcing.ValueObjects;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;
@@ -21,7 +21,7 @@ namespace Aggregates.UnitTests.Retrievers
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamAggregateRetriever(null, eventStreamAggregateBuilder));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamAggregateBuilder(
@@ -29,7 +29,7 @@ namespace Aggregates.UnitTests.Retrievers
         {
             Assert.Throws<ArgumentNullException>(() => new EventStreamAggregateRetriever(eventStreamRetriever, null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNotNullParameters(
@@ -52,9 +52,9 @@ namespace Aggregates.UnitTests.Retrievers
                 .Setup(retriever => retriever.RetrieveAsync(streamId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(eventStream)
                 .Verifiable();
-            
+
             _ = await aggregateRetriever.RetrieveAsync(aggregateType, streamId, CancellationToken.None);
-            
+
             eventStreamRetrieverMock.Verify();
             eventStreamRetrieverMock.VerifyNoOtherCalls();
         }
@@ -72,9 +72,9 @@ namespace Aggregates.UnitTests.Retrievers
                 .Setup(retriever => retriever.RetrieveAsync(streamId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(EventStream.NewEventStream(streamId))
                 .Verifiable();
-            
+
             var result = await aggregateRetriever.RetrieveAsync(aggregateType, streamId, CancellationToken.None);
-            
+
             Assert.Null(result);
             eventStreamRetrieverMock.Verify();
             eventStreamRetrieverMock.VerifyNoOtherCalls();
@@ -101,14 +101,14 @@ namespace Aggregates.UnitTests.Retrievers
                 .Setup(builder => builder.Build(aggregateType, eventStream))
                 .Returns(builtAggregate)
                 .Verifiable();
-            
+
             var result = await aggregateRetriever.RetrieveAsync(aggregateType, streamId, CancellationToken.None);
-            
+
             eventStreamRetrieverMock.Verify();
             eventStreamRetrieverMock.VerifyNoOtherCalls();
             eventStreamAggregateBuilderMock.Verify();
             eventStreamAggregateBuilderMock.VerifyNoOtherCalls();
-            
+
             Assert.Equal(builtAggregate, result);
         }
     }

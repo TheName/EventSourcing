@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.Bus.Abstractions
+﻿namespace EventSourcing.Bus
 {
     /// <summary>
     /// Options related to event sourcing builder for bus registrations
@@ -14,7 +14,7 @@
         /// <summary>
         /// EventSourcingBusBuilderOptions constructor
         /// </summary>
-        /// <param name="withConsumer"> 
+        /// <param name="withConsumer">
         /// The <see cref="WithConsumer"/>
         /// </param>
         public EventSourcingBusBuilderOptions(bool withConsumer)

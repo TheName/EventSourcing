@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Bus.RabbitMQ.UnitTests.Helpers;
-using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Bus.RabbitMQ;
 using EventSourcing.Bus.RabbitMQ.Transport;
+using EventSourcing.ValueObjects;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;
@@ -21,7 +21,7 @@ namespace Bus.RabbitMQ.UnitTests
         {
             Assert.Throws<ArgumentNullException>(() => new RabbitMQEventSourcingBusPublisher(null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void NotThrow_When_Creating_And_ProducerFactoryParameterIsNotNull(IRabbitMQProducerFactory producerFactory)
@@ -35,7 +35,7 @@ namespace Bus.RabbitMQ.UnitTests
             var producerFactoryMock = new Mock<IRabbitMQProducerFactory>();
 
             _ = new RabbitMQEventSourcingBusPublisher(producerFactoryMock.Object);
-            
+
             producerFactoryMock.VerifyNoOtherCalls();
         }
 
@@ -94,7 +94,7 @@ namespace Bus.RabbitMQ.UnitTests
             producerFactoryMock
                 .Setup(factory => factory.CreateAsync<EventStreamEntry>(It.IsAny<CancellationToken>()))
                 .Returns(producerTaskCompletionSource.Task);
-            
+
             var publishingTasks = entries
                 .Select(entry => publisher.PublishAsync(entry, CancellationToken.None))
                 .ToList();
@@ -176,7 +176,7 @@ namespace Bus.RabbitMQ.UnitTests
 
             var publishingTask = publisher.PublishAsync(entry, CancellationToken.None);
             Assert.False(publishingTask.IsCompleted);
-            
+
             publisher.Dispose();
 
             await Assert.ThrowsAsync<OperationCanceledException>(() => publishingTask);
@@ -195,7 +195,7 @@ namespace Bus.RabbitMQ.UnitTests
             producerFactoryMock
                 .Setup(factory => factory.CreateAsync<EventStreamEntry>(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(producerMock.Object);
-            
+
             var cancellingTask = CancellingTasksHelper.CreateCancellingTask<EventStreamEntry>(() => cancellationRequested = true);
             producerMock
                 .Setup(producer => producer.PublishAsync(entry, It.IsAny<CancellationToken>()))
@@ -203,7 +203,7 @@ namespace Bus.RabbitMQ.UnitTests
 
             var publishingTask = publisher.PublishAsync(entry, CancellationToken.None);
             Assert.False(publishingTask.IsCompleted);
-            
+
             publisher.Dispose();
 
             await Assert.ThrowsAsync<OperationCanceledException>(() => publishingTask);
@@ -225,9 +225,9 @@ namespace Bus.RabbitMQ.UnitTests
 
             var publishingTask = publisher.PublishAsync(entry, CancellationToken.None);
             Assert.False(publishingTask.IsCompleted);
-            
+
             publisher.Dispose();
-            
+
             producerTaskCompletionSource.SetResult(producerMock.Object);
 
             await Assert.ThrowsAsync<OperationCanceledException>(() => publishingTask);
@@ -247,7 +247,7 @@ namespace Bus.RabbitMQ.UnitTests
             producerFactoryMock
                 .Setup(factory => factory.CreateAsync<EventStreamEntry>(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(producerMock.Object);
-            
+
             var publishingTasks = entries
                 .Select(entry => publisher.PublishAsync(entry, CancellationToken.None))
                 .ToList();
@@ -277,7 +277,7 @@ namespace Bus.RabbitMQ.UnitTests
 
             await publisher.PublishAsync(entry, CancellationToken.None);
             publisher.Dispose();
-            
+
             producerMock.Verify(producer => producer.PublishAsync(entry, It.IsAny<CancellationToken>()), Times.Once);
             producerDisposableMock.Verify(producer => producer.Dispose(), Times.Once);
             producerFactoryMock.Verify(factory => factory.CreateAsync<EventStreamEntry>(It.IsAny<CancellationToken>()), Times.Once);
@@ -301,7 +301,7 @@ namespace Bus.RabbitMQ.UnitTests
             publisher.Dispose();
             publisher.Dispose();
             publisher.Dispose();
-            
+
             producerMock.Verify(producer => producer.PublishAsync(entry, It.IsAny<CancellationToken>()), Times.Once);
             producerDisposableMock.Verify(producer => producer.Dispose(), Times.Once);
             producerFactoryMock.Verify(factory => factory.CreateAsync<EventStreamEntry>(It.IsAny<CancellationToken>()), Times.Once);
@@ -315,7 +315,7 @@ namespace Bus.RabbitMQ.UnitTests
             RabbitMQEventSourcingBusPublisher publisher)
         {
             publisher.Dispose();
-            
+
             producerFactoryMock.VerifyNoOtherCalls();
         }
 
@@ -334,7 +334,7 @@ namespace Bus.RabbitMQ.UnitTests
 
             await publisher.PublishAsync(entry, CancellationToken.None);
             publisher.Dispose();
-            
+
             producerMock.Verify(producer => producer.PublishAsync(entry, It.IsAny<CancellationToken>()), Times.Once);
             producerDisposableMock.Verify(producer => producer.Dispose(), Times.Once);
             producerFactoryMock.Verify(factory => factory.CreateAsync<EventStreamEntry>(It.IsAny<CancellationToken>()), Times.Once);
@@ -349,9 +349,9 @@ namespace Bus.RabbitMQ.UnitTests
             RabbitMQEventSourcingBusPublisher publisher)
         {
             publisher.Dispose();
-            
+
             await Assert.ThrowsAsync<ObjectDisposedException>(() => publisher.PublishAsync(entry, CancellationToken.None));
-            
+
             producerFactoryMock.VerifyNoOtherCalls();
         }
     }

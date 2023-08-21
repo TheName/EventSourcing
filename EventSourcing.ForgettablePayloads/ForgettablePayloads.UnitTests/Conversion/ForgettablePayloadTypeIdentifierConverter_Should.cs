@@ -1,6 +1,6 @@
 ﻿using System;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
 using EventSourcing.ForgettablePayloads.Conversion;
+using EventSourcing.ForgettablePayloads.ValueObjects;
 using ForgettablePayloads.UnitTests.ReferencedAssembly;
 using TestHelpers.Attributes;
 using Xunit;

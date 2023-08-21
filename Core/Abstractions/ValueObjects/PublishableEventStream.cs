@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// Represents a read-only event stream of events with metadata that should be published.
@@ -40,7 +40,7 @@ namespace EventSourcing.Abstractions.ValueObjects
             {
                 throw new ArgumentNullException(nameof(appendableEventStream));
             }
-            
+
             StreamId = appendableEventStream.StreamId;
             EventsWithMetadata = appendableEventStream.EventsWithMetadata.ToList().AsReadOnly();
             EventsWithMetadataToPublish = appendableEventStream.EventsWithMetadataToAppend.ToList().AsReadOnly();

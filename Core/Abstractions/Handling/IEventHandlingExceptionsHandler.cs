@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Exceptions;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.Exceptions;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions.Handling
+namespace EventSourcing.Handling
 {
     /// <summary>
     /// Handles exceptions thrown during handling of an <see cref="EventStreamEntry"/>.

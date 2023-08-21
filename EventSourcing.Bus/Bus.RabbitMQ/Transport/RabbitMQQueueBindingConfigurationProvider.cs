@@ -1,9 +1,8 @@
 ﻿using System;
-using EventSourcing.Abstractions.Configurations;
-using EventSourcing.Abstractions.Exceptions;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Bus.Abstractions;
 using EventSourcing.Bus.RabbitMQ.Configurations;
+using EventSourcing.Configurations;
+using EventSourcing.Exceptions;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Bus.RabbitMQ.Transport
 {

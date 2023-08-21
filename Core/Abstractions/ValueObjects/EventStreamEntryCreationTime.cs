@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// The event stream entry creation time value object.
@@ -46,7 +46,7 @@ namespace EventSourcing.Abstractions.ValueObjects
                 throw new ArgumentException(
                     $"{nameof(EventStreamEntryCreationTime)} must have a different value than {DateTime.MaxValue}.",
                     nameof(value));
-                
+
             }
 
             if (value.Kind != DateTimeKind.Utc)
@@ -55,7 +55,7 @@ namespace EventSourcing.Abstractions.ValueObjects
                     $"{nameof(EventStreamEntryCreationTime)} must have {DateTimeKind.Utc} date time kind.",
                     nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -71,7 +71,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The <see cref="DateTime"/>.
         /// </returns>
         public static implicit operator DateTime(EventStreamEntryCreationTime creationTime) => creationTime.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="DateTime"/> to <see cref="EventStreamEntryCreationTime"/>.
         /// </summary>

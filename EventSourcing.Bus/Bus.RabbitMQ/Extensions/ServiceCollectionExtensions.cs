@@ -1,5 +1,4 @@
 ﻿using System;
-using EventSourcing.Bus.Abstractions;
 using EventSourcing.Bus.RabbitMQ.Configurations;
 using EventSourcing.Bus.RabbitMQ.Transport;
 using Microsoft.Extensions.DependencyInjection;

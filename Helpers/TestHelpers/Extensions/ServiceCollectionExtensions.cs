@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Bus.Abstractions;
-using EventSourcing.Persistence.Abstractions;
-using EventSourcing.Serialization.Abstractions;
+using EventSourcing.Bus;
+using EventSourcing.Persistence;
+using EventSourcing.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;

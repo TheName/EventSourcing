@@ -1,9 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Bus.Abstractions
+namespace EventSourcing.Bus
 {
     /// <summary>
     /// Publishes event stream entries to the event sourcing bus.
