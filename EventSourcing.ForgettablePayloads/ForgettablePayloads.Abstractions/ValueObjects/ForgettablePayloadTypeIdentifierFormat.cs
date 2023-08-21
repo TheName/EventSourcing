@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// Represents <see cref="ForgettablePayloadTypeIdentifier"/>'s format
@@ -11,7 +11,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The ClassName <see cref="ForgettablePayloadTypeIdentifier"/>'s format.
         /// </summary>
         public static ForgettablePayloadTypeIdentifierFormat ClassName = new ForgettablePayloadTypeIdentifierFormat(nameof(ClassName));
-        
+
         /// <summary>
         /// The actual value of forgettable payload type identifier format
         /// </summary>
@@ -32,7 +32,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
             {
                 throw new ArgumentException($"{nameof(ForgettablePayloadTypeIdentifierFormat)} cannot be null or whitespace.", nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -48,7 +48,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The <see cref="string"/>.
         /// </returns>
         public static implicit operator string(ForgettablePayloadTypeIdentifierFormat typeIdentifierFormat) => typeIdentifierFormat.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="string"/> to <see cref="ForgettablePayloadTypeIdentifierFormat"/>.
         /// </summary>

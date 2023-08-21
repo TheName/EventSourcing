@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EventSourcing.Abstractions.Exceptions;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.Exceptions;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 

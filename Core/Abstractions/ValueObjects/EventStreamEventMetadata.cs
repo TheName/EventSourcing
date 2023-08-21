@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// Represents event's metadata.
@@ -13,27 +13,27 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The <see cref="EventStreamId"/> that this event belongs to.
         /// </summary>
         public EventStreamId StreamId { get; }
-        
+
         /// <summary>
         /// The <see cref="EventStreamEntryId"/> assigned to this entry.
         /// </summary>
         public EventStreamEntryId EntryId { get; }
-        
+
         /// <summary>
         /// The <see cref="EventStreamEntrySequence"/> this entry has in the event stream it belongs to.
         /// </summary>
         public EventStreamEntrySequence EntrySequence { get; }
-        
+
         /// <summary>
         /// The causation id. See <see cref="EventStreamEntryCausationId"/>.
         /// </summary>
         public EventStreamEntryCausationId CausationId { get; }
-        
+
         /// <summary>
         /// The creation time. See <see cref="EventStreamEntryCreationTime"/>.
         /// </summary>
         public EventStreamEntryCreationTime CreationTime { get; }
-        
+
         /// <summary>
         /// The correlation id. See <see cref="EventStreamEntryCorrelationId"/>.
         /// </summary>

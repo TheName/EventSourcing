@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Bus.Abstractions;
+using EventSourcing.Bus;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Extensions
 {
@@ -23,7 +22,7 @@ namespace EventSourcing.Extensions
             foreach (var eventStreamEntry in entries)
             {
                 await publisher.PublishAsync(eventStreamEntry, cancellationToken).ConfigureAwait(false);
-                
+
                 cancellationToken.ThrowIfCancellationRequested();
             }
         }

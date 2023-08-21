@@ -1,7 +1,4 @@
 ﻿using System;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.Configurations;
-using EventSourcing.Abstractions.Conversion;
 using EventSourcing.Abstractions.Handling;
 using EventSourcing.Abstractions.Reconciliation;
 using EventSourcing.Configurations;
@@ -49,7 +46,7 @@ namespace EventSourcing.Extensions
                 .AddTransient<IEventStreamRetriever, EventStreamRetriever>()
                 .AddTransient<IReconciliationJob, ReconciliationJob>()
                 .AddTransient<IEventStreamStagedEntriesReconciliationService, EventStreamStagedEntriesReconciliationService>();
-            
+
             serviceCollection
                 .AddOptions<EventSourcingConfiguration>()
                 .BindConfiguration(nameof(EventSourcingConfiguration))

@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions
+namespace EventSourcing
 {
     /// <summary>
     /// Retrieves an <see cref="EventStream"/>.

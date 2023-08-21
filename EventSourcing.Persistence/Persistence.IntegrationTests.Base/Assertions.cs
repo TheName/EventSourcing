@@ -1,4 +1,4 @@
-﻿using EventSourcing.Abstractions.ValueObjects;
+﻿using EventSourcing.ValueObjects;
 using Xunit;
 
 namespace Persistence.IntegrationTests.Base

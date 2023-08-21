@@ -1,4 +1,4 @@
-﻿using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+﻿using EventSourcing.ForgettablePayloads.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 

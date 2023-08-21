@@ -2,14 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Hooks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.Conversion;
 using EventSourcing.ForgettablePayloads.Helpers;
-using EventSourcing.ForgettablePayloads.Persistence.Abstractions;
+using EventSourcing.ForgettablePayloads.Persistence;
+using EventSourcing.ForgettablePayloads.Services;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.Hooks;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.ForgettablePayloads.Hooks
 {
@@ -28,16 +27,16 @@ namespace EventSourcing.ForgettablePayloads.Hooks
             _forgettablePayloadStorageWriter = forgettablePayloadStorageWriter ?? throw new ArgumentNullException(nameof(forgettablePayloadStorageWriter));
             _forgettablePayloadConverter = forgettablePayloadConverter ?? throw new ArgumentNullException(nameof(forgettablePayloadConverter));
         }
-        
+
         public async Task PreEventStreamEventWithMetadataPublishHookAsync(
-            EventStreamEventWithMetadata eventWithMetadata, 
+            EventStreamEventWithMetadata eventWithMetadata,
             CancellationToken cancellationToken)
         {
             if (eventWithMetadata == null)
             {
                 throw new ArgumentNullException(nameof(eventWithMetadata));
             }
-            
+
             var forgettablePayloadEntities = _forgettablePayloadFinder.Find(eventWithMetadata.Event);
             if (forgettablePayloadEntities == null)
             {
@@ -71,7 +70,7 @@ namespace EventSourcing.ForgettablePayloads.Hooks
                     out var payloadMetadata))
             {
                 // this ForgettablePayload instance was not created; must've been reused
-                
+
                 return;
             }
 

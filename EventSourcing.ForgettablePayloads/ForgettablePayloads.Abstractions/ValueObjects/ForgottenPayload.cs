@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// The payload that will replace original payload when forgetting original payload
@@ -16,12 +16,12 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The time of the forgetting action
         /// </summary>
         public ForgettingPayloadTime ForgettingTime { get; }
-        
+
         /// <summary>
         /// The reason why the original payload was forgotten
         /// </summary>
         public ForgettingPayloadReason ForgettingReason { get; }
-        
+
         /// <summary>
         /// The entity that requested the original payload to be forgotten
         /// </summary>

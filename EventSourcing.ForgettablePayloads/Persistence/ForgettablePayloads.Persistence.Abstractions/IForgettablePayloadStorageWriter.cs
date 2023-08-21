@@ -1,9 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.ForgettablePayloads.Abstractions;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Persistence.Abstractions
+namespace EventSourcing.ForgettablePayloads.Persistence
 {
     /// <summary>
     /// Storage writer for <see cref="ForgettablePayload"/>

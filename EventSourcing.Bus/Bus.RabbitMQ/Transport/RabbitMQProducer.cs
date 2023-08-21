@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Bus.RabbitMQ.Extensions;
-using EventSourcing.Serialization.Abstractions;
+using EventSourcing.Serialization;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.Bus.RabbitMQ.Transport

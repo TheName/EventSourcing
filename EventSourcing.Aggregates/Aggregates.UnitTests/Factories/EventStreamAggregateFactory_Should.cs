@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions;
+using EventSourcing.Aggregates;
 using EventSourcing.Aggregates.Factories;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -15,7 +15,7 @@ namespace Aggregates.UnitTests.Factories
         {
             Assert.Throws<ArgumentNullException>(() => factory.Create(null));
         }
-        
+
         [Theory]
         [AutoMoqWithInlineData(typeof(BaseEventStreamAggregate))]
         internal void Throw_ArgumentNullException_When_TryingToCreate_And_PassingAbstractType(
@@ -24,7 +24,7 @@ namespace Aggregates.UnitTests.Factories
         {
             Assert.Throws<ArgumentException>(() => factory.Create(aggregateType));
         }
-        
+
         [Theory]
         [AutoMoqWithInlineData(typeof(IEventStreamAggregate))]
         internal void Throw_ArgumentNullException_When_TryingToCreate_And_PassingInterfaceType(
@@ -40,7 +40,7 @@ namespace Aggregates.UnitTests.Factories
         {
             Assert.Throws<MissingMethodException>(() => factory.Create(aggregateType));
         }
-        
+
         [Theory]
         [AutoMoqWithInlineData(typeof(ClassWithPublicParameterlessConstructor))]
         [AutoMoqWithInlineData(typeof(ClassWithPrivateParameterlessConstructor))]
@@ -50,7 +50,7 @@ namespace Aggregates.UnitTests.Factories
 
             Assert.NotNull(result);
         }
-        
+
         [Theory]
         [AutoMoqWithInlineData(typeof(ClassWithConstructorAcceptingStreamIdOnly))]
         internal void CreateObject_When_TryingToCreateObjectWithConstructorAcceptingStreamIdOnly(Type aggregateType, EventStreamAggregateFactory factory)
@@ -59,18 +59,18 @@ namespace Aggregates.UnitTests.Factories
 
             Assert.NotNull(result);
         }
-        
+
         private class ClassWithPublicParameterlessConstructor
         {
         }
-        
+
         private class ClassWithPrivateParameterlessConstructor
         {
             private ClassWithPrivateParameterlessConstructor()
             {
             }
         }
-        
+
         private class ClassWithoutParameterlessConstructor
         {
             private readonly bool _someParam;
@@ -80,7 +80,7 @@ namespace Aggregates.UnitTests.Factories
                 _someParam = someParam;
             }
         }
-        
+
         private class ClassWithConstructorAcceptingStreamIdOnly
         {
             private readonly EventStreamId _streamId;

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions.Retrievers;
+using EventSourcing.Aggregates.Retrievers;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Aggregates.Abstractions.Extensions
+namespace EventSourcing.Aggregates.Extensions
 {
     /// <summary>
     /// Extension methods for <see cref="IEventStreamAggregateRetriever"/>

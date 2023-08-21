@@ -1,10 +1,9 @@
 ﻿using System;
 using AutoFixture.Xunit2;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
 using EventSourcing.ForgettablePayloads.Conversion;
-using EventSourcing.Serialization.Abstractions;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.Serialization;
+using EventSourcing.ValueObjects;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;

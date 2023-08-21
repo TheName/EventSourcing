@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
 using EventSourcing.Conversion;
 using EventSourcing.UnitTests.ReferencedAssembly;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 

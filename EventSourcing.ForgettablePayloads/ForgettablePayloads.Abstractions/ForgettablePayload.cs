@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.Conversion;
+using EventSourcing.ForgettablePayloads.Services;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions
+namespace EventSourcing.ForgettablePayloads
 {
     /// <summary>
     /// The forgettable payload
@@ -14,7 +14,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
     public class ForgettablePayload
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-        
+
         private object _payload;
         private ForgettablePayloadCreationTime _payloadCreationTime;
         private ForgettablePayloadDescriptor _payloadDescriptor;
@@ -94,7 +94,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
 
             return forgettablePayload;
         }
-        
+
         /// <summary>
         /// The <see cref="ForgettablePayloadId"/>
         /// </summary>
@@ -186,9 +186,9 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
                 // if this instance was created it cannot have been forgotten yet.
                 return false;
             }
-            
+
             await LoadIfNotLoadedAsync(cancellationToken).ConfigureAwait(false);
-            
+
             return _payloadDescriptor.PayloadState == ForgettablePayloadState.Forgotten;
         }
 
@@ -208,9 +208,9 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
                 // if this instance was created it cannot have been claimed yet.
                 return false;
             }
-            
+
             await LoadIfNotLoadedAsync(cancellationToken).ConfigureAwait(false);
-            
+
             return _payloadDescriptor.PayloadState == ForgettablePayloadState.CreatedAndClaimed;
         }
 
@@ -229,14 +229,14 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
             {
                 return _payload;
             }
-            
+
             await LoadIfNotLoadedAsync(cancellationToken).ConfigureAwait(false);
 
             if (_payload != null)
             {
                 return _payload;
             }
-            
+
             var converter = Converter;
             var payload = converter.FromPayloadContentDescriptor(_payloadDescriptor.ToContentDescriptor());
 
@@ -261,7 +261,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
                 eventStreamId,
                 eventStreamEntryId,
                 PayloadId,
-                ForgettablePayloadState.Created, 
+                ForgettablePayloadState.Created,
                 _payloadCreationTime,
                 new ForgettablePayloadLastModifiedTime(_payloadCreationTime.Value),
                 new ForgettablePayloadSequence(0));
@@ -295,14 +295,14 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
             {
                 throw new ArgumentNullException(nameof(forgettingPayloadRequestedBy));
             }
-            
+
             if (await IsForgottenAsync(cancellationToken).ConfigureAwait(false))
             {
                 return;
             }
 
             var descriptor = await GetDescriptorAsync(cancellationToken).ConfigureAwait(false);
-            
+
             var forgettingService = ForgettingService;
             await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -320,7 +320,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
             {
                 _semaphore.Release();
             }
-            
+
             var isForgotten = await IsForgottenAsync(cancellationToken).ConfigureAwait(false);
             if (!isForgotten)
             {
@@ -359,7 +359,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
             {
                 _semaphore.Release();
             }
-            
+
             var isClaimed = await IsClaimedAsync(cancellationToken).ConfigureAwait(false);
             if (!isClaimed)
             {
@@ -367,7 +367,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions
                     $"This instance of {nameof(ForgettablePayload)} does not have claimed state assigned to it after using claiming service of type {claimingService.GetType().Name}. PayloadId: {PayloadId}");
             }
         }
-        
+
         private async Task<ForgettablePayloadDescriptor> GetDescriptorAsync(CancellationToken cancellationToken)
         {
             await LoadIfNotLoadedAsync(cancellationToken).ConfigureAwait(false);

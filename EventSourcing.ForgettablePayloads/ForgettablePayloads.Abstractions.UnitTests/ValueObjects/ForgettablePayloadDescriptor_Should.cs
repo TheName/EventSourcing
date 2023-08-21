@@ -1,6 +1,6 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -35,7 +35,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventStreamEntryId(
@@ -63,7 +63,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullForgettablePayloadId(
@@ -91,7 +91,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullForgettablePayloadState(
@@ -119,7 +119,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullForgettablePayloadCreationTime(
@@ -147,7 +147,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullForgettablePayloadLastModifiedTime(
@@ -175,7 +175,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullForgettablePayloadSequence(
@@ -203,7 +203,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullForgettablePayloadContent(
@@ -231,7 +231,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullSerializationFormat(
@@ -259,7 +259,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullForgettablePayloadTypeIdentifier(
@@ -287,7 +287,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 null,
                 payloadTypeIdentifierFormat));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullForgettablePayloadTypeIdentifierFormat(
@@ -372,7 +372,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadContentSerializationFormat,
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat);
-            
+
             Assert.Equal(eventStreamId, payloadDescriptor.EventStreamId);
             Assert.Equal(eventStreamEntryId, payloadDescriptor.EventStreamEntryId);
             Assert.Equal(payloadId, payloadDescriptor.PayloadId);
@@ -385,7 +385,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
             Assert.Equal(payloadTypeIdentifier, payloadDescriptor.PayloadTypeIdentifier);
             Assert.Equal(payloadTypeIdentifierFormat, payloadDescriptor.PayloadTypeIdentifierFormat);
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingFromMetadataAndContentDescriptorWithNullMetadata(
@@ -396,7 +396,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                     null,
                     contentDescriptor));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingFromMetadataAndContentDescriptorWithNullContentDescriptor(
@@ -407,7 +407,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                     metadata,
                     null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingFromMetadataAndContentDescriptorWithNonNullValues(
@@ -428,7 +428,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
             var payloadDescriptor = ForgettablePayloadDescriptor.CreateFromMetadataAndContentDescriptor(
                 metadata,
                 contentDescriptor);
-            
+
             Assert.Equal(metadata.EventStreamId, payloadDescriptor.EventStreamId);
             Assert.Equal(metadata.EventStreamEntryId, payloadDescriptor.EventStreamEntryId);
             Assert.Equal(metadata.PayloadId, payloadDescriptor.PayloadId);
@@ -469,7 +469,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadContentSerializationFormat,
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 eventStreamId,
                 eventStreamEntryId,
@@ -482,7 +482,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 payloadContentSerializationFormat,
                 payloadTypeIdentifier,
                 payloadTypeIdentifierFormat);
-            
+
             Assert.Equal(descriptor1, descriptor2);
             Assert.True(descriptor1 == descriptor2);
             Assert.False(descriptor1 != descriptor2);
@@ -506,7 +506,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 differentEventStreamId,
                 descriptor.EventStreamEntryId,
@@ -519,7 +519,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -543,7 +543,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 differentEventStreamEntryId,
@@ -556,7 +556,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -580,7 +580,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
@@ -593,7 +593,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -636,7 +636,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                     ? ForgettablePayloadState.Created
                     : ForgettablePayloadState.CreatedAndClaimed;
             }
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
@@ -649,7 +649,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -673,7 +673,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
@@ -686,7 +686,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -710,7 +710,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
@@ -723,7 +723,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -747,7 +747,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
@@ -760,7 +760,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -784,7 +784,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
@@ -797,7 +797,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -821,7 +821,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
@@ -834,7 +834,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 differentPayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -858,7 +858,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
@@ -871,7 +871,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 differentPayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -895,7 +895,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             var descriptor2 = new ForgettablePayloadDescriptor(
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
@@ -908,7 +908,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 differentPayloadTypeIdentifierFormat);
-            
+
             Assert.NotEqual(descriptor1, descriptor2);
             Assert.False(descriptor1 == descriptor2);
             Assert.True(descriptor1 != descriptor2);
@@ -920,7 +920,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
             ForgettablePayloadDescriptor descriptor)
         {
             var metadata = descriptor.ToMetadata();
-            
+
             Assert.Equal(descriptor.EventStreamId, metadata.EventStreamId);
             Assert.Equal(descriptor.EventStreamEntryId, metadata.EventStreamEntryId);
             Assert.Equal(descriptor.PayloadId, metadata.PayloadId);
@@ -936,7 +936,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
             ForgettablePayloadDescriptor descriptor)
         {
             var contentDescriptor = descriptor.ToContentDescriptor();
-            
+
             Assert.Equal(descriptor.PayloadContent, contentDescriptor.PayloadContent);
             Assert.Equal(descriptor.PayloadContentSerializationFormat, contentDescriptor.PayloadContentSerializationFormat);
             Assert.Equal(descriptor.PayloadTypeIdentifier, contentDescriptor.PayloadTypeIdentifier);
@@ -949,7 +949,7 @@ namespace ForgettablePayloads.Abstractions.UnitTests.ValueObjects
         {
             var expectedValue =
                 $"Forgettable payload attached to event stream id {descriptor.EventStreamId} and entry id {descriptor.EventStreamEntryId}, Payload Id {descriptor.PayloadId}, Payload State: {descriptor.PayloadState}, Payload Creation Time: {descriptor.PayloadCreationTime}, Payload Last Modified Time: {descriptor.PayloadLastModifiedTime}, Payload Sequence: {descriptor.PayloadSequence}, Payload Content: {descriptor.PayloadContent}, Payload Content Serialization Format: {descriptor.PayloadContentSerializationFormat}, Payload Type Identifier: {descriptor.PayloadTypeIdentifier}, Payload Type Identifier Format: {descriptor.PayloadTypeIdentifierFormat}";
-            
+
             Assert.Equal(expectedValue, descriptor.ToString());
         }
     }

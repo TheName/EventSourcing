@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Aggregates.Abstractions.Factories
+namespace EventSourcing.Aggregates.Factories
 {
     /// <summary>
     /// Creates an object of provided <see cref="Type"/> that represents an aggregate.

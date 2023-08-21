@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -62,7 +62,7 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var stream1 = new PublishableEventStream(appendableEventStream);
             var stream2 = new PublishableEventStream(appendableEventStream);
-            
+
             Assert.Equal(stream1, stream2);
             Assert.True(stream1 == stream2);
             Assert.False(stream1 != stream2);
@@ -76,7 +76,7 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var stream1 = new PublishableEventStream(appendableEventStream1);
             var stream2 = new PublishableEventStream(appendableEventStream2);
-            
+
             Assert.NotEqual(stream1.GetHashCode(), stream2.GetHashCode());
             Assert.NotEqual(stream1, stream2);
             Assert.True(stream1 != stream2);
@@ -101,7 +101,7 @@ namespace Abstractions.UnitTests.ValueObjects
 
                 return stringBuilder.ToString();
             }
-            
+
             string EventsWithMetadataToPublishString()
             {
                 var stringBuilder = new StringBuilder();
@@ -113,7 +113,7 @@ namespace Abstractions.UnitTests.ValueObjects
 
                 return stringBuilder.ToString();
             }
-            
+
             Assert.Equal(expectedValue, publishableEventStream.ToString());
         }
     }

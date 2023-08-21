@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// The event stream entry id value object.
@@ -14,7 +14,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// Creates a new instance of <see cref="EventStreamEntryId"/> initialized with a random <see cref="Guid"/>.
         /// </summary>
         public static EventStreamEntryId NewEventStreamEntryId() => new EventStreamEntryId(Guid.NewGuid());
-        
+
         /// <summary>
         /// The actual value of entry id
         /// </summary>
@@ -51,7 +51,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The <see cref="Guid"/>.
         /// </returns>
         public static implicit operator Guid(EventStreamEntryId id) => id.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="Guid"/> to <see cref="EventStreamEntryId"/>.
         /// </summary>

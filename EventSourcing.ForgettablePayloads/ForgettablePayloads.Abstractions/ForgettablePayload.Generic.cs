@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions
+namespace EventSourcing.ForgettablePayloads
 {
     /// <summary>
     /// The forgettable payload

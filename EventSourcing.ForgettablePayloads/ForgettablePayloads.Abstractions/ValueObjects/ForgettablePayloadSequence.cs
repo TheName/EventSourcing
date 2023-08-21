@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+﻿namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// The forgettable payload sequence value object.
@@ -36,7 +36,7 @@
         /// The <see cref="uint"/>.
         /// </returns>
         public static implicit operator uint(ForgettablePayloadSequence sequence) => sequence.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="uint"/> to <see cref="ForgettablePayloadSequence"/>.
         /// </summary>

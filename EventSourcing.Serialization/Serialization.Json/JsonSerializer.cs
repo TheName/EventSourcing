@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Serialization.Abstractions;
 using EventSourcing.Serialization.Json.Converters;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Serialization.Json
 {

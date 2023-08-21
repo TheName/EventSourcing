@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions.Conversion
+namespace EventSourcing.Conversion
 {
     /// <summary>
     /// Converts <see cref="EventStreamEventTypeIdentifier"/> to <see cref="Type"/> and <see cref="Type"/> to <see cref="EventStreamEventTypeIdentifier"/>.
@@ -12,7 +12,7 @@ namespace EventSourcing.Abstractions.Conversion
         /// The <see cref="EventStreamEventTypeIdentifierFormat"/> used by this instance of serializer.
         /// </summary>
         EventStreamEventTypeIdentifierFormat TypeIdentifierFormat { get; }
-        
+
         /// <summary>
         /// Converts <paramref name="type"/> to <see cref="EventStreamEventTypeIdentifier"/>.
         /// </summary>
@@ -23,7 +23,7 @@ namespace EventSourcing.Abstractions.Conversion
         /// The <see cref="EventStreamEventTypeIdentifier"/> that uniquely identifies the <see cref="Type"/> of an event.
         /// </returns>
         EventStreamEventTypeIdentifier ToTypeIdentifier(Type type);
-        
+
         /// <summary>
         /// Converts <paramref name="identifier"/> to <see cref="Type"/>.
         /// </summary>

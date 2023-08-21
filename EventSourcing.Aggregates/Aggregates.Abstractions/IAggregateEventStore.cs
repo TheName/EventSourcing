@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Aggregates.Abstractions
+namespace EventSourcing.Aggregates
 {
     /// <summary>
     /// Publishes and retrieves event stream aggregates.
@@ -23,7 +23,7 @@ namespace EventSourcing.Aggregates.Abstractions
         /// A <see cref="Task"/> representing the action.
         /// </returns>
         Task PublishAsync(object aggregate, CancellationToken cancellationToken);
-        
+
         /// <summary>
         /// Retrieves an event stream aggregate.
         /// </summary>

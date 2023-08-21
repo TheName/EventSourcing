@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using EventSourcing.ForgettablePayloads.Abstractions;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
+using EventSourcing.ForgettablePayloads;
+using EventSourcing.ForgettablePayloads.Conversion;
+using EventSourcing.ForgettablePayloads.Services;
 
 namespace ForgettablePayloads.UnitTests.Extensions
 {

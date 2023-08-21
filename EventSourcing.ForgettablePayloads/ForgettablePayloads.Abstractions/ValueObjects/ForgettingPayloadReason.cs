@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// The reason payload was forgotten
@@ -24,7 +24,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         {
             return $"Payload was not claimed within configured timeout - {timeoutTimeSpan}";
         }
-        
+
         /// <summary>
         /// The actual value of the reason text.
         /// </summary>
@@ -54,7 +54,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
                 throw new ArgumentException($"{nameof(ForgettingPayloadReason)} cannot be longer than {MaxLength}",
                     nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -70,7 +70,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The <see cref="string"/>.
         /// </returns>
         public static implicit operator string(ForgettingPayloadReason reason) => reason.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="string"/> to <see cref="ForgettingPayloadReason"/>.
         /// </summary>

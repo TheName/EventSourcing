@@ -1,4 +1,4 @@
-﻿using EventSourcing.Bus.Abstractions;
+﻿using EventSourcing.Bus;
 using EventSourcing.Bus.Extensions;
 using EventSourcing.Bus.RabbitMQ.Extensions;
 using EventSourcing.Extensions;

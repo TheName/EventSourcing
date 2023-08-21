@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Bus.Abstractions
+namespace EventSourcing.Bus
 {
     /// <summary>
     /// Allows to start and stop consuming events from the EventBus.

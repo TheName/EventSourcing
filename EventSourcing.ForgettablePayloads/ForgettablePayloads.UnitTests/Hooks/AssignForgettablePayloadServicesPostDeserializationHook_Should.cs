@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using AutoFixture.Xunit2;
-using EventSourcing.ForgettablePayloads.Abstractions;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
+using EventSourcing.ForgettablePayloads;
+using EventSourcing.ForgettablePayloads.Conversion;
 using EventSourcing.ForgettablePayloads.Hooks;
+using EventSourcing.ForgettablePayloads.Services;
 using ForgettablePayloads.UnitTests.Extensions;
 using Moq;
 using TestHelpers.Attributes;

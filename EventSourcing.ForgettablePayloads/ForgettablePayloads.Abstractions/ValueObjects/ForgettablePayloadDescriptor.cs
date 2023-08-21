@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
-    /// Represents a serialized forgettable payload with type and serialization information. 
+    /// Represents a serialized forgettable payload with type and serialization information.
     /// </summary>
     public class ForgettablePayloadDescriptor
     {
@@ -93,7 +93,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
             {
                 throw new ArgumentNullException(nameof(contentDescriptor));
             }
-            
+
             return new ForgettablePayloadDescriptor(
                 metadata.EventStreamId,
                 metadata.EventStreamEntryId,

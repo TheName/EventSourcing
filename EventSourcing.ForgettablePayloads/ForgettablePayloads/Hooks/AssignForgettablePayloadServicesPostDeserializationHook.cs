@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.Hooks;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
+using EventSourcing.ForgettablePayloads.Conversion;
+using EventSourcing.ForgettablePayloads.Services;
+using EventSourcing.Hooks;
 
 namespace EventSourcing.ForgettablePayloads.Hooks
 {

@@ -2,9 +2,8 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.Handling;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.Handling;
+using EventSourcing.ValueObjects;
 
 namespace Bus.RabbitMQ.IntegrationTests
 {

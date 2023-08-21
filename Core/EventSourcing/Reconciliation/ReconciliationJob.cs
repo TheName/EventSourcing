@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Abstractions.Reconciliation;
-using EventSourcing.Persistence.Abstractions;
+using EventSourcing.Persistence;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.Reconciliation

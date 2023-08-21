@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Persistence.Abstractions
+namespace EventSourcing.Persistence
 {
     /// <summary>
     /// Reads event stream.
@@ -30,7 +30,7 @@ namespace EventSourcing.Persistence.Abstractions
         /// An instance of <see cref="EventStreamId"/> identifying the stream to read events from.
         /// </param>
         /// <param name="minimumSequenceInclusive">
-        /// The minimum (inclusive) event's sequence that should be included in the result. 
+        /// The minimum (inclusive) event's sequence that should be included in the result.
         /// </param>
         /// <param name="maximumSequenceInclusive">
         /// The maximum (inclusive) event's sequence that should be included in the result.

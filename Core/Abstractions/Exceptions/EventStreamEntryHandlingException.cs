@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.Serialization;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions.Exceptions
+namespace EventSourcing.Exceptions
 {
     /// <summary>
     /// Handling an event stream entry has failed.
@@ -26,7 +25,7 @@ namespace EventSourcing.Abstractions.Exceptions
         public EventStreamEntryHandlingTime HandlingTime { get; }
 
         private EventStreamEntryHandlingException(
-            string message, 
+            string message,
             EventStreamEntry entry,
             EventStreamEntryHandlingTime handlingTime)
         {

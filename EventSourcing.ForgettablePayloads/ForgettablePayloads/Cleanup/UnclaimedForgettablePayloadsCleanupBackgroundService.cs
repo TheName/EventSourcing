@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.ForgettablePayloads.Abstractions.Cleanup;
-using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
+using EventSourcing.ForgettablePayloads.Configurations;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

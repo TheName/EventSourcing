@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Abstractions.Configurations
+namespace EventSourcing.Configurations
 {
     /// <summary>
     /// The configuration for event sourcing library
@@ -11,12 +11,12 @@ namespace EventSourcing.Abstractions.Configurations
         /// The bounded context
         /// </summary>
         string BoundedContext { get; }
-        
+
         /// <summary>
         /// The interval at which reconciliation job should execute.
         /// </summary>
         TimeSpan ReconciliationJobInterval { get; }
-        
+
         /// <summary>
         /// The grace period that should pass after staging time before reconciliation for staged entries starts
         /// </summary>

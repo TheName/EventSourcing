@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RootNamespace>EventSourcing.Persistence.Abstractions</RootNamespace>
+        <RootNamespace>EventSourcing.Persistence</RootNamespace>
         <AssemblyName>EventSourcing.Persistence.Abstractions</AssemblyName>
     </PropertyGroup>
 
@@ -25,7 +25,7 @@
         <IncludeSource>true</IncludeSource>
         <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
     </PropertyGroup>
-    
+
     <ItemGroup>
       <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
     </ItemGroup>

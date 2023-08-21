@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Persistence.Abstractions.ValueObjects
+namespace EventSourcing.Persistence.ValueObjects
 {
     /// <summary>
     /// The event stream entries staging time value object.
@@ -37,7 +37,7 @@ namespace EventSourcing.Persistence.Abstractions.ValueObjects
                 throw new ArgumentException(
                     $"{nameof(EventStreamStagedEntriesStagingTime)} must have a different value than {DateTime.MaxValue}.",
                     nameof(value));
-                
+
             }
 
             if (value.Kind != DateTimeKind.Utc)
@@ -46,7 +46,7 @@ namespace EventSourcing.Persistence.Abstractions.ValueObjects
                     $"{nameof(EventStreamStagedEntriesStagingTime)} must have {DateTimeKind.Utc} date time kind.",
                     nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -62,7 +62,7 @@ namespace EventSourcing.Persistence.Abstractions.ValueObjects
         /// The <see cref="DateTime"/>.
         /// </returns>
         public static implicit operator DateTime(EventStreamStagedEntriesStagingTime stagingTime) => stagingTime.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="DateTime"/> to <see cref="EventStreamStagedEntriesStagingTime"/>.
         /// </summary>

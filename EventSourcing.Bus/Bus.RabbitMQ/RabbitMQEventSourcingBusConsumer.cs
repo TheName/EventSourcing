@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Bus.Abstractions;
 using EventSourcing.Bus.RabbitMQ.Extensions;
 using EventSourcing.Bus.RabbitMQ.Transport;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Bus.RabbitMQ
 {

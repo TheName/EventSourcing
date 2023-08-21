@@ -1,12 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Exceptions;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.Exceptions;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions
+namespace EventSourcing
 {
     /// <summary>
-    /// The event stream publisher used to store and publish (to event bus) appended entries from <see cref="AppendableEventStream"/>. 
+    /// The event stream publisher used to store and publish (to event bus) appended entries from <see cref="AppendableEventStream"/>.
     /// </summary>
     public interface IEventStreamPublisher
     {

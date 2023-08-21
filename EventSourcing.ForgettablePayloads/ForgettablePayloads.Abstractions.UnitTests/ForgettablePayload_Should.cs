@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions;
-using EventSourcing.ForgettablePayloads.Abstractions.Conversion;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads;
+using EventSourcing.ForgettablePayloads.Conversion;
+using EventSourcing.ForgettablePayloads.Services;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.ValueObjects;
 using ForgettablePayloads.Abstractions.UnitTests.Extensions;
 using Moq;
 using TestHelpers.Attributes;

@@ -5,8 +5,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer

@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RootNamespace>EventSourcing.ForgettablePayloads.Persistence.Abstractions</RootNamespace>
+        <RootNamespace>EventSourcing.ForgettablePayloads.Persistence</RootNamespace>
         <AssemblyName>EventSourcing.ForgettablePayloads.Persistence.Abstractions</AssemblyName>
     </PropertyGroup>
 

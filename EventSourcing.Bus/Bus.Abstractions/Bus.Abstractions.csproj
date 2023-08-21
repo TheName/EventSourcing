@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <RootNamespace>EventSourcing.Bus.Abstractions</RootNamespace>
+        <RootNamespace>EventSourcing.Bus</RootNamespace>
         <AssemblyName>EventSourcing.Bus.Abstractions</AssemblyName>
     </PropertyGroup>
 

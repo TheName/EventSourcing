@@ -4,16 +4,15 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.Conversion;
-using EventSourcing.Abstractions.Exceptions;
-using EventSourcing.Abstractions.Hooks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Bus.Abstractions;
+using EventSourcing.Bus;
+using EventSourcing.Conversion;
+using EventSourcing.Exceptions;
 using EventSourcing.Extensions;
 using EventSourcing.Helpers;
-using EventSourcing.Persistence.Abstractions;
-using EventSourcing.Persistence.Abstractions.Enums;
+using EventSourcing.Hooks;
+using EventSourcing.Persistence;
+using EventSourcing.Persistence.Enums;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing
 {
@@ -52,7 +51,7 @@ namespace EventSourcing
                         .SelectMany(modifier => eventsToAppend
                             .Select(eventWithMetadata => modifier.PreEventStreamEventWithMetadataPublishHookAsync(eventWithMetadata, cancellationToken))))
                 .ConfigureAwait(false);
-            
+
             var entriesToAppend = ConvertToEntries(eventsToAppend);
             var stagingId = await _stagingWriter.WriteAsync(entriesToAppend, cancellationToken).ConfigureAwait(false);
             var writeResult = await _streamWriter.WriteAsync(entriesToAppend, cancellationToken).ConfigureAwait(false);
@@ -62,14 +61,14 @@ namespace EventSourcing
                     await _busPublisher.PublishAsync(entriesToAppend, cancellationToken).ConfigureAwait(false);
                     await _stagingWriter.MarkAsPublishedAsync(stagingId, cancellationToken).ConfigureAwait(false);
                     break;
-                    
+
                 case EventStreamWriteResult.SequenceAlreadyTaken:
                     await _stagingWriter.MarkAsFailedToStoreAsync(stagingId, cancellationToken).ConfigureAwait(false);
                     throw EventStreamOptimisticConcurrencyException.New(eventsToAppend.Count, stream.StreamId);
-                
+
                 case EventStreamWriteResult.UnknownFailure:
                     throw EventStreamAppendingFailedException.New(eventsToAppend.Count, stream.StreamId);
-                
+
                 default:
                     throw new InvalidEnumArgumentException(nameof(writeResult), (int) writeResult, typeof(EventStreamWriteResult));
             }

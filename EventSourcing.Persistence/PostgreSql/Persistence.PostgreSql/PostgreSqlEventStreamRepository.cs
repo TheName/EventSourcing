@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions.Enums;
+using EventSourcing.Persistence.Enums;
+using EventSourcing.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using NpgsqlTypes;
@@ -14,7 +14,7 @@ namespace EventSourcing.Persistence.PostgreSql
     internal class PostgreSqlEventStreamRepository : IEventStreamRepository
     {
         private const string TableName = "EventStream";
-        
+
         private readonly IPostgreSqlEventStreamPersistenceConfiguration _configuration;
         private readonly ILogger<PostgreSqlEventStreamRepository> _logger;
 
@@ -25,7 +25,7 @@ namespace EventSourcing.Persistence.PostgreSql
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        
+
         public async Task<EventStreamWriteResult> WriteAsync(EventStreamEntries eventStreamEntries, CancellationToken cancellationToken)
         {
             if (eventStreamEntries.Count == 0)
@@ -34,7 +34,7 @@ namespace EventSourcing.Persistence.PostgreSql
             }
 
             var (sqlCommand, sqlParameters) = PrepareInsertCommand(eventStreamEntries);
-                        
+
             try
             {
                 var executionResult = await ExecuteCommand(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -48,12 +48,12 @@ namespace EventSourcing.Persistence.PostgreSql
                 {
                     return EventStreamWriteResult.SequenceAlreadyTaken;
                 }
-                
+
                 _logger.LogError(
                     exception,
                     "An unexpected failure happened when trying to insert event stream entries. Entries to insert: {Entries}",
                     eventStreamEntries);
-                
+
                 return EventStreamWriteResult.UnknownFailure;
             }
         }
@@ -61,7 +61,7 @@ namespace EventSourcing.Persistence.PostgreSql
         public async Task<EventStreamEntries> ReadAsync(EventStreamId streamId, CancellationToken cancellationToken)
         {
             var (sqlCommand, sqlParameters) = PrepareSelectCommand(streamId);
-            
+
             try
             {
                 return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -84,7 +84,7 @@ namespace EventSourcing.Persistence.PostgreSql
             CancellationToken cancellationToken)
         {
             var (sqlCommand, sqlParameters) = PrepareSelectInRangeCommand(streamId, minimumSequenceInclusive, maximumSequenceInclusive);
-            
+
             try
             {
                 return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -133,7 +133,7 @@ namespace EventSourcing.Persistence.PostgreSql
                         {
                             var creationDateTime = reader.GetFieldValue<DateTime>(8);
                             creationDateTime = creationDateTime.AddMillisecondsLeftover(reader.GetInt64(9));
-                            
+
                             entries.Add(new EventStreamEntry(
                                 reader.GetGuid(0),
                                 reader.GetGuid(1),
@@ -182,7 +182,7 @@ namespace EventSourcing.Persistence.PostgreSql
                     new NpgsqlParameter($"@CreationTimeNanoSeconds_{i}", NpgsqlDbType.Bigint) {Value = creationTimeWithUnspecifiedKind.GetMillisecondsLeftover() },
                     new NpgsqlParameter($"@CorrelationId_{i}", NpgsqlDbType.Uuid) {Value = entry.CorrelationId.Value}
                 });
-                
+
                 separator = ", ";
             }
 

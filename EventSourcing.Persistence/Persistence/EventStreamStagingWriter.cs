@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions;
-using EventSourcing.Persistence.Abstractions.ValueObjects;
+using EventSourcing.Persistence.ValueObjects;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Persistence
 {

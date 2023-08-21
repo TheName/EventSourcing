@@ -1,5 +1,4 @@
-﻿using EventSourcing.Abstractions.Configurations;
-using EventSourcing.Abstractions.ValueObjects;
+﻿using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Configurations
 {

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -50,15 +50,15 @@ namespace Abstractions.UnitTests
         public void ReturnEmptyEventsWithMetadataToAppend_When_GettingEventsWithMetadataToAppend(EventStream eventStream)
         {
             var stream = new AppendableEventStream(eventStream);
-            
-            Assert.Empty(stream.EventsWithMetadataToAppend); 
+
+            Assert.Empty(stream.EventsWithMetadataToAppend);
         }
 
         [Fact]
         public void ReturnZero_When_GettingNextSequenceOnEmptyEventStream()
         {
             var stream = new AppendableEventStream(EventStream.NewEventStream());
-            
+
             Assert.Equal<uint>(0, stream.NextSequence);
         }
 
@@ -67,7 +67,7 @@ namespace Abstractions.UnitTests
         public void ReturnOne_When_GettingNextSequenceOnEventStreamWithOneEntry(EventStream eventStream)
         {
             var stream = new AppendableEventStream(new EventStream(eventStream.StreamId, eventStream.EventsWithMetadata.Take(1)));
-            
+
             Assert.Equal<uint>(1, stream.NextSequence);
         }
 
@@ -76,7 +76,7 @@ namespace Abstractions.UnitTests
         public void ReturnMaxSequenceIncreasedByOne_When_GettingNextSequence(EventStream eventStream)
         {
             var stream = new AppendableEventStream(eventStream);
-            
+
             Assert.Equal<uint>(eventStream.MaxSequence + 1, stream.NextSequence);
         }
 
@@ -103,7 +103,7 @@ namespace Abstractions.UnitTests
             object @event)
         {
             var result = appendableEventStream.AppendEventWithMetadata(@event);
-            
+
             Assert.Equal(appendableEventStream.EventsWithMetadataToAppend.Last(), result);
         }
 
@@ -201,7 +201,7 @@ namespace Abstractions.UnitTests
             object @event)
         {
             var previousNextSequence = appendableEventStream.NextSequence;
-            
+
             appendableEventStream.AppendEventWithMetadata(@event);
 
             Assert.Equal<EventStreamEntrySequence>(previousNextSequence + 1, appendableEventStream.NextSequence);
@@ -214,7 +214,7 @@ namespace Abstractions.UnitTests
         {
             var appendableEventStream = new AppendableEventStream(EventStream.NewEventStream());
             Assert.Equal<EventStreamEntrySequence>(0, appendableEventStream.NextSequence);
-            
+
             appendableEventStream.AppendEventWithMetadata(@event);
 
             Assert.Equal<EventStreamEntrySequence>(1, appendableEventStream.NextSequence);
@@ -226,7 +226,7 @@ namespace Abstractions.UnitTests
         {
             var stream1 = new PublishableEventStream(appendableEventStream);
             var stream2 = new PublishableEventStream(appendableEventStream);
-            
+
             Assert.Equal(stream1, stream2);
             Assert.True(stream1 == stream2);
             Assert.False(stream1 != stream2);
@@ -240,7 +240,7 @@ namespace Abstractions.UnitTests
         {
             var stream1 = new PublishableEventStream(appendableEventStream1);
             var stream2 = new PublishableEventStream(appendableEventStream2);
-            
+
             Assert.NotEqual(stream1.GetHashCode(), stream2.GetHashCode());
             Assert.NotEqual(stream1, stream2);
             Assert.True(stream1 != stream2);
@@ -265,7 +265,7 @@ namespace Abstractions.UnitTests
 
                 return stringBuilder.ToString();
             }
-            
+
             string EventsWithMetadataToPublishString()
             {
                 var stringBuilder = new StringBuilder();
@@ -277,7 +277,7 @@ namespace Abstractions.UnitTests
 
                 return stringBuilder.ToString();
             }
-            
+
             Assert.Equal(expectedValue, publishableEventStream.ToString());
         }
     }

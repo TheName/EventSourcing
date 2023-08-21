@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions.Handling
+namespace EventSourcing.Handling
 {
     /// <summary>
     /// Handles a published event.

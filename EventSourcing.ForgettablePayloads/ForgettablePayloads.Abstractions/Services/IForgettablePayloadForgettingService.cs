@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.Services
+namespace EventSourcing.ForgettablePayloads.Services
 {
     /// <summary>
     /// Forgetting service

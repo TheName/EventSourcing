@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace EventSourcing.Aggregates.Abstractions.Publishers
+namespace EventSourcing.Aggregates.Publishers
 {
     /// <summary>
     /// Publishes event stream aggregates.

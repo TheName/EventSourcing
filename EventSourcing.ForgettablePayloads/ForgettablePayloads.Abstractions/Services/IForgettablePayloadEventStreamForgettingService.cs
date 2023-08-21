@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.Services
+namespace EventSourcing.ForgettablePayloads.Services
 {
     /// <summary>
     /// A forgetting service for all forgettable payloads assigned to the same event stream

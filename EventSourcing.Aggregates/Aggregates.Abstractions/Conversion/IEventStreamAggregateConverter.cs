@@ -1,6 +1,6 @@
-﻿using EventSourcing.Abstractions.ValueObjects;
+﻿using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Aggregates.Abstractions.Conversion
+namespace EventSourcing.Aggregates.Conversion
 {
     /// <summary>
     /// Converts aggregates to <see cref="PublishableEventStream"/>.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Persistence.Abstractions.ValueObjects
+namespace EventSourcing.Persistence.ValueObjects
 {
     /// <summary>
     /// The event stream staging id value object.
@@ -14,7 +14,7 @@ namespace EventSourcing.Persistence.Abstractions.ValueObjects
         /// The actual value of staging id
         /// </summary>
         public Guid Value { get; }
-        
+
         /// <summary>
         /// Creates a new instance of <see cref="EventStreamStagingId"/> initialized with a random <see cref="Guid"/>.
         /// </summary>
@@ -42,7 +42,7 @@ namespace EventSourcing.Persistence.Abstractions.ValueObjects
         /// The <see cref="Guid"/>.
         /// </returns>
         public static implicit operator Guid(EventStreamStagingId id) => id.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="Guid"/> to <see cref="EventStreamStagingId"/>.
         /// </summary>

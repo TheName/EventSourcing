@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions.Enums;
+using EventSourcing.Persistence.Enums;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Persistence
 {
@@ -60,7 +60,7 @@ namespace EventSourcing.Persistence
         Task<EventStreamEntries> ReadAsync(
             EventStreamId streamId,
             EventStreamEntrySequence minimumSequenceInclusive,
-            EventStreamEntrySequence maximumSequenceInclusive, 
+            EventStreamEntrySequence maximumSequenceInclusive,
             CancellationToken cancellationToken);
     }
 }

@@ -2,11 +2,10 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
 using EventSourcing.ForgettablePayloads.Helpers;
-using EventSourcing.ForgettablePayloads.Persistence.Abstractions;
+using EventSourcing.ForgettablePayloads.Persistence;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.ForgettablePayloads.Services
 {

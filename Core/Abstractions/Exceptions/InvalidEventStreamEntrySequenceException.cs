@@ -1,10 +1,10 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.Abstractions.Exceptions
+namespace EventSourcing.Exceptions
 {
     /// <summary>
-    /// Provided <see cref="EventStreamEntrySequence"/> is invalid. 
+    /// Provided <see cref="EventStreamEntrySequence"/> is invalid.
     /// </summary>
     [Serializable]
     public class InvalidEventStreamEntrySequenceException : ArgumentException

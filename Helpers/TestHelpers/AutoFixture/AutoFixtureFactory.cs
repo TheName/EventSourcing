@@ -4,9 +4,9 @@ using System.Linq;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
-using EventSourcing.Persistence.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.Persistence.ValueObjects;
+using EventSourcing.ValueObjects;
 
 namespace TestHelpers.AutoFixture
 {

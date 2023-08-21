@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Bus.RabbitMQ.Extensions;
-using EventSourcing.Serialization.Abstractions;
+using EventSourcing.Serialization;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;

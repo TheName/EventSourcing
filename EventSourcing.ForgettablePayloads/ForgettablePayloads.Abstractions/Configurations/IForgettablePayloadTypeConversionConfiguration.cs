@@ -1,6 +1,6 @@
-﻿using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+﻿using EventSourcing.ForgettablePayloads.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.Configurations
+namespace EventSourcing.ForgettablePayloads.Configurations
 {
     /// <summary>
     /// Configuration for type conversion of <see cref="ForgettablePayload{T}"/>

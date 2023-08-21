@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Configurations;
 using EventSourcing.Abstractions.Reconciliation;
-using EventSourcing.Bus.Abstractions;
+using EventSourcing.Bus;
+using EventSourcing.Configurations;
 using EventSourcing.Extensions;
-using EventSourcing.Persistence.Abstractions;
-using EventSourcing.Persistence.Abstractions.ValueObjects;
+using EventSourcing.Persistence;
+using EventSourcing.Persistence.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.Reconciliation

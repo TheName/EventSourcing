@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.ValueObjects;
 
-namespace EventSourcing.ForgettablePayloads.Persistence.Abstractions
+namespace EventSourcing.ForgettablePayloads.Persistence
 {
     /// <summary>
     /// Storage reader for <see cref="ForgettablePayload"/>
@@ -45,7 +44,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.Abstractions
             EventStreamId eventStreamId,
             EventStreamEntryId eventStreamEntryId,
             CancellationToken cancellationToken);
-        
+
         /// <summary>
         /// Reads <see cref="ForgettablePayloadDescriptor"/> from storage
         /// </summary>
@@ -61,7 +60,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.Abstractions
         Task<ForgettablePayloadDescriptor> ReadAsync(
             ForgettablePayloadId forgettablePayloadId,
             CancellationToken cancellationToken);
-        
+
         /// <summary>
         /// Reads unclaimed <see cref="ForgettablePayloadDescriptor"/>s from storage
         /// </summary>

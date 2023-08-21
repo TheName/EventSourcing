@@ -2,9 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using EventSourcing.ForgettablePayloads.Abstractions.Cleanup;
-using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
 using EventSourcing.ForgettablePayloads.Cleanup;
+using EventSourcing.ForgettablePayloads.Configurations;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TestHelpers.Attributes;

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
 using EventSourcing.ForgettablePayloads.Persistence;
+using EventSourcing.ForgettablePayloads.ValueObjects;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 

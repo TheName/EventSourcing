@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Serialization.Abstractions;
+using EventSourcing.ValueObjects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 

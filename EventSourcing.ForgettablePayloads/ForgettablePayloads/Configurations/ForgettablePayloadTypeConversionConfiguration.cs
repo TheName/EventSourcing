@@ -1,5 +1,4 @@
-﻿using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
+﻿using EventSourcing.ForgettablePayloads.ValueObjects;
 
 namespace EventSourcing.ForgettablePayloads.Configurations
 {

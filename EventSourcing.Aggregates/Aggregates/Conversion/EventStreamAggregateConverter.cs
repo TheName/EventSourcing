@@ -1,7 +1,5 @@
 ﻿using System;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions;
-using EventSourcing.Aggregates.Abstractions.Conversion;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Aggregates.Conversion
 {

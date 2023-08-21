@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
+namespace EventSourcing.ForgettablePayloads.ValueObjects
 {
     /// <summary>
     /// Describes the entity that requested payload to be forgotten
@@ -21,7 +21,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The Requested By Unclaimed Forgettable Payload Cleanup Job entity
         /// </summary>
         public static ForgettingPayloadRequestedBy UnclaimedForgettablePayloadCleanupJob = "Unclaimed Forgettable Payload Cleanup Job";
-        
+
         /// <summary>
         /// The actual value of the description.
         /// </summary>
@@ -51,7 +51,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
                 throw new ArgumentException($"{nameof(ForgettingPayloadRequestedBy)} cannot be longer than {MaxLength}",
                     nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -67,7 +67,7 @@ namespace EventSourcing.ForgettablePayloads.Abstractions.ValueObjects
         /// The <see cref="string"/>.
         /// </returns>
         public static implicit operator string(ForgettingPayloadRequestedBy requestedBy) => requestedBy.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="string"/> to <see cref="ForgettingPayloadRequestedBy"/>.
         /// </summary>

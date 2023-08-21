@@ -1,5 +1,4 @@
 ﻿using System;
-using EventSourcing.Bus.Abstractions;
 
 namespace EventSourcing.Bus
 {

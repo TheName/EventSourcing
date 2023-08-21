@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions;
-using EventSourcing.Aggregates.Abstractions.Publishers;
-using EventSourcing.Aggregates.Abstractions.Retrievers;
+using EventSourcing.Aggregates.Publishers;
+using EventSourcing.Aggregates.Retrievers;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Aggregates
 {

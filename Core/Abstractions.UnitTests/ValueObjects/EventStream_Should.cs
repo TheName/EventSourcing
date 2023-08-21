@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.Exceptions;
-using EventSourcing.Abstractions.ValueObjects;
+using EventSourcing;
+using EventSourcing.Exceptions;
+using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
@@ -20,7 +20,7 @@ namespace Abstractions.UnitTests.ValueObjects
             Assert.Empty(stream.EventsWithMetadata);
             Assert.Equal<uint>(0, stream.MaxSequence);
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void CreateNewEventStreamWithProvidedStreamIdAndEmptyEntries_When_CallingNewEventStream(EventStreamId streamId)
@@ -30,7 +30,7 @@ namespace Abstractions.UnitTests.ValueObjects
             Assert.Empty(stream.EventsWithMetadata);
             Assert.Equal<uint>(0, stream.MaxSequence);
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullStreamId(
@@ -40,7 +40,7 @@ namespace Abstractions.UnitTests.ValueObjects
                 null,
                 eventsWithMetadata));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEventsWithMetadata(
@@ -76,9 +76,9 @@ namespace Abstractions.UnitTests.ValueObjects
                         eventWithMetadata.EventMetadata.CausationId,
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)));
-            
+
             Assert.Throws<InvalidEventStreamIdException>(() => new EventStream(
-                streamId, 
+                streamId,
                 eventsWithMetadata));
         }
 
@@ -121,7 +121,7 @@ namespace Abstractions.UnitTests.ValueObjects
                         eventWithMetadata.EventMetadata.CausationId,
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)));
-            
+
             Assert.Throws<InvalidEventStreamEntrySequenceException>(() => new EventStream(
                 streamId,
                 eventsWithMetadata));
@@ -145,10 +145,10 @@ namespace Abstractions.UnitTests.ValueObjects
                     {
                         currentInvalidSequence = currentValidSequence + 1;
                     }
-                    
+
                     return currentIndex == invalidSequenceIndex ? currentInvalidSequence : currentValidSequence;
                 });
-            
+
             eventsWithMetadata = eventsWithMetadata
                 .Select((eventWithMetadata, i) => new EventStreamEventWithMetadata(
                     eventWithMetadata.Event,
@@ -199,7 +199,7 @@ namespace Abstractions.UnitTests.ValueObjects
                         eventWithMetadata.EventMetadata.CausationId,
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)));
-            
+
             Assert.Throws<InvalidEventStreamEntrySequenceException>(() => new EventStream(
                 streamId,
                 eventsWithMetadata));
@@ -231,7 +231,7 @@ namespace Abstractions.UnitTests.ValueObjects
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var stream = new EventStream(streamId, eventsWithMetadata);
 
             Assert.NotSame(eventsWithMetadata, stream.EventsWithMetadata);
@@ -257,7 +257,7 @@ namespace Abstractions.UnitTests.ValueObjects
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var stream = new EventStream(streamId, eventsWithMetadata);
 
             Assert.Equal<uint>(eventsWithMetadata.Last().EventMetadata.EntrySequence, stream.MaxSequence);
@@ -270,7 +270,7 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var stream1 = new EventStream(streamId, new List<EventStreamEventWithMetadata>());
             var stream2 = new EventStream(streamId, new List<EventStreamEventWithMetadata>());
-            
+
             Assert.Equal(stream1, stream2);
             Assert.True(stream1 == stream2);
             Assert.False(stream1 != stream2);
@@ -283,7 +283,7 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var stream1 = new EventStream(eventStream.StreamId, eventStream.EventsWithMetadata);
             var stream2 = new EventStream(eventStream.StreamId, eventStream.EventsWithMetadata);
-            
+
             Assert.Equal(stream1, stream2);
             Assert.True(stream1 == stream2);
             Assert.False(stream1 != stream2);
@@ -297,7 +297,7 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var stream1 = new EventStream(streamId1, new List<EventStreamEventWithMetadata>());
             var stream2 = new EventStream(streamId2, new List<EventStreamEventWithMetadata>());
-            
+
             Assert.NotEqual(stream1.GetHashCode(), stream2.GetHashCode());
             Assert.NotEqual(stream1, stream2);
             Assert.True(stream1 != stream2);
@@ -312,7 +312,7 @@ namespace Abstractions.UnitTests.ValueObjects
         {
             var stream1 = new EventStream(eventStream1.StreamId, eventStream1.EventsWithMetadata);
             var stream2 = new EventStream(eventStream2.StreamId, eventStream2.EventsWithMetadata);
-            
+
             Assert.NotEqual(stream1, stream2);
             Assert.True(stream1 != stream2);
             Assert.False(stream1 == stream2);
@@ -336,7 +336,7 @@ namespace Abstractions.UnitTests.ValueObjects
 
                 return stringBuilder.ToString();
             }
-            
+
             Assert.Equal(expectedValue, eventStream.ToString());
         }
     }

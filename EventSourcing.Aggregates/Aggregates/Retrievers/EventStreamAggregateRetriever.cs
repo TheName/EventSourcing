@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Aggregates.Abstractions.Builders;
-using EventSourcing.Aggregates.Abstractions.Retrievers;
+using EventSourcing.Aggregates.Builders;
+using EventSourcing.ValueObjects;
 
 namespace EventSourcing.Aggregates.Retrievers
 {
@@ -20,7 +18,7 @@ namespace EventSourcing.Aggregates.Retrievers
             _eventStreamRetriever = eventStreamRetriever ?? throw new ArgumentNullException(nameof(eventStreamRetriever));
             _eventStreamAggregateBuilder = eventStreamAggregateBuilder ?? throw new ArgumentNullException(nameof(eventStreamAggregateBuilder));
         }
-        
+
         public async Task<object> RetrieveAsync(Type aggregateType, EventStreamId streamId, CancellationToken cancellationToken)
         {
             var eventStream = await _eventStreamRetriever.RetrieveAsync(streamId, cancellationToken).ConfigureAwait(false);

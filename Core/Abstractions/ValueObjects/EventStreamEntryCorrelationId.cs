@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace EventSourcing.Abstractions.ValueObjects
+namespace EventSourcing.ValueObjects
 {
     /// <summary>
     /// The event stream entry correlation id.
@@ -12,7 +12,7 @@ namespace EventSourcing.Abstractions.ValueObjects
     public class EventStreamEntryCorrelationId
     {
         private static readonly AsyncLocal<EventStreamEntryCorrelationId> AsyncLocalCorrelationId = new AsyncLocal<EventStreamEntryCorrelationId>();
-        
+
         /// <summary>
         /// Creates a new instance of <see cref="EventStreamEntryCorrelationId"/> initialized with a random <see cref="Guid"/>.
         /// </summary>
@@ -40,7 +40,7 @@ namespace EventSourcing.Abstractions.ValueObjects
                 {
                     AsyncLocalCorrelationId.Value = NewEventStreamEntryCorrelationId();
                 }
-                
+
                 return AsyncLocalCorrelationId.Value;
             }
             set
@@ -54,11 +54,11 @@ namespace EventSourcing.Abstractions.ValueObjects
                 {
                     return;
                 }
-            
+
                 AsyncLocalCorrelationId.Value = value;
             }
         }
-        
+
         /// <summary>
         /// The actual value of correlation id
         /// </summary>
@@ -79,7 +79,7 @@ namespace EventSourcing.Abstractions.ValueObjects
             {
                 throw new ArgumentException($"{nameof(EventStreamEntryCorrelationId)} cannot be empty guid.", nameof(value));
             }
-            
+
             Value = value;
         }
 
@@ -95,7 +95,7 @@ namespace EventSourcing.Abstractions.ValueObjects
         /// The <see cref="Guid"/>.
         /// </returns>
         public static implicit operator Guid(EventStreamEntryCorrelationId correlationId) => correlationId.Value;
-        
+
         /// <summary>
         /// Implicit operator that converts the <see cref="Guid"/> to <see cref="EventStreamEntryCorrelationId"/>.
         /// </summary>

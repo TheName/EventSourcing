@@ -1,7 +1,7 @@
 ﻿using System;
-using EventSourcing.Abstractions.Configurations;
 using EventSourcing.Bus.RabbitMQ.Configurations;
 using EventSourcing.Bus.RabbitMQ.Enums;
+using EventSourcing.Configurations;
 
 namespace EventSourcing.Bus.RabbitMQ.Transport
 {

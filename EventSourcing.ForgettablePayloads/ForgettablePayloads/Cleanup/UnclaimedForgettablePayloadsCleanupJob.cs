@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.ForgettablePayloads.Abstractions.Cleanup;
-using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
-using EventSourcing.ForgettablePayloads.Persistence.Abstractions;
+using EventSourcing.ForgettablePayloads.Configurations;
+using EventSourcing.ForgettablePayloads.Persistence;
+using EventSourcing.ForgettablePayloads.Services;
+using EventSourcing.ForgettablePayloads.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.ForgettablePayloads.Cleanup
@@ -28,7 +27,7 @@ namespace EventSourcing.ForgettablePayloads.Cleanup
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        
+
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             var unclaimedDescriptors = await _storageReader.ReadUnclaimedAsync(cancellationToken).ConfigureAwait(false);
@@ -37,13 +36,13 @@ namespace EventSourcing.ForgettablePayloads.Cleanup
             {
                 throw new InvalidOperationException($"{_storageReader.GetType()} has returned null when trying to read unclaimed forgettable payload descriptors");
             }
-            
+
             // Since this is a background job, we do not want to use too many resources
             // That's why we try to cleanup each entry sequentially instead of doing it in parallel.
             foreach (var unclaimedDescriptor in unclaimedDescriptors)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                
+
                 var timeSinceLastModified = DateTime.UtcNow - unclaimedDescriptor.PayloadLastModifiedTime;
                 var timeout = _configuration.UnclaimedForgettablePayloadsCleanupTimeout;
                 if (timeSinceLastModified < timeout)
@@ -53,10 +52,10 @@ namespace EventSourcing.ForgettablePayloads.Cleanup
                         timeout,
                         unclaimedDescriptor.PayloadLastModifiedTime,
                         unclaimedDescriptor);
-                    
+
                     continue;
                 }
-                
+
                 try
                 {
                     await _forgettingService.ForgetAsync(
@@ -72,7 +71,7 @@ namespace EventSourcing.ForgettablePayloads.Cleanup
                         e,
                         "Trying to forget unclaimed forgettable payload has failed with an exception. Descriptor: {ForgottenPayloadDescriptor}",
                         unclaimedDescriptor);
-                    
+
                     if (e is OperationCanceledException && cancellationToken.IsCancellationRequested)
                     {
                         throw;

@@ -5,15 +5,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using EventSourcing.Abstractions;
-using EventSourcing.Abstractions.Conversion;
-using EventSourcing.Abstractions.Exceptions;
-using EventSourcing.Abstractions.Hooks;
-using EventSourcing.Abstractions.ValueObjects;
-using EventSourcing.Bus.Abstractions;
-using EventSourcing.Persistence.Abstractions;
-using EventSourcing.Persistence.Abstractions.Enums;
-using EventSourcing.Persistence.Abstractions.ValueObjects;
+using EventSourcing.Bus;
+using EventSourcing.Conversion;
+using EventSourcing.Exceptions;
+using EventSourcing.Hooks;
+using EventSourcing.Persistence;
+using EventSourcing.Persistence.Enums;
+using EventSourcing.Persistence.ValueObjects;
+using EventSourcing.ValueObjects;
 using Moq;
 using TestHelpers.Attributes;
 using Xunit;
@@ -37,7 +36,7 @@ namespace EventSourcing.UnitTests
                 busPublisher,
                 prePublishingHooks));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_StagingWriterIsNull(
@@ -53,7 +52,7 @@ namespace EventSourcing.UnitTests
                 busPublisher,
                 prePublishingHooks));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_WriterIsNull(
@@ -69,7 +68,7 @@ namespace EventSourcing.UnitTests
                 busPublisher,
                 prePublishingHooks));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_BusPublisherIsNull(
@@ -85,7 +84,7 @@ namespace EventSourcing.UnitTests
                 null,
                 prePublishingHooks));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_Creating_And_PrePublishingHookCollectionIsNull(
@@ -101,7 +100,7 @@ namespace EventSourcing.UnitTests
                 busPublisher,
                 null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_Creating_And_AllParametersAreNotNull(
@@ -118,7 +117,7 @@ namespace EventSourcing.UnitTests
                 busPublisher,
                 prePublishingHooks);
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_Creating_And_PrePublishingHookCollectionIsEmpty(
@@ -153,7 +152,7 @@ namespace EventSourcing.UnitTests
             var stream = new PublishableEventStream(new AppendableEventStream(EventStream.NewEventStream()));
 
             await publisher.PublishAsync(stream, CancellationToken.None);
-            
+
             storeStagingWriterMock.VerifyNoOtherCalls();
             storeWriterMock.VerifyNoOtherCalls();
         }
@@ -207,7 +206,7 @@ namespace EventSourcing.UnitTests
                 prePublishingModifierMock.Verify();
                 prePublishingModifierMock.VerifyNoOtherCalls();
             }
-            
+
             foreach (var eventToAppend in eventsToAppend)
             {
                 eventStreamEventConverterMock.Verify(converter => converter.ToEventDescriptor(eventToAppend), Times.Once);
@@ -268,7 +267,7 @@ namespace EventSourcing.UnitTests
                 prePublishingModifierMock.Verify();
                 prePublishingModifierMock.VerifyNoOtherCalls();
             }
-            
+
             eventStreamEventConverterMock.VerifyNoOtherCalls();
         }
 
@@ -311,7 +310,7 @@ namespace EventSourcing.UnitTests
             {
                 var eventWithMetadata = appendableStream.AppendEventWithMetadata(@event);
                 appendedEventsMetadata.Add(eventWithMetadata);
-                
+
                 eventStreamEventConverterMock
                     .Setup(converter => converter.ToEventDescriptor(@event))
                     .Returns(eventDescriptor);
@@ -330,7 +329,7 @@ namespace EventSourcing.UnitTests
 
                     var actualEventMetadata = entries[i].ToEventMetadata();
                     var actualEventDescriptor = entries[i].EventDescriptor;
-                    
+
                     Assert.Equal(expectedEventMetadata, actualEventMetadata);
                     Assert.Equal(expectedEventDescriptor, actualEventDescriptor);
                 }
@@ -360,7 +359,7 @@ namespace EventSourcing.UnitTests
             {
                 var eventWithMetadata = appendableStream.AppendEventWithMetadata(@event);
                 appendedEventsMetadata.Add(eventWithMetadata);
-                
+
                 eventStreamEventConverterMock
                     .Setup(converter => converter.ToEventDescriptor(@event))
                     .Returns(eventDescriptor);
@@ -379,7 +378,7 @@ namespace EventSourcing.UnitTests
 
                     var actualEventMetadata = entries[i].ToEventMetadata();
                     var actualEventDescriptor = entries[i].EventDescriptor;
-                    
+
                     Assert.Equal(expectedEventMetadata, actualEventMetadata);
                     Assert.Equal(expectedEventDescriptor, actualEventDescriptor);
                 }
@@ -416,7 +415,7 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
             foreach (var eventStreamEventWithMetadata in eventsToAppend)
             {
@@ -477,7 +476,7 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
             foreach (var eventStreamEventWithMetadata in eventsToAppend)
             {
@@ -485,7 +484,7 @@ namespace EventSourcing.UnitTests
             }
 
             var stream = new PublishableEventStream(appendableStream);
-            
+
             EventStreamEntries stagedEntries = null;
 
             storeStagingWriterMock
@@ -535,7 +534,7 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
             foreach (var eventStreamEventWithMetadata in eventsToAppend)
             {
@@ -582,7 +581,7 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
             foreach (var eventStreamEventWithMetadata in eventsToAppend)
             {
@@ -621,7 +620,7 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
             foreach (var eventStreamEventWithMetadata in eventsToAppend)
             {
@@ -668,7 +667,7 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
             foreach (var eventStreamEventWithMetadata in eventsToAppend)
             {
@@ -707,7 +706,7 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
             foreach (var eventStreamEventWithMetadata in eventsToAppend)
             {
@@ -758,7 +757,7 @@ namespace EventSourcing.UnitTests
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)))
                 .ToList();
-            
+
             var appendableStream = new AppendableEventStream(EventStream.NewEventStream(eventStreamId));
             foreach (var eventStreamEventWithMetadata in eventsToAppend)
             {
@@ -782,7 +781,7 @@ namespace EventSourcing.UnitTests
                 .Verifiable();
 
             await Assert.ThrowsAsync<InvalidEnumArgumentException>(() => publisher.PublishAsync(stream, CancellationToken.None));
-            
+
             storeStagingWriterMock.Verify();
             storeStagingWriterMock.VerifyNoOtherCalls();
         }

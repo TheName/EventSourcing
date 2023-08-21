@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using EventSourcing.ForgettablePayloads.Abstractions.Configurations;
-using EventSourcing.ForgettablePayloads.Abstractions.Services;
-using EventSourcing.ForgettablePayloads.Abstractions.ValueObjects;
 using EventSourcing.ForgettablePayloads.Cleanup;
-using EventSourcing.ForgettablePayloads.Persistence.Abstractions;
+using EventSourcing.ForgettablePayloads.Configurations;
+using EventSourcing.ForgettablePayloads.Persistence;
+using EventSourcing.ForgettablePayloads.Services;
+using EventSourcing.ForgettablePayloads.ValueObjects;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TestHelpers.Attributes;
@@ -31,7 +31,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 configuration,
                 logger));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void Throw_ArgumentNullException_When_Creating_And_ForgettingServiceIsNull(
@@ -45,7 +45,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 configuration,
                 logger));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void Throw_ArgumentNullException_When_Creating_And_ConfigurationIsNull(
@@ -59,7 +59,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 null,
                 logger));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void Throw_ArgumentNullException_When_Creating_And_LoggerIsNull(
@@ -73,7 +73,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 configuration,
                 null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void NotThrow_When_Creating_And_AllParametersAreNotNull(
@@ -103,7 +103,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
 
             await Assert.ThrowsAsync<InvalidOperationException>(() =>
                 cleanupJob.ExecuteAsync(CancellationToken.None));
-            
+
             storageReaderMock.Verify();
             storageReaderMock.VerifyNoOtherCalls();
             forgettingServiceMock.VerifyNoOtherCalls();
@@ -122,7 +122,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .Verifiable();
 
             await cleanupJob.ExecuteAsync(CancellationToken.None);
-            
+
             storageReaderMock.Verify();
             storageReaderMock.VerifyNoOtherCalls();
             forgettingServiceMock.VerifyNoOtherCalls();
@@ -143,18 +143,18 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .SetupGet(configuration => configuration.UnclaimedForgettablePayloadsCleanupTimeout)
                 .Returns(TimeSpan.FromSeconds(10))
                 .Verifiable();
-            
+
             descriptors = descriptors
                 .Select(descriptor => CreateDescriptorWithLastModifiedTime(descriptor, lastModifiedTime))
                 .ToList();
-            
+
             storageReaderMock
                 .Setup(reader => reader.ReadUnclaimedAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(descriptors)
                 .Verifiable();
 
             await cleanupJob.ExecuteAsync(CancellationToken.None);
-            
+
             configurationMock.Verify();
             configurationMock.VerifyNoOtherCalls();
             storageReaderMock.Verify();
@@ -178,18 +178,18 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .SetupGet(configuration => configuration.UnclaimedForgettablePayloadsCleanupTimeout)
                 .Returns(timeout)
                 .Verifiable();
-            
+
             descriptors = descriptors
                 .Select(descriptor => CreateDescriptorWithLastModifiedTime(descriptor, lastModifiedTime))
                 .ToList();
-            
+
             storageReaderMock
                 .Setup(reader => reader.ReadUnclaimedAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(descriptors)
                 .Verifiable();
 
             await cleanupJob.ExecuteAsync(CancellationToken.None);
-            
+
             configurationMock.Verify();
             configurationMock.VerifyNoOtherCalls();
             storageReaderMock.Verify();
@@ -234,14 +234,14 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                         ? earlierThanRequiredTimeoutLastModifiedTime
                         : laterThanRequiredTimeoutLastModifiedTime))
                 .ToList();
-            
+
             storageReaderMock
                 .Setup(reader => reader.ReadUnclaimedAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(descriptors)
                 .Verifiable();
 
             await cleanupJob.ExecuteAsync(CancellationToken.None);
-            
+
             configurationMock.Verify();
             configurationMock.VerifyNoOtherCalls();
             storageReaderMock.Verify();
@@ -273,11 +273,11 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .SetupGet(configuration => configuration.UnclaimedForgettablePayloadsCleanupTimeout)
                 .Returns(timeout)
                 .Verifiable();
-            
+
             descriptors = descriptors
                 .Select(descriptor => CreateDescriptorWithLastModifiedTime(descriptor, lastModifiedTime))
                 .ToList();
-            
+
             storageReaderMock
                 .Setup(reader => reader.ReadUnclaimedAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(descriptors)
@@ -295,7 +295,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
             }
 
             await cleanupJob.ExecuteAsync(CancellationToken.None);
-            
+
             configurationMock.Verify();
             configurationMock.VerifyNoOtherCalls();
             storageReaderMock.Verify();
@@ -324,11 +324,11 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .SetupGet(configuration => configuration.UnclaimedForgettablePayloadsCleanupTimeout)
                 .Returns(timeout)
                 .Verifiable();
-            
+
             descriptors = descriptors
                 .Select(descriptor => CreateDescriptorWithLastModifiedTime(descriptor, lastModifiedTime))
                 .ToList();
-            
+
             storageReaderMock
                 .Setup(reader => reader.ReadUnclaimedAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(descriptors)
@@ -348,7 +348,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
 
                         return Task.FromException<ForgettablePayloadDescriptor>(new OperationCanceledException());
                     });
-                
+
                 forgettingServiceMock
                     .Setup(service => service.ForgetAsync(
                         descriptor,
@@ -395,11 +395,11 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .SetupGet(configuration => configuration.UnclaimedForgettablePayloadsCleanupTimeout)
                 .Returns(timeout)
                 .Verifiable();
-            
+
             descriptors = descriptors
                 .Select(descriptor => CreateDescriptorWithLastModifiedTime(descriptor, lastModifiedTime))
                 .ToList();
-            
+
             storageReaderMock
                 .Setup(reader => reader.ReadUnclaimedAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(descriptors)
@@ -418,7 +418,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
 
                         return Task.FromResult(null as ForgettablePayloadDescriptor);
                     });
-                
+
                 forgettingServiceMock
                     .Setup(service => service.ForgetAsync(
                         descriptor,
@@ -467,7 +467,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
         }
 
         private static ForgettablePayloadDescriptor CreateDescriptorWithLastModifiedTime(
-            ForgettablePayloadDescriptor descriptor, 
+            ForgettablePayloadDescriptor descriptor,
             DateTime lastModifiedTime)
         {
             return new ForgettablePayloadDescriptor(

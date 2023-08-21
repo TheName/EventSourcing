@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.Abstractions.Configurations;
-using EventSourcing.Abstractions.Reconciliation;
+using EventSourcing.Configurations;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +22,7 @@ namespace EventSourcing.Reconciliation
             _reconciliationJob = reconciliationJob ?? throw new ArgumentNullException(nameof(reconciliationJob));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
@@ -31,7 +30,7 @@ namespace EventSourcing.Reconciliation
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     await WaitUntilNextReconciliationJobExecution(stoppingToken).ConfigureAwait(false);
-                
+
                     try
                     {
                         await _reconciliationJob.ExecuteAsync(stoppingToken).ConfigureAwait(false);
@@ -64,7 +63,7 @@ namespace EventSourcing.Reconciliation
             _logger.LogDebug(
                 "Next reconciliation job will be triggered in {ReconciliationJobInterval}",
                 _configuration.ReconciliationJobInterval);
-            
+
             try
             {
                 await Task.Delay(_configuration.ReconciliationJobInterval, cancellationToken).ConfigureAwait(false);

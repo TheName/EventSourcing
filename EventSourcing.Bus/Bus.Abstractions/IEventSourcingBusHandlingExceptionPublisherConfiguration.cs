@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventSourcing.Bus.Abstractions
+namespace EventSourcing.Bus
 {
     /// <summary>
     /// The configuration for event sourcing bus handling exception publisher
