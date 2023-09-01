@@ -1,6 +1,7 @@
 ﻿using System;
 using EventSourcing.Abstractions.Handling;
 using EventSourcing.Abstractions.Reconciliation;
+using EventSourcing.Bus;
 using EventSourcing.Configurations;
 using EventSourcing.Conversion;
 using EventSourcing.Handling;
@@ -22,13 +23,18 @@ namespace EventSourcing.Extensions
         /// <param name="serviceCollection">
         /// The <see cref="IServiceCollection"/>.
         /// </param>
+        /// <param name="busOptions">
+        /// The <see cref="EventSourcingBusBuilderOptions"/>.
+        /// </param>
         /// <returns>
         /// The <see cref="IServiceCollection"/>.
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="serviceCollection"/> is null.
         /// </exception>
-        public static IServiceCollection AddEventSourcing(this IServiceCollection serviceCollection)
+        public static IServiceCollection AddEventSourcing(
+            this IServiceCollection serviceCollection,
+            EventSourcingBusBuilderOptions busOptions = null)
         {
             if (serviceCollection == null)
             {
@@ -79,6 +85,36 @@ namespace EventSourcing.Extensions
                     provider.GetRequiredService<IOptions<EventSourcingTypeConversionConfiguration>>().Value);
 
             serviceCollection.AddHostedService<ReconciliationBackgroundService>();
+
+            return serviceCollection.WithBus(busOptions);
+        }
+
+        private static IServiceCollection WithBus(
+            this IServiceCollection serviceCollection,
+            EventSourcingBusBuilderOptions options)
+        {
+            if (serviceCollection == null)
+            {
+                throw new ArgumentNullException(nameof(serviceCollection));
+            }
+
+            var optionsToUse = options ?? new EventSourcingBusBuilderOptions();
+
+            if (optionsToUse.WithConsumer)
+            {
+                serviceCollection.AddHostedService<EventSourcingConsumerHostedService>();
+            }
+
+            serviceCollection
+                .AddOptions<EventSourcingBusHandlingExceptionPublisherConfiguration>()
+                .BindConfiguration(nameof(EventSourcingBusHandlingExceptionPublisherConfiguration));
+            // .Validate(
+            //     configuration => configuration.PublishingTimeout <= TimeSpan.Zero,
+            //     "PublishingTimeout cannot be less or equal to zero.");
+
+            serviceCollection
+                .TryAddTransient<IEventSourcingBusHandlingExceptionPublisherConfiguration>(provider =>
+                    provider.GetRequiredService<IOptions<EventSourcingBusHandlingExceptionPublisherConfiguration>>().Value);
 
             return serviceCollection;
         }

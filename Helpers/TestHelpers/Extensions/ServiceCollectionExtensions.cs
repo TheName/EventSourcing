@@ -25,15 +25,15 @@ namespace TestHelpers.Extensions
 
         public static IServiceCollection AddEventSourcingBusMocks(this IServiceCollection serviceCollection) =>
             serviceCollection
-                .AddMock<IEventSourcingBusPublisher>()
+                .AddMock<IEventSourcingBusConsumer>()
                 .AddMock<IEventSourcingBusHandlingExceptionPublisher>()
-                .AddMock<IEventSourcingBusHandlingExceptionPublisherConfiguration>();
+                .AddMock<IEventSourcingBusPublisher>();
 
         public static IServiceCollection AddMicrosoftLoggerMock(this IServiceCollection serviceCollection) =>
             serviceCollection
                 .AddTransient(typeof(ILogger<>), typeof(LoggerMock<>))
                 .AddMock<ILoggerFactory>();
-        
+
         private class LoggerMock<T> : ILogger<T>
         {
             public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)

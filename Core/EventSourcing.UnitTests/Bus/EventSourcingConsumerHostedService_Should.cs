@@ -8,7 +8,7 @@ using Moq;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Bus.UnitTests
+namespace EventSourcing.UnitTests.Bus
 {
     public class EventSourcingConsumerHostedService_Should
     {

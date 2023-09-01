@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using EventSourcing.Bus.Extensions;
 using EventSourcing.Bus.RabbitMQ.Extensions;
 using EventSourcing.Extensions;
 using EventSourcing.Handling;
@@ -42,7 +41,6 @@ namespace Bus.RabbitMQ.IntegrationTests
 
             serviceCollection
                 .AddEventSourcing()
-                .WithBus()
                 .UsingRabbitMQ()
                 .WithJsonSerialization();
 
@@ -62,7 +60,7 @@ namespace Bus.RabbitMQ.IntegrationTests
             return this;
         }
 
-        public T GetService<T>() => 
+        public T GetService<T>() =>
             _serviceProvider.GetRequiredService<T>();
 
         public async Task InitializeAsync()

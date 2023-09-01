@@ -27,7 +27,6 @@
     </PropertyGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Bus.Abstractions\Bus.Abstractions.csproj" />
       <ProjectReference Include="..\..\EventSourcing.Serialization\Serialization.Abstractions\Serialization.Abstractions.csproj" />
     </ItemGroup>
     
