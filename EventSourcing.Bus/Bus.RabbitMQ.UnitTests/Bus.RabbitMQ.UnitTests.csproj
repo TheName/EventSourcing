@@ -24,7 +24,6 @@
       <ProjectReference Include="..\..\Core\EventSourcing\EventSourcing.csproj" />
       <ProjectReference Include="..\Bus.RabbitMQ\Bus.RabbitMQ.csproj" />
       <ProjectReference Include="..\..\Helpers\TestHelpers\TestHelpers.csproj" />
-      <ProjectReference Include="..\Bus\Bus.csproj" />
     </ItemGroup>
 
 </Project>
