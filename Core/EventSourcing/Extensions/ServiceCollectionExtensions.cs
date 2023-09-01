@@ -6,6 +6,7 @@ using EventSourcing.Configurations;
 using EventSourcing.Conversion;
 using EventSourcing.Handling;
 using EventSourcing.Reconciliation;
+using EventSourcing.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -86,7 +87,9 @@ namespace EventSourcing.Extensions
 
             serviceCollection.AddHostedService<ReconciliationBackgroundService>();
 
-            return serviceCollection.WithBus(busOptions);
+            return serviceCollection
+                .WithSerialization()
+                .WithBus(busOptions);
         }
 
         private static IServiceCollection WithBus(
@@ -115,6 +118,26 @@ namespace EventSourcing.Extensions
             serviceCollection
                 .TryAddTransient<IEventSourcingBusHandlingExceptionPublisherConfiguration>(provider =>
                     provider.GetRequiredService<IOptions<EventSourcingBusHandlingExceptionPublisherConfiguration>>().Value);
+
+            return serviceCollection;
+        }
+
+        private static IServiceCollection WithSerialization(this IServiceCollection serviceCollection)
+        {
+            if (serviceCollection == null)
+            {
+                throw new ArgumentNullException(nameof(serviceCollection));
+            }
+
+            serviceCollection
+                .AddOptions<EventSourcingSerializationConfiguration>()
+                .BindConfiguration(nameof(EventSourcingSerializationConfiguration));
+
+            serviceCollection
+                .TryAddTransient<IEventSourcingSerializationConfiguration>(provider =>
+                    provider.GetRequiredService<IOptions<EventSourcingSerializationConfiguration>>().Value);
+
+            serviceCollection.TryAddTransient<ISerializerProvider, SerializerProvider>();
 
             return serviceCollection;
         }
