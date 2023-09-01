@@ -40,8 +40,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcing.UnitTests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventSourcing.Serialization", "EventSourcing.Serialization", "{29745774-1ACA-4563-89CD-8C145BAF9D29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.Abstractions", "EventSourcing.Serialization\Serialization.Abstractions\Serialization.Abstractions.csproj", "{E9ADF67D-3872-4CF0-AE96-38C488D5C62F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.NewtonsoftJson", "EventSourcing.Serialization\Serialization.NewtonsoftJson\Serialization.NewtonsoftJson.csproj", "{CBD939E9-38EE-4A59-8042-1EB5B0D48EB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.Json", "EventSourcing.Serialization\Serialization.Json\Serialization.Json.csproj", "{E7C12395-6A77-44BC-89F3-62B9E0BB4690}"
@@ -61,8 +59,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregates.Abstractions.UnitTests", "EventSourcing.Aggregates\Aggregates.Abstractions.UnitTests\Aggregates.Abstractions.UnitTests.csproj", "{2CDB97C9-D7FD-4929-A99D-F3B7D8163BCF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcing.UnitTests.ReferencedAssembly", "Core\EventSourcing.UnitTests.ReferencedAssembly\EventSourcing.UnitTests.ReferencedAssembly.csproj", "{B23CEB74-9659-4E73-A264-8076BF2E69F1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization", "EventSourcing.Serialization\Serialization\Serialization.csproj", "{1450F357-8633-4F64-BB94-435D504108FB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlServer", "SqlServer", "{CF15C20C-3512-4966-8BA8-20F6C98BB96E}"
 EndProject
@@ -119,8 +115,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgettablePayloads.Persistence.PostgreSql.IntegrationTests", "EventSourcing.ForgettablePayloads\Persistence\PostgreSql\ForgettablePayloads.Persistence.PostgreSql.IntegrationTests\ForgettablePayloads.Persistence.PostgreSql.IntegrationTests.csproj", "{41B5FB23-BF1F-4F04-A278-B36478FC20B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgettablePayloads.Persistence.IntegrationTests.Base", "EventSourcing.ForgettablePayloads\Persistence\ForgettablePayloads.Persistence.IntegrationTests.Base\ForgettablePayloads.Persistence.IntegrationTests.Base.csproj", "{3BBA6BC9-4E9F-42F1-B318-02C2964F2459}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.UnitTests", "EventSourcing.Serialization\Serialization.UnitTests\Serialization.UnitTests.csproj", "{9F02497F-C769-40A3-92D8-CC477428F5F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -188,10 +182,6 @@ Global
 		{F4F18A22-872E-4672-9D44-EF3685C31F1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4F18A22-872E-4672-9D44-EF3685C31F1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4F18A22-872E-4672-9D44-EF3685C31F1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9ADF67D-3872-4CF0-AE96-38C488D5C62F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9ADF67D-3872-4CF0-AE96-38C488D5C62F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9ADF67D-3872-4CF0-AE96-38C488D5C62F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9ADF67D-3872-4CF0-AE96-38C488D5C62F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CBD939E9-38EE-4A59-8042-1EB5B0D48EB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CBD939E9-38EE-4A59-8042-1EB5B0D48EB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBD939E9-38EE-4A59-8042-1EB5B0D48EB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -228,10 +218,6 @@ Global
 		{B23CEB74-9659-4E73-A264-8076BF2E69F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B23CEB74-9659-4E73-A264-8076BF2E69F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B23CEB74-9659-4E73-A264-8076BF2E69F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1450F357-8633-4F64-BB94-435D504108FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1450F357-8633-4F64-BB94-435D504108FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1450F357-8633-4F64-BB94-435D504108FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1450F357-8633-4F64-BB94-435D504108FB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -320,10 +306,6 @@ Global
 		{3BBA6BC9-4E9F-42F1-B318-02C2964F2459}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BBA6BC9-4E9F-42F1-B318-02C2964F2459}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BBA6BC9-4E9F-42F1-B318-02C2964F2459}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F02497F-C769-40A3-92D8-CC477428F5F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F02497F-C769-40A3-92D8-CC477428F5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F02497F-C769-40A3-92D8-CC477428F5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F02497F-C769-40A3-92D8-CC477428F5F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{90AA64F3-52A1-45E0-AD2E-62ACA6C276F8} = {3829A2ED-C973-4C40-89B2-276296AC020A}
@@ -337,7 +319,6 @@ Global
 		{C3E3CBAE-7BBB-4223-8B11-6410AE5FF7E2} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
 		{FE3103A9-28B7-455A-BA80-10E902E57F1B} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
 		{F4F18A22-872E-4672-9D44-EF3685C31F1D} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
-		{E9ADF67D-3872-4CF0-AE96-38C488D5C62F} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{CBD939E9-38EE-4A59-8042-1EB5B0D48EB7} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{E7C12395-6A77-44BC-89F3-62B9E0BB4690} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{4DCA9DC7-3FDB-4057-91BB-50D54AC4920F} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
@@ -347,7 +328,6 @@ Global
 		{918D9C34-9263-4774-907D-87F1C9C860E9} = {554639EC-1D6A-41B9-8B71-07DE055A27EB}
 		{2CDB97C9-D7FD-4929-A99D-F3B7D8163BCF} = {554639EC-1D6A-41B9-8B71-07DE055A27EB}
 		{B23CEB74-9659-4E73-A264-8076BF2E69F1} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
-		{1450F357-8633-4F64-BB94-435D504108FB} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 		{CF15C20C-3512-4966-8BA8-20F6C98BB96E} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
 		{1B426689-F3C7-460B-A8D1-539CDFE09630} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
 		{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
@@ -379,6 +359,5 @@ Global
 		{5FC89E6F-1E21-4345-BC29-6102C67D9D5C} = {C9014F64-CD59-46F5-9590-8CFAAC5B9E67}
 		{41B5FB23-BF1F-4F04-A278-B36478FC20B7} = {C9014F64-CD59-46F5-9590-8CFAAC5B9E67}
 		{3BBA6BC9-4E9F-42F1-B318-02C2964F2459} = {E9547AC6-1592-4CC0-9612-6A8629E23132}
-		{9F02497F-C769-40A3-92D8-CC477428F5F0} = {29745774-1ACA-4563-89CD-8C145BAF9D29}
 	EndGlobalSection
 EndGlobal

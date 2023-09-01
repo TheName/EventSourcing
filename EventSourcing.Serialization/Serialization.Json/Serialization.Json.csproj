@@ -27,11 +27,10 @@
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\Core\Abstractions\Abstractions.csproj" />
-      <ProjectReference Include="..\Serialization.Abstractions\Serialization.Abstractions.csproj" />
-      <ProjectReference Include="..\Serialization\Serialization.csproj" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="System.Text.Json" Version="6.0.6" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     </ItemGroup>
 
 </Project>

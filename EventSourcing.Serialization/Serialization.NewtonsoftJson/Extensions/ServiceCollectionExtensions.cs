@@ -1,5 +1,4 @@
 ﻿using System;
-using EventSourcing.Serialization.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
@@ -26,20 +25,6 @@ namespace EventSourcing.Serialization.NewtonsoftJson.Extensions
         /// Thrown if <paramref name="serviceCollection"/> is null.
         /// </exception>
         public static IServiceCollection WithNewtonsoftJsonSerialization(
-            this IServiceCollection serviceCollection,
-            Action<JsonSerializerSettings> configureJsonSerializerSettings = null)
-        {
-            if (serviceCollection == null)
-            {
-                throw new ArgumentNullException(nameof(serviceCollection));
-            }
-
-            return serviceCollection
-                .WithSerialization()
-                .AddNewtonsoftJsonSerializer(configureJsonSerializerSettings);
-        }
-
-        private static IServiceCollection AddNewtonsoftJsonSerializer(
             this IServiceCollection serviceCollection,
             Action<JsonSerializerSettings> configureJsonSerializerSettings = null)
         {

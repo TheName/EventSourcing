@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.Json;
-using EventSourcing.Serialization.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EventSourcing.Serialization.Json.Extensions
@@ -26,20 +25,6 @@ namespace EventSourcing.Serialization.Json.Extensions
         /// Thrown if <paramref name="serviceCollection"/> is null.
         /// </exception>
         public static IServiceCollection WithJsonSerialization(
-            this IServiceCollection serviceCollection,
-            Action<JsonSerializerOptions> configureJsonSerializerOptions = null)
-        {
-            if (serviceCollection == null)
-            {
-                throw new ArgumentNullException(nameof(serviceCollection));
-            }
-
-            return serviceCollection
-                .WithSerialization()
-                .AddJsonSerializer(configureJsonSerializerOptions);
-        }
-
-        private static IServiceCollection AddJsonSerializer(
             this IServiceCollection serviceCollection,
             Action<JsonSerializerOptions> configureJsonSerializerOptions = null)
         {
