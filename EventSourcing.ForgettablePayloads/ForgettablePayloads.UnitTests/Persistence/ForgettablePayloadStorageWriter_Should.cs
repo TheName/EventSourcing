@@ -9,7 +9,7 @@ using Moq;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace ForgettablePayloads.Persistence.UnitTests
+namespace ForgettablePayloads.UnitTests.Persistence
 {
     public class ForgettablePayloadStorageWriter_Should
     {
@@ -22,7 +22,7 @@ namespace ForgettablePayloads.Persistence.UnitTests
                 repository,
                 null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void Throw_ArgumentNullException_When_TryingToCreateWithNullRepository(
@@ -69,7 +69,7 @@ namespace ForgettablePayloads.Persistence.UnitTests
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             await Assert.ThrowsAsync<InvalidOperationException>(() => writer.InsertAsync(descriptor, CancellationToken.None));
         }
 
@@ -93,7 +93,7 @@ namespace ForgettablePayloads.Persistence.UnitTests
                 descriptor.PayloadContentSerializationFormat,
                 descriptor.PayloadTypeIdentifier,
                 descriptor.PayloadTypeIdentifierFormat);
-            
+
             await Assert.ThrowsAsync<InvalidOperationException>(() => writer.InsertAsync(descriptor, CancellationToken.None));
         }
 
@@ -108,7 +108,7 @@ namespace ForgettablePayloads.Persistence.UnitTests
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
                 descriptor.PayloadId,
-                ForgettablePayloadState.Created, 
+                ForgettablePayloadState.Created,
                 descriptor.PayloadCreationTime,
                 descriptor.PayloadLastModifiedTime,
                 0,
@@ -123,7 +123,7 @@ namespace ForgettablePayloads.Persistence.UnitTests
                 .Verifiable();
 
             await writer.InsertAsync(descriptor, CancellationToken.None);
-            
+
             repositoryMock.Verify();
             repositoryMock.VerifyNoOtherCalls();
         }
@@ -139,7 +139,7 @@ namespace ForgettablePayloads.Persistence.UnitTests
                 descriptor.EventStreamId,
                 descriptor.EventStreamEntryId,
                 descriptor.PayloadId,
-                ForgettablePayloadState.Created, 
+                ForgettablePayloadState.Created,
                 descriptor.PayloadCreationTime,
                 descriptor.PayloadLastModifiedTime,
                 0,
@@ -154,7 +154,7 @@ namespace ForgettablePayloads.Persistence.UnitTests
                 .Verifiable();
 
             await Assert.ThrowsAsync<Exception>(() => writer.InsertAsync(descriptor, CancellationToken.None));
-            
+
             repositoryMock.Verify();
             repositoryMock.VerifyNoOtherCalls();
         }
@@ -180,7 +180,7 @@ namespace ForgettablePayloads.Persistence.UnitTests
                 .Verifiable();
 
             await writer.UpdateAsync(descriptor, CancellationToken.None);
-            
+
             repositoryMock.Verify();
             repositoryMock.VerifyNoOtherCalls();
         }
@@ -198,7 +198,7 @@ namespace ForgettablePayloads.Persistence.UnitTests
                 .Verifiable();
 
             await Assert.ThrowsAsync<Exception>(() => writer.UpdateAsync(descriptor, CancellationToken.None));
-            
+
             repositoryMock.Verify();
             repositoryMock.VerifyNoOtherCalls();
         }

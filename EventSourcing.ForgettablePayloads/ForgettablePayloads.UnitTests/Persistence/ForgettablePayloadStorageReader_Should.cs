@@ -10,7 +10,7 @@ using Moq;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace ForgettablePayloads.Persistence.UnitTests
+namespace ForgettablePayloads.UnitTests.Persistence
 {
     public class ForgettablePayloadStorageReader_Should
     {
