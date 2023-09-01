@@ -1,6 +1,5 @@
 ﻿using EventSourcing.Extensions;
 using EventSourcing.Persistence;
-using EventSourcing.Persistence.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using TestHelpers.Extensions;
 using Xunit;
@@ -13,16 +12,14 @@ namespace Persistence.IntegrationTests.Base.Extensions
         public void BuildWithoutErrors_When_AddingEventSourcingAndExternalDependenciesAndRequiredPersistenceImplementation()
         {
             var serviceCollection = new ServiceCollection();
-                
-            serviceCollection
-                .AddEventSourcing()
-                .WithPersistence();
-            
+
+            serviceCollection.AddEventSourcing();
+
             // Required EventSourcing.Persistence implementations
             serviceCollection
                 .AddMock<IEventStreamRepository>()
                 .AddMock<IEventStreamStagingRepository>();
-            
+
             // External dependencies
             serviceCollection
                 .AddEventSourcingSerializationMocks()

@@ -4,7 +4,7 @@ using EventSourcing.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Persistence.Abstractions.UnitTests.ValueObjects
+namespace Abstractions.UnitTests.Persistence.ValueObjects
 {
     public class EventStreamStagedEntries_Should
     {
@@ -19,7 +19,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 stagingTime,
                 entries));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullStagingTime(
@@ -31,7 +31,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 null,
                 entries));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void Throw_ArgumentNullException_When_CreatingWithNullEntries(
@@ -43,7 +43,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 stagingTime,
                 null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         public void NotThrow_When_CreatingWithNonNullValues(
@@ -68,7 +68,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 stagingId,
                 stagingTime,
                 entries);
-            
+
             Assert.Equal(stagingId, stagedEntries.StagingId);
         }
 
@@ -83,7 +83,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 stagingId,
                 stagingTime,
                 entries);
-            
+
             Assert.Equal(stagingTime, stagedEntries.StagingTime);
         }
 
@@ -98,7 +98,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 stagingId,
                 stagingTime,
                 entries);
-            
+
             Assert.Equal(entries, stagedEntries.Entries);
         }
 
@@ -111,12 +111,12 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 stagedEntries.StagingId,
                 stagedEntries.StagingTime,
                 stagedEntries.Entries);
-            
+
             var stagedEntries2 = new EventStreamStagedEntries(
                 stagedEntries.StagingId,
                 stagedEntries.StagingTime,
                 stagedEntries.Entries);
-            
+
             Assert.Equal(stagedEntries1, stagedEntries2);
             Assert.True(stagedEntries1 == stagedEntries2);
             Assert.False(stagedEntries1 != stagedEntries2);
@@ -132,12 +132,12 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 stagedEntries.StagingId,
                 stagedEntries.StagingTime,
                 stagedEntries.Entries);
-            
+
             var stagedEntries2 = new EventStreamStagedEntries(
                 differentStagingId,
                 stagedEntries.StagingTime,
                 stagedEntries.Entries);
-            
+
             Assert.NotEqual(stagedEntries1, stagedEntries2);
             Assert.False(stagedEntries1 == stagedEntries2);
             Assert.True(stagedEntries1 != stagedEntries2);
@@ -153,12 +153,12 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 stagedEntries.StagingId,
                 stagedEntries.StagingTime,
                 stagedEntries.Entries);
-            
+
             var stagedEntries2 = new EventStreamStagedEntries(
                 stagedEntries.StagingId,
                 differentStagingTime,
                 stagedEntries.Entries);
-            
+
             Assert.NotEqual(stagedEntries1, stagedEntries2);
             Assert.False(stagedEntries1 == stagedEntries2);
             Assert.True(stagedEntries1 != stagedEntries2);
@@ -174,12 +174,12 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
                 stagedEntries.StagingId,
                 stagedEntries.StagingTime,
                 stagedEntries.Entries);
-            
+
             var stagedEntries2 = new EventStreamStagedEntries(
                 stagedEntries.StagingId,
                 stagedEntries.StagingTime,
                 differentEntries);
-            
+
             Assert.NotEqual(stagedEntries1, stagedEntries2);
             Assert.False(stagedEntries1 == stagedEntries2);
             Assert.True(stagedEntries1 != stagedEntries2);
@@ -191,7 +191,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
         {
             var expectedValue =
                 $"Event Stream Staging ID: {stagedEntries.StagingId}, Staging Time: {stagedEntries.StagingTime}, Entries: {stagedEntries.Entries}";
-            
+
             Assert.Equal(expectedValue, stagedEntries.ToString());
         }
     }
