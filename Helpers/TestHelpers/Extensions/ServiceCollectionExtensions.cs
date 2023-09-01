@@ -18,10 +18,8 @@ namespace TestHelpers.Extensions
 
         public static IServiceCollection AddEventSourcingPersistenceMocks(this IServiceCollection serviceCollection) =>
             serviceCollection
-                .AddMock<IEventStreamStagingReader>()
-                .AddMock<IEventStreamStagingWriter>()
-                .AddMock<IEventStreamReader>()
-                .AddMock<IEventStreamWriter>();
+                .AddMock<IEventStreamRepository>()
+                .AddMock<IEventStreamStagingRepository>();
 
         public static IServiceCollection AddEventSourcingBusMocks(this IServiceCollection serviceCollection) =>
             serviceCollection

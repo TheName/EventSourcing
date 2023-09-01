@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using EventSourcing.Persistence.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -31,8 +30,6 @@ namespace EventSourcing.Persistence.PostgreSql.Extensions
             {
                 throw new ArgumentNullException(nameof(serviceCollection));
             }
-
-            serviceCollection.WithPersistence();
 
             serviceCollection
                 .AddOptions<PostgreSqlEventStreamPersistenceConfiguration>()

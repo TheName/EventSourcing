@@ -3,7 +3,7 @@ using EventSourcing.Persistence.ValueObjects;
 using TestHelpers.Attributes;
 using Xunit;
 
-namespace Persistence.Abstractions.UnitTests.ValueObjects
+namespace Abstractions.UnitTests.Persistence.ValueObjects
 {
     public class EventStreamStagingId_Should
     {
@@ -26,7 +26,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
         {
             EventStreamStagingId id1 = value;
             EventStreamStagingId id2 = value;
-            
+
             Assert.Equal(id1, id2);
             Assert.True(id1 == id2);
             Assert.False(id1 != id2);
@@ -38,7 +38,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
         {
             EventStreamStagingId id1 = value;
             EventStreamStagingId id2 = otherValue;
-            
+
             Assert.NotEqual(id1, id2);
             Assert.False(id1 == id2);
             Assert.True(id1 != id2);
@@ -49,7 +49,7 @@ namespace Persistence.Abstractions.UnitTests.ValueObjects
         public void ReturnValueToString_When_CallingToString(EventStreamStagingId id)
         {
             var idAsGuid = (Guid) id;
-            
+
             Assert.Equal(idAsGuid.ToString(), id.ToString());
         }
     }
