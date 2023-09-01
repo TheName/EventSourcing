@@ -17,12 +17,10 @@ namespace ForgettablePayloads.UnitTests.Extensions
             serviceCollection
                 .AddEventSourcing()
                 .WithForgettablePayloads();
-            
+
             // Required EventSourcing.ForgettablePayloads implementations
-            serviceCollection
-                .AddMock<IForgettablePayloadStorageReader>()
-                .AddMock<IForgettablePayloadStorageWriter>();
-            
+            serviceCollection.AddMock<IForgettablePayloadStorageRepository>();
+
             // External dependencies
             serviceCollection
                 .AddEventSourcingSerializationMocks()

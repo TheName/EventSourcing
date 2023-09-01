@@ -3,6 +3,7 @@ using EventSourcing.ForgettablePayloads.Cleanup;
 using EventSourcing.ForgettablePayloads.Configurations;
 using EventSourcing.ForgettablePayloads.Conversion;
 using EventSourcing.ForgettablePayloads.Hooks;
+using EventSourcing.ForgettablePayloads.Persistence;
 using EventSourcing.ForgettablePayloads.Services;
 using EventSourcing.Hooks;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,7 +68,7 @@ namespace EventSourcing.ForgettablePayloads.Extensions
                     }
                 });
 
-            return serviceCollection;
+            return serviceCollection.WithForgettablePayloadsPersistence();
         }
 
         private static IServiceCollection AddConfiguration<TInterface, TConfiguration>(
@@ -80,6 +81,20 @@ namespace EventSourcing.ForgettablePayloads.Extensions
             serviceCollection
                 .TryAddTransient<TInterface>(provider =>
                     provider.GetRequiredService<IOptions<TConfiguration>>().Value);
+
+            return serviceCollection;
+        }
+
+        private static IServiceCollection WithForgettablePayloadsPersistence(this IServiceCollection serviceCollection)
+        {
+            if (serviceCollection == null)
+            {
+                throw new ArgumentNullException(nameof(serviceCollection));
+            }
+
+            serviceCollection
+                .AddTransient<IForgettablePayloadStorageReader, ForgettablePayloadStorageReader>()
+                .AddTransient<IForgettablePayloadStorageWriter, ForgettablePayloadStorageWriter>();
 
             return serviceCollection;
         }

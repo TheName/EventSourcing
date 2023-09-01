@@ -26,7 +26,6 @@
         <RepositoryUrl>https://github.com/TheName/EventSourcing</RepositoryUrl>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Persistence\ForgettablePayloads.Persistence.Abstractions\ForgettablePayloads.Persistence.Abstractions.csproj" />
       <ProjectReference Include="..\ForgettablePayloads.Abstractions\ForgettablePayloads.Abstractions.csproj" />
     </ItemGroup>
     <ItemGroup>

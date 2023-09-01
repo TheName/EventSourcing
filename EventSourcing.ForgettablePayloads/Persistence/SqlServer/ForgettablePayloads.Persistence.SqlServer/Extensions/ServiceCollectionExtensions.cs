@@ -1,5 +1,4 @@
 ﻿using System;
-using EventSourcing.ForgettablePayloads.Persistence.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -29,8 +28,6 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer.Extensions
             {
                 throw new ArgumentNullException(nameof(serviceCollection));
             }
-
-            serviceCollection.WithForgettablePayloadsPersistence();
 
             serviceCollection
                 .AddTransient<IForgettablePayloadStorageRepository, ForgettablePayloadStorageSqlServerRepository>();
