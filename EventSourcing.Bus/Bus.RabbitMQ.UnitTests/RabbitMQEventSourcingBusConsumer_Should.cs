@@ -21,7 +21,7 @@ namespace Bus.RabbitMQ.UnitTests
         {
             Assert.Throws<ArgumentNullException>(() => new RabbitMQEventSourcingBusConsumer(null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void NotThrow_When_Creating_And_ConsumerFactoryParameterIsNotNull(IRabbitMQConsumerFactory consumerFactory)
@@ -35,7 +35,7 @@ namespace Bus.RabbitMQ.UnitTests
             var consumerFactoryMock = new Mock<IRabbitMQConsumerFactory>();
 
             _ = new RabbitMQEventSourcingBusConsumer(consumerFactoryMock.Object);
-            
+
             consumerFactoryMock.VerifyNoOtherCalls();
         }
 
@@ -62,9 +62,9 @@ namespace Bus.RabbitMQ.UnitTests
             consumerFactoryMock
                 .Setup(factory => factory.CreateAsync(consumingTaskFunc, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(rabbitMQConsumerMock.Object);
-            
+
             await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
-            
+
             consumerFactoryMock.Verify(factory => factory.CreateAsync(consumingTaskFunc, It.IsAny<CancellationToken>()), Times.Once);
             consumerFactoryMock.VerifyNoOtherCalls();
         }
@@ -80,15 +80,15 @@ namespace Bus.RabbitMQ.UnitTests
             consumerFactoryMock
                 .Setup(factory => factory.CreateAsync(consumingTaskFunc, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(rabbitMQConsumerMock.Object);
-            
+
             await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
-            
+
             consumerFactoryMock.Reset();
 
             await Assert.ThrowsAsync<InvalidOperationException>(() => consumer.StartConsuming(consumingTaskFunc, CancellationToken.None));
             await Assert.ThrowsAsync<InvalidOperationException>(() => consumer.StartConsuming(consumingTaskFunc, CancellationToken.None));
             await Assert.ThrowsAsync<InvalidOperationException>(() => consumer.StartConsuming(consumingTaskFunc, CancellationToken.None));
-            
+
             consumerFactoryMock.VerifyNoOtherCalls();
         }
 
@@ -107,7 +107,7 @@ namespace Bus.RabbitMQ.UnitTests
                     It.IsAny<Func<EventStreamEntry, CancellationToken, Task>>(),
                     It.IsAny<CancellationToken>()))
                 .Returns(consumerTaskCompletionSource.Task);
-            
+
             var startConsumingTasks = consumingTaskFunctions
                 .Select(func => consumer.StartConsuming(func, cancellationToken))
                 .ToList();
@@ -115,10 +115,10 @@ namespace Bus.RabbitMQ.UnitTests
             consumerTaskCompletionSource.SetResult(rabbitMQConsumerMock.Object);
 
             var whenAllTask = Task.WhenAll(startConsumingTasks);
-            
+
             await Assert.ThrowsAsync<InvalidOperationException>(() => whenAllTask);
             Assert.Equal(consumingTaskFunctions.Count - 1, startConsumingTasks.Count(task => task.IsFaulted));
-            await Assert.Single(startConsumingTasks.Where(task => task.IsCompletedSuccessfully));
+            await Assert.Single(startConsumingTasks.Where(task => task.Status == TaskStatus.RanToCompletion));
             Assert.NotNull(whenAllTask.Exception);
             var flattenedException = whenAllTask.Exception.Flatten();
             Assert.All(flattenedException.InnerExceptions, exception => Assert.IsType<InvalidOperationException>(exception));
@@ -139,7 +139,7 @@ namespace Bus.RabbitMQ.UnitTests
                 CancellingTasksHelper.CreateCancellingTaskWithReturnType<
                     Func<EventStreamEntry, CancellationToken, Task>,
                     IRabbitMQConsumer<EventStreamEntry>>(() => cancellationRequested = true);
-            
+
             consumerFactoryMock
                 .Setup(factory => factory.CreateAsync(consumingTaskFunction, It.IsAny<CancellationToken>()))
                 .Returns(cancellingTask);
@@ -306,9 +306,9 @@ namespace Bus.RabbitMQ.UnitTests
             consumerFactoryMock
                 .Setup(factory => factory.CreateAsync(consumingTaskFunc, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(rabbitMQConsumerMock.Object);
-            
+
             await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
-            
+
             rabbitMQConsumerMock.Verify(mqConsumer => mqConsumer.StartConsumingAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -320,9 +320,9 @@ namespace Bus.RabbitMQ.UnitTests
             RabbitMQEventSourcingBusConsumer consumer)
         {
             await consumer.StopConsuming(CancellationToken.None);
-            
+
             await Assert.ThrowsAsync<OperationCanceledException>(() => consumer.StartConsuming(consumingTaskFunc, CancellationToken.None));
-            
+
             consumerFactoryMock.VerifyNoOtherCalls();
         }
 
@@ -333,7 +333,7 @@ namespace Bus.RabbitMQ.UnitTests
             RabbitMQEventSourcingBusConsumer consumer)
         {
             await consumer.StopConsuming(CancellationToken.None);
-            
+
             consumerFactoryMock.VerifyNoOtherCalls();
         }
 
@@ -348,14 +348,14 @@ namespace Bus.RabbitMQ.UnitTests
             consumerFactoryMock
                 .Setup(factory => factory.CreateAsync(consumingTaskFunc, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(rabbitMQConsumerMock.Object);
-            
+
             await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
-            
+
             consumerFactoryMock.Reset();
             rabbitMQConsumerMock.Reset();
-            
+
             await consumer.StopConsuming(CancellationToken.None);
-            
+
             rabbitMQConsumerMock.Verify(mqConsumer => mqConsumer.StopConsumingAsync(It.IsAny<CancellationToken>()), Times.Once);
             rabbitMQConsumerMock.VerifyNoOtherCalls();
             consumerFactoryMock.VerifyNoOtherCalls();
@@ -401,7 +401,7 @@ namespace Bus.RabbitMQ.UnitTests
         {
             var cancellationRequested = false;
             var cancellingTask = CancellingTasksHelper.CreateCancellingTask(() => cancellationRequested = true);
-            
+
             rabbitMQConsumerMock
                 .Setup(mqConsumer => mqConsumer.StopConsumingAsync(It.IsAny<CancellationToken>()))
                 .Returns(cancellingTask);
@@ -437,7 +437,7 @@ namespace Bus.RabbitMQ.UnitTests
 
             await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
             consumer.Dispose();
-            
+
             rabbitMQConsumerMock.Verify(mqConsumer => mqConsumer.StartConsumingAsync(It.IsAny<CancellationToken>()), Times.Once);
             rabbitMQConsumerDisposableMock.Verify(mqConsumer => mqConsumer.Dispose(), Times.Once);
             rabbitMQConsumerMock.VerifyNoOtherCalls();
@@ -460,7 +460,7 @@ namespace Bus.RabbitMQ.UnitTests
             consumer.Dispose();
             consumer.Dispose();
             consumer.Dispose();
-            
+
             rabbitMQConsumerMock.Verify(mqConsumer => mqConsumer.StartConsumingAsync(It.IsAny<CancellationToken>()), Times.Once);
             rabbitMQConsumerDisposableMock.Verify(mqConsumer => mqConsumer.Dispose(), Times.Once);
             rabbitMQConsumerMock.VerifyNoOtherCalls();
@@ -473,7 +473,7 @@ namespace Bus.RabbitMQ.UnitTests
             RabbitMQEventSourcingBusConsumer consumer)
         {
             consumer.Dispose();
-            
+
             consumerFactoryMock.VerifyNoOtherCalls();
         }
 
@@ -492,7 +492,7 @@ namespace Bus.RabbitMQ.UnitTests
 
             await consumer.StartConsuming(consumingTaskFunc, CancellationToken.None);
             consumer.Dispose();
-            
+
             rabbitMQConsumerMock.Verify(mqConsumer => mqConsumer.StartConsumingAsync(It.IsAny<CancellationToken>()), Times.Once);
             rabbitMQConsumerDisposableMock.Verify(mqConsumer => mqConsumer.Dispose(), Times.Once);
             rabbitMQConsumerMock.VerifyNoOtherCalls();
@@ -508,9 +508,9 @@ namespace Bus.RabbitMQ.UnitTests
             RabbitMQEventSourcingBusConsumer consumer)
         {
             consumer.Dispose();
-            
+
             await Assert.ThrowsAsync<ObjectDisposedException>(() => consumer.StartConsuming(consumingTaskFunc, CancellationToken.None));
-            
+
             consumerFactoryMock.VerifyNoOtherCalls();
         }
 
@@ -521,9 +521,9 @@ namespace Bus.RabbitMQ.UnitTests
             RabbitMQEventSourcingBusConsumer consumer)
         {
             consumer.Dispose();
-            
+
             await Assert.ThrowsAsync<ObjectDisposedException>(() => consumer.StopConsuming(CancellationToken.None));
-            
+
             consumerFactoryMock.VerifyNoOtherCalls();
         }
     }

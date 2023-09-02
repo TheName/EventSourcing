@@ -20,15 +20,19 @@ namespace ForgettablePayloads.Persistence.PostgreSql.IntegrationTests
         {
             _fixture = fixture.SetTestOutputHelper(testOutputHelper);
         }
-        
+
         protected override async Task TruncateAsync(CancellationToken cancellationToken)
         {
             var connectionString = _fixture.GetService<IPostgreSqlEventStreamForgettablePayloadPersistenceConfiguration>().ConnectionString;
-            await using var connection = new NpgsqlConnection(connectionString);
-            await using var command = connection.CreateCommand();
-            command.CommandText = "TRUNCATE TABLE \"EventStream.ForgettablePayloads\"";
-            await connection.OpenAsync(cancellationToken);
-            await command.ExecuteNonQueryAsync(cancellationToken);
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "TRUNCATE TABLE \"EventStream.ForgettablePayloads\"";
+                    await connection.OpenAsync(cancellationToken);
+                    await command.ExecuteNonQueryAsync(cancellationToken);
+                }
+            }
         }
     }
 }

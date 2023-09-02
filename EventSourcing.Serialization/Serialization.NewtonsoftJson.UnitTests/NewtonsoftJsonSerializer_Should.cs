@@ -10,8 +10,8 @@ namespace Serialization.NewtonsoftJson.UnitTests
 {
     public class NewtonsoftJsonSerializer_Should
     {
-        private readonly NewtonsoftJsonSerializer _serializer = new(NewtonsoftJsonSerializer.DefaultSerializerSettings);
-        
+        private readonly NewtonsoftJsonSerializer _serializer = new NewtonsoftJsonSerializer(NewtonsoftJsonSerializer.DefaultSerializerSettings);
+
         [Theory]
         [AutoMoqData]
         internal void SerializeEventStreamEntryCorrectly(EventStreamEntry entry)
@@ -21,7 +21,7 @@ namespace Serialization.NewtonsoftJson.UnitTests
             var expectedString = GetExpectedSerializedString(entry);
             Assert.Equal(expectedString, result);
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void SerializeEventStreamEntryToUtf8BytesCorrectly(EventStreamEntry entry)
@@ -30,10 +30,10 @@ namespace Serialization.NewtonsoftJson.UnitTests
 
             var expectedString = GetExpectedSerializedString(entry);
             var expectedBytes = Encoding.UTF8.GetBytes(expectedString);
-            
+
             Assert.True(expectedBytes.SequenceEqual(result));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void DeserializeEventStreamEntryCorrectly(EventStreamEntry entry)
@@ -44,7 +44,7 @@ namespace Serialization.NewtonsoftJson.UnitTests
 
             Assert.Equal(entry, result);
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void DeserializeEventStreamEntryFromUtf8BytesCorrectly(EventStreamEntry entry)
@@ -56,7 +56,7 @@ namespace Serialization.NewtonsoftJson.UnitTests
 
             Assert.Equal(entry, result);
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void SerializeClassWithEnumsCorrectly(IFixture fixture)
@@ -67,7 +67,7 @@ namespace Serialization.NewtonsoftJson.UnitTests
             var expectedString = GetExpectedSerializedString(objectToSerialize);
             Assert.Equal(expectedString, result);
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void SerializeClassWithEnumsToUtf8BytesCorrectly(IFixture fixture)
@@ -77,10 +77,10 @@ namespace Serialization.NewtonsoftJson.UnitTests
 
             var expectedString = GetExpectedSerializedString(objectToSerialize);
             var expectedBytes = Encoding.UTF8.GetBytes(expectedString);
-            
+
             Assert.True(expectedBytes.SequenceEqual(result));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void DeserializeClassWithEnumsCorrectly(IFixture fixture)
@@ -96,7 +96,7 @@ namespace Serialization.NewtonsoftJson.UnitTests
             Assert.Equal(objectToSerialize.BoolValue, resultAsClassWithEnums.BoolValue);
             Assert.Equal(objectToSerialize.EnumValue, resultAsClassWithEnums.EnumValue);
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void DeserializeClassWithEnumsFromUtf8BytesCorrectly(IFixture fixture)
@@ -125,7 +125,7 @@ namespace Serialization.NewtonsoftJson.UnitTests
             return
                 $"{{\"StringValue\":\"{classWithEnums.StringValue}\",\"IntValue\":{classWithEnums.IntValue},\"BoolValue\":{classWithEnums.BoolValue.ToString().ToLower()},\"EnumValue\":\"{classWithEnums.EnumValue.ToString()}\"}}";
         }
-        
+
         private class ClassWithEnums
         {
             public string StringValue { get; set; }
@@ -133,7 +133,7 @@ namespace Serialization.NewtonsoftJson.UnitTests
             public bool BoolValue { get; set; }
             public SomeEnum EnumValue { get; set; }
         }
-        
+
         private enum SomeEnum
         {
             Undefined,
