@@ -24,11 +24,15 @@ namespace ForgettablePayloads.Persistence.SqlServer.IntegrationTests
         protected override async Task TruncateAsync(CancellationToken cancellationToken)
         {
             var connectionString = _fixture.GetService<ISqlServerEventStreamForgettablePayloadPersistenceConfiguration>().ConnectionString;
-            await using var connection = new SqlConnection(connectionString);
-            await using var command = connection.CreateCommand();
-            command.CommandText = "TRUNCATE TABLE [EventStream.ForgettablePayloads]";
-            await connection.OpenAsync(cancellationToken);
-            await command.ExecuteNonQueryAsync(cancellationToken);
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "TRUNCATE TABLE [EventStream.ForgettablePayloads]";
+                    await connection.OpenAsync(cancellationToken);
+                    await command.ExecuteNonQueryAsync(cancellationToken);
+                }
+            }
         }
     }
 }

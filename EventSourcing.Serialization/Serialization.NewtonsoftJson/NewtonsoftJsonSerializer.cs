@@ -13,12 +13,16 @@ namespace EventSourcing.Serialization.NewtonsoftJson
         {
             Converters = new List<JsonConverter>
             {
-                new StringEnumConverter()
+                new StringEnumConverter(),
+                new IsoDateTimeConverter
+                {
+                    DateTimeFormat = "O"
+                }
             }
         };
-        
+
         private static readonly SerializationFormat JsonSerializationFormat = SerializationFormat.Json;
-        
+
         private readonly JsonSerializerSettings _jsonSerializerSettings;
 
         public SerializationFormat SerializationFormat => JsonSerializationFormat;

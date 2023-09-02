@@ -8,13 +8,13 @@ namespace EventSourcing.Serialization.Json
 {
     internal class JsonSerializer : ISerializer
     {
-        public static readonly JsonSerializerOptions DefaultJsonSerializerOptions = CreateDefaultJsonSerializerOptions(); 
+        public static readonly JsonSerializerOptions DefaultJsonSerializerOptions = CreateDefaultJsonSerializerOptions();
         private static readonly SerializationFormat JsonSerializationFormat = SerializationFormat.Json;
-        
+
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         public SerializationFormat SerializationFormat => JsonSerializationFormat;
-        
+
         public JsonSerializer(JsonSerializerOptions jsonSerializerOptions)
         {
             _jsonSerializerOptions = jsonSerializerOptions ?? throw new ArgumentNullException(nameof(jsonSerializerOptions));
@@ -39,12 +39,13 @@ namespace EventSourcing.Serialization.Json
         {
             return System.Text.Json.JsonSerializer.Deserialize(serializedObject, objectType, _jsonSerializerOptions);
         }
-        
+
         private static JsonSerializerOptions CreateDefaultJsonSerializerOptions()
         {
             var options = new JsonSerializerOptions();
             options.Converters.Add(new JsonStringEnumConverter());
             options.Converters.Add(new TypeConverter());
+            options.Converters.Add(new DateTimeConverter());
 
             return options;
         }

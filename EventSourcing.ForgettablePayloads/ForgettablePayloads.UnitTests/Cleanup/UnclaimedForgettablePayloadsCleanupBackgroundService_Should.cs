@@ -24,7 +24,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 cleanupJob,
                 logger));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void Throw_ArgumentNullException_When_Creating_And_CleanupJobIsNull(
@@ -36,7 +36,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 null,
                 logger));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void Throw_ArgumentNullException_When_Creating_And_LoggerIsNull(
@@ -48,7 +48,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 cleanupJob,
                 null));
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal void NotThrow_When_Creating_And_AllParametersAreNotNull(
@@ -61,7 +61,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 cleanupJob,
                 logger);
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal async Task DoNothing_When_Starting_And_CancellationIsAlreadyRequested(
@@ -72,11 +72,11 @@ namespace ForgettablePayloads.UnitTests.Cleanup
             var cancellationToken = new CancellationToken(true);
 
             await reconciliationService.StartAsync(cancellationToken);
-            
+
             configurationMock.VerifyNoOtherCalls();
             cleanupJobMock.VerifyNoOtherCalls();
         }
-        
+
         [Theory]
         [AutoMoqData]
         internal async Task ExecuteCleanupJob_When_Started(
@@ -90,7 +90,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .SetupGet(configuration => configuration.UnclaimedForgettablePayloadsCleanupJobInterval)
                 .Returns(jobExecutionInterval)
                 .Verifiable();
-            
+
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(jobExecutionInterval, cancellationToken);
@@ -98,7 +98,7 @@ namespace ForgettablePayloads.UnitTests.Cleanup
             configurationMock.VerifyNoOtherCalls();
             cleanupJobMock.Verify(job => job.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
-        
+
         [Theory]
         [AutoMoqWithInlineData(5)]
         internal async Task ExecuteCleanupJobInALoop_When_Started(
@@ -113,18 +113,18 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .SetupGet(configuration => configuration.UnclaimedForgettablePayloadsCleanupJobInterval)
                 .Returns(jobExecutionInterval)
                 .Verifiable();
-            
+
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * expectedNumberOfReconciliationJobInvocations + jobExecutionInterval / 2,
+                (int)jobExecutionInterval.TotalMilliseconds * expectedNumberOfReconciliationJobInvocations + (int)jobExecutionInterval.TotalMilliseconds / 2,
                 cancellationToken);
-            
+
             configurationMock.Verify();
             configurationMock.VerifyNoOtherCalls();
             cleanupJobMock.Verify(job => job.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Exactly(expectedNumberOfReconciliationJobInvocations));
         }
-        
+
         [Theory]
         [AutoMoqWithInlineData(5)]
         internal async Task ExecuteCleanupJobInALoopUntilStopped_When_Started(
@@ -139,24 +139,24 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .SetupGet(configuration => configuration.UnclaimedForgettablePayloadsCleanupJobInterval)
                 .Returns(jobExecutionInterval)
                 .Verifiable();
-            
+
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * (expectedNumberOfReconciliationJobInvocations + 1) + jobExecutionInterval / 2,
+                (int)jobExecutionInterval.TotalMilliseconds * (expectedNumberOfReconciliationJobInvocations + 1) + (int)jobExecutionInterval.TotalMilliseconds / 2,
                 cancellationToken);
 
             await reconciliationService.StopAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * expectedNumberOfReconciliationJobInvocations,
+                (int)jobExecutionInterval.TotalMilliseconds * expectedNumberOfReconciliationJobInvocations,
                 cancellationToken);
-            
+
             configurationMock.Verify();
             configurationMock.VerifyNoOtherCalls();
             cleanupJobMock.Verify(job => job.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Exactly(expectedNumberOfReconciliationJobInvocations));
         }
-        
+
         [Theory]
         [AutoMoqWithInlineData(5)]
         internal async Task ExecuteCleanupJobInALoopUntilStoppedEventIfExecutionThrowsOperationCancelledException(
@@ -176,24 +176,24 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .Setup(job => job.ExecuteAsync(It.IsAny<CancellationToken>()))
                 .Throws<OperationCanceledException>()
                 .Verifiable();
-            
+
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * (expectedNumberOfReconciliationJobInvocations + 1) + jobExecutionInterval / 2,
+                (int)jobExecutionInterval.TotalMilliseconds * (expectedNumberOfReconciliationJobInvocations + 1) + (int)jobExecutionInterval.TotalMilliseconds / 2,
                 cancellationToken);
 
             await reconciliationService.StopAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * expectedNumberOfReconciliationJobInvocations,
+                (int)jobExecutionInterval.TotalMilliseconds * expectedNumberOfReconciliationJobInvocations,
                 cancellationToken);
-            
+
             configurationMock.Verify();
             configurationMock.VerifyNoOtherCalls();
             cleanupJobMock.Verify(job => job.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Exactly(expectedNumberOfReconciliationJobInvocations));
         }
-        
+
         [Theory]
         [AutoMoqWithInlineData(5)]
         internal async Task ExecuteCleanupJobInALoopUntilStoppedEventIfExecutionThrowsException(
@@ -213,19 +213,19 @@ namespace ForgettablePayloads.UnitTests.Cleanup
                 .Setup(job => job.ExecuteAsync(It.IsAny<CancellationToken>()))
                 .Throws<Exception>()
                 .Verifiable();
-            
+
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * (expectedNumberOfReconciliationJobInvocations + 1) + jobExecutionInterval / 2,
+                (int)jobExecutionInterval.TotalMilliseconds * (expectedNumberOfReconciliationJobInvocations + 1) + (int)jobExecutionInterval.TotalMilliseconds / 2,
                 cancellationToken);
 
             await reconciliationService.StopAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * expectedNumberOfReconciliationJobInvocations,
+                (int)jobExecutionInterval.TotalMilliseconds * expectedNumberOfReconciliationJobInvocations,
                 cancellationToken);
-            
+
             configurationMock.Verify();
             configurationMock.VerifyNoOtherCalls();
             cleanupJobMock.Verify(job => job.ExecuteAsync(It.IsAny<CancellationToken>()), Times.AtLeast(expectedNumberOfReconciliationJobInvocations));

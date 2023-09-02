@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Persistence.IntegrationTests.Base;
+using TestHelpers.Extensions;
 using TestHelpers.Logging;
 using Xunit;
 using Xunit.Abstractions;
@@ -43,9 +44,10 @@ namespace Persistence.SqlServer.IntegrationTests
                     sqlConnectionBuilder.InitialCatalog = $"{sqlConnectionBuilder.InitialCatalog}_{Guid.NewGuid()}";
                     persistenceConfiguration.ConnectionString = sqlConnectionBuilder.ConnectionString;
                 })
-                .AddSingleton(new Mock<IEventSourcingBusPublisher>().Object)
-                .AddSingleton(new Mock<IEventSourcingBusHandlingExceptionPublisherConfiguration>().Object)
-                .AddSingleton(new Mock<IEventSourcingBusHandlingExceptionPublisher>().Object)
+                .AddMock<IEventSourcingBusPublisher>()
+                .AddMock<IEventSourcingBusHandlingExceptionPublisherConfiguration>()
+                .AddMock<IEventSourcingBusHandlingExceptionPublisher>()
+                .AddMock<IEventSourcingBusConsumer>()
                 .AddTransient<IEventStreamTestReadRepository, SqlServerEventStreamTestReadRepository>()
                 .AddTransient<IEventStreamStagingTestRepository, SqlServerEventStreamStagingTestRepository>();
 
@@ -68,7 +70,7 @@ namespace Persistence.SqlServer.IntegrationTests
             return this;
         }
 
-        public T GetService<T>() => 
+        public T GetService<T>() =>
             _serviceProvider.GetRequiredService<T>();
 
         public Task InitializeAsync()
@@ -87,7 +89,7 @@ namespace Persistence.SqlServer.IntegrationTests
             {
                 throw new Exception("Migrations were not successful!");
             }
-            
+
             return Task.CompletedTask;
         }
 

@@ -12,7 +12,7 @@ namespace TestHelpers.AutoFixture
 {
     internal static class AutoFixtureFactory
     {
-        private static readonly Random Random = new();
+        private static readonly Random Random = new Random();
 
         private static readonly IReadOnlyList<ForgettablePayloadState> ValidForgettablePayloadStates =
             new List<ForgettablePayloadState>
@@ -25,7 +25,7 @@ namespace TestHelpers.AutoFixture
         public static IFixture Create()
         {
             var fixture = new Fixture().Customize(new AutoMoqCustomization {ConfigureMembers = true});
-            
+
             fixture.Register<ISpecimenBuilder, EventStream>(CreateEventStream);
             fixture.Register<ISpecimenBuilder, EventStreamEntryCausationId>(builder => builder.Create<Guid>());
             fixture.Register<ISpecimenBuilder, EventStreamEntryCorrelationId>(builder => builder.Create<Guid>());
@@ -69,7 +69,7 @@ namespace TestHelpers.AutoFixture
                         eventWithMetadata.EventMetadata.CausationId,
                         eventWithMetadata.EventMetadata.CreationTime,
                         eventWithMetadata.EventMetadata.CorrelationId)));
-            
+
             return new EventStream(streamId, eventsWithMetadata);
         }
 

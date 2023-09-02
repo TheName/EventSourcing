@@ -9,7 +9,7 @@ namespace Bus.RabbitMQ.IntegrationTests
 {
     public class SimpleEventHandler : IEventHandler<SimpleEvent>
     {
-        private readonly ConcurrentDictionary<Guid, int> _handledEvents = new();
+        private readonly ConcurrentDictionary<Guid, int> _handledEvents = new ConcurrentDictionary<Guid, int>();
 
         public int GetNumberOfHandledEvents(Guid eventId)
         {

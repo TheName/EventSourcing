@@ -70,9 +70,9 @@ namespace ForgettablePayloads.Persistence.PostgreSql.IntegrationTests
             return this;
         }
 
-        public T GetService<T>() => 
+        public T GetService<T>() =>
             _serviceProvider.GetRequiredService<T>();
-        
+
         public Task InitializeAsync()
         {
             var sqlConnectionString = GetService<IPostgreSqlEventStreamForgettablePayloadPersistenceConfiguration>().ConnectionString;
@@ -89,7 +89,7 @@ namespace ForgettablePayloads.Persistence.PostgreSql.IntegrationTests
             {
                 throw new Exception("Migrations were not successful!");
             }
-            
+
             return Task.CompletedTask;
         }
 
@@ -98,13 +98,17 @@ namespace ForgettablePayloads.Persistence.PostgreSql.IntegrationTests
             var sqlConnectionBuilder = new NpgsqlConnectionStringBuilder(GetService<IPostgreSqlEventStreamForgettablePayloadPersistenceConfiguration>().ConnectionString);
             var databaseToDelete = sqlConnectionBuilder.Database;
             sqlConnectionBuilder.Database = null;
-            
-            await using var connection = new NpgsqlConnection(sqlConnectionBuilder.ConnectionString);
-            await using var command = connection.CreateCommand();
-            command.CommandText = $"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{databaseToDelete}'; DROP DATABASE \"{databaseToDelete}\"";
-            command.CommandType = CommandType.Text;
-            await connection.OpenAsync(CancellationToken.None);
-            await command.ExecuteNonQueryAsync(CancellationToken.None);
+
+            using (var connection = new NpgsqlConnection(sqlConnectionBuilder.ConnectionString))
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = $"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{databaseToDelete}'; DROP DATABASE \"{databaseToDelete}\"";
+                    command.CommandType = CommandType.Text;
+                    await connection.OpenAsync(CancellationToken.None);
+                    await command.ExecuteNonQueryAsync(CancellationToken.None);
+                }
+            }
         }
     }
 }

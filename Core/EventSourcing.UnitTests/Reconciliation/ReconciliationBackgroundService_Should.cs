@@ -88,13 +88,12 @@ namespace EventSourcing.UnitTests.Reconciliation
             var jobExecutionInterval = TimeSpan.FromMilliseconds(250);
             configurationMock
                 .SetupGet(configuration => configuration.ReconciliationJobInterval)
-                .Returns(jobExecutionInterval)
-                .Verifiable();
+                .Returns(jobExecutionInterval);
 
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(jobExecutionInterval, cancellationToken);
-            configurationMock.Verify();
+            configurationMock.Verify(configuration => configuration.ReconciliationJobInterval, Times.AtLeastOnce);
             configurationMock.VerifyNoOtherCalls();
             reconciliationJobMock.Verify(job => job.ExecuteAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -117,8 +116,8 @@ namespace EventSourcing.UnitTests.Reconciliation
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * (expectedNumberOfReconciliationJobInvocations + 1) +
-                jobExecutionInterval / 2,
+                (int)jobExecutionInterval.TotalMilliseconds * (expectedNumberOfReconciliationJobInvocations + 1) +
+                (int)jobExecutionInterval.TotalMilliseconds / 2,
                 cancellationToken);
 
             configurationMock.Verify();
@@ -144,13 +143,14 @@ namespace EventSourcing.UnitTests.Reconciliation
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * (expectedNumberOfReconciliationJobInvocations + 1) + jobExecutionInterval / 2,
+                (int)jobExecutionInterval.TotalMilliseconds * (expectedNumberOfReconciliationJobInvocations + 1) +
+                (int)jobExecutionInterval.TotalMilliseconds / 2,
                 cancellationToken);
 
             await reconciliationService.StopAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * expectedNumberOfReconciliationJobInvocations,
+                (int)jobExecutionInterval.TotalMilliseconds * expectedNumberOfReconciliationJobInvocations,
                 cancellationToken);
 
             configurationMock.Verify();
@@ -181,13 +181,14 @@ namespace EventSourcing.UnitTests.Reconciliation
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * expectedNumberOfReconciliationJobInvocations + jobExecutionInterval / 2,
+                (int)jobExecutionInterval.TotalMilliseconds * expectedNumberOfReconciliationJobInvocations +
+                (int)jobExecutionInterval.TotalMilliseconds / 2,
                 cancellationToken);
 
             await reconciliationService.StopAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * expectedNumberOfReconciliationJobInvocations,
+                (int)jobExecutionInterval.TotalMilliseconds * expectedNumberOfReconciliationJobInvocations,
                 cancellationToken);
 
             configurationMock.Verify();
@@ -218,13 +219,14 @@ namespace EventSourcing.UnitTests.Reconciliation
             await reconciliationService.StartAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * (expectedNumberOfReconciliationJobInvocations + 1) + jobExecutionInterval / 2,
+                (int)jobExecutionInterval.TotalMilliseconds * (expectedNumberOfReconciliationJobInvocations + 1) +
+                (int)jobExecutionInterval.TotalMilliseconds / 2,
                 cancellationToken);
 
             await reconciliationService.StopAsync(cancellationToken);
 
             await Task.Delay(
-                jobExecutionInterval * expectedNumberOfReconciliationJobInvocations,
+                (int)jobExecutionInterval.TotalMilliseconds * expectedNumberOfReconciliationJobInvocations,
                 cancellationToken);
 
             configurationMock.Verify();
