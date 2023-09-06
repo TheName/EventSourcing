@@ -12,13 +12,11 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persis
     /// </summary>
     public static class SqlServerDatabaseMigrationScriptsProvider
     {
-        private const string ScriptResourceNamePrefix = "EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer.Scripts.";
-
         private static Assembly CurrentAssembly { get; } = typeof(SqlServerDatabaseMigrationScriptsProvider).Assembly;
 
         private static IReadOnlyList<string> ResourceNames { get; } = CurrentAssembly
             .GetManifestResourceNames()
-            .Where(name => name.StartsWith(ScriptResourceNamePrefix))
+            .Where(name => name.StartsWith($"{CurrentAssembly.GetName().Name}.Scripts."))
             .OrderBy(name => name)
             .ToList();
 

@@ -12,13 +12,11 @@ namespace EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbU
     /// </summary>
     public static class PostgreSqlDatabaseMigrationScriptsProvider
     {
-        private const string ScriptResourceNamePrefix = "EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.Scripts.";
-
         private static Assembly CurrentAssembly { get; } = typeof(PostgreSqlDatabaseMigrationScriptsProvider).Assembly;
 
         private static IReadOnlyList<string> ResourceNames { get; } = CurrentAssembly
             .GetManifestResourceNames()
-            .Where(name => name.StartsWith(ScriptResourceNamePrefix))
+            .Where(name => name.StartsWith($"{CurrentAssembly.GetName().Name}.Scripts."))
             .OrderBy(name => name)
             .ToList();
 
