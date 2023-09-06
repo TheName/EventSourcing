@@ -31,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Extensions.DatabaseMigrations.SqlServer\Extensions.DatabaseMigrations.SqlServer.csproj" />
+        <EmbeddedResource Include="Scripts\*.sql" />
     </ItemGroup>
 
 </Project>

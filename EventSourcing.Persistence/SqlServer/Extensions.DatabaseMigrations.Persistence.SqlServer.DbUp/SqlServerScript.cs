@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer
+﻿namespace EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp
 {
     /// <summary>
     /// The SqlServer script
@@ -9,12 +9,12 @@
         /// The script's name
         /// </summary>
         public string Name { get; }
-        
+
         /// <summary>
         /// The script's content
         /// </summary>
         public string Content { get; }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SqlServerScript"/> class.
         /// </summary>

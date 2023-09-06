@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bus.RabbitMQ.UnitTests", "E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventSourcing.Persistence", "EventSourcing.Persistence", "{8792BDC7-C64B-4270-A84C-579204AC79B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.SqlServer", "EventSourcing.Persistence\SqlServer\Extensions.DatabaseMigrations.Persistence.SqlServer\Extensions.DatabaseMigrations.Persistence.SqlServer.csproj", "{1B426689-F3C7-460B-A8D1-539CDFE09630}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp", "EventSourcing.Persistence\SqlServer\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp\Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp.csproj", "{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.SqlServer", "EventSourcing.Persistence\SqlServer\Persistence.SqlServer\Persistence.SqlServer.csproj", "{8063A8D8-20A4-41ED-AB51-F510BF6925E1}"
@@ -60,8 +58,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.PostgreSql", "EventSourcing.Persistence\PostgreSql\Persistence.PostgreSql\Persistence.PostgreSql.csproj", "{97B81C83-4D70-4B5D-98E9-D3E8590AF674}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.PostgreSql", "EventSourcing.Persistence\PostgreSql\Extensions.DatabaseMigrations.Persistence.PostgreSql\Extensions.DatabaseMigrations.Persistence.PostgreSql.csproj", "{47C655D7-5BB0-4159-93A1-0F3F3A823378}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp", "EventSourcing.Persistence\PostgreSql\Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp\Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp.csproj", "{B9719B28-3265-4232-AB7E-04BB1CA55DA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.PostgreSql.IntegrationTests", "EventSourcing.Persistence\PostgreSql\Persistence.PostgreSql.IntegrationTests\Persistence.PostgreSql.IntegrationTests.csproj", "{246BB686-60C1-45E2-B435-719C55015E6F}"
@@ -88,13 +84,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostgreSql", "PostgreSql", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgettablePayloads.Persistence.SqlServer", "EventSourcing.ForgettablePayloads\Persistence\SqlServer\ForgettablePayloads.Persistence.SqlServer\ForgettablePayloads.Persistence.SqlServer.csproj", "{218FD923-EE82-4B81-A2D3-41647D5CEF89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.SqlServer", "EventSourcing.ForgettablePayloads\Persistence\SqlServer\Extensions.DatabaseMigrations.SqlServer\Extensions.DatabaseMigrations.SqlServer.csproj", "{57078529-4B1A-4D83-951E-D2A20BCB9FB0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.SqlServer.DbUp", "EventSourcing.ForgettablePayloads\Persistence\SqlServer\Extensions.DatabaseMigrations.SqlServer.DbUp\Extensions.DatabaseMigrations.SqlServer.DbUp.csproj", "{15B58F20-853B-41FC-B5B5-45E4A23C318A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForgettablePayloads.Persistence.SqlServer.IntegrationTests", "EventSourcing.ForgettablePayloads\Persistence\SqlServer\ForgettablePayloads.Persistence.SqlServer.IntegrationTests\ForgettablePayloads.Persistence.SqlServer.IntegrationTests.csproj", "{26A88552-DBFA-4992-8D56-2C3242E2CACB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.PostgreSql", "EventSourcing.ForgettablePayloads\Persistence\PostgreSql\Extensions.DatabaseMigrations.PostgreSql\Extensions.DatabaseMigrations.PostgreSql.csproj", "{08E8609F-1D68-4E57-9E77-1004CE1ED9C5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions.DatabaseMigrations.PostgreSql.DbUp", "EventSourcing.ForgettablePayloads\Persistence\PostgreSql\Extensions.DatabaseMigrations.PostgreSql.DbUp\Extensions.DatabaseMigrations.PostgreSql.DbUp.csproj", "{FF77DA5D-5F7C-40A1-9369-D55691EE45E0}"
 EndProject
@@ -122,10 +114,6 @@ Global
 		{7B67F03F-428F-40B2-86F9-B5ED8E3EC1E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B67F03F-428F-40B2-86F9-B5ED8E3EC1E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B67F03F-428F-40B2-86F9-B5ED8E3EC1E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1B426689-F3C7-460B-A8D1-539CDFE09630}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1B426689-F3C7-460B-A8D1-539CDFE09630}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1B426689-F3C7-460B-A8D1-539CDFE09630}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1B426689-F3C7-460B-A8D1-539CDFE09630}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -198,10 +186,6 @@ Global
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674}.Release|Any CPU.Build.0 = Release|Any CPU
-		{47C655D7-5BB0-4159-93A1-0F3F3A823378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{47C655D7-5BB0-4159-93A1-0F3F3A823378}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{47C655D7-5BB0-4159-93A1-0F3F3A823378}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{47C655D7-5BB0-4159-93A1-0F3F3A823378}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B9719B28-3265-4232-AB7E-04BB1CA55DA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B9719B28-3265-4232-AB7E-04BB1CA55DA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9719B28-3265-4232-AB7E-04BB1CA55DA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -238,10 +222,6 @@ Global
 		{218FD923-EE82-4B81-A2D3-41647D5CEF89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{218FD923-EE82-4B81-A2D3-41647D5CEF89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{218FD923-EE82-4B81-A2D3-41647D5CEF89}.Release|Any CPU.Build.0 = Release|Any CPU
-		{57078529-4B1A-4D83-951E-D2A20BCB9FB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{57078529-4B1A-4D83-951E-D2A20BCB9FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57078529-4B1A-4D83-951E-D2A20BCB9FB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{57078529-4B1A-4D83-951E-D2A20BCB9FB0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15B58F20-853B-41FC-B5B5-45E4A23C318A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15B58F20-853B-41FC-B5B5-45E4A23C318A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15B58F20-853B-41FC-B5B5-45E4A23C318A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -250,10 +230,6 @@ Global
 		{26A88552-DBFA-4992-8D56-2C3242E2CACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26A88552-DBFA-4992-8D56-2C3242E2CACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26A88552-DBFA-4992-8D56-2C3242E2CACB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08E8609F-1D68-4E57-9E77-1004CE1ED9C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08E8609F-1D68-4E57-9E77-1004CE1ED9C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08E8609F-1D68-4E57-9E77-1004CE1ED9C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08E8609F-1D68-4E57-9E77-1004CE1ED9C5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FF77DA5D-5F7C-40A1-9369-D55691EE45E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FF77DA5D-5F7C-40A1-9369-D55691EE45E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF77DA5D-5F7C-40A1-9369-D55691EE45E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -290,13 +266,11 @@ Global
 		{2CDB97C9-D7FD-4929-A99D-F3B7D8163BCF} = {554639EC-1D6A-41B9-8B71-07DE055A27EB}
 		{B23CEB74-9659-4E73-A264-8076BF2E69F1} = {051E2AFC-545F-4977-BA96-6BB80736FE2C}
 		{CF15C20C-3512-4966-8BA8-20F6C98BB96E} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
-		{1B426689-F3C7-460B-A8D1-539CDFE09630} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
 		{6A449FAA-DB82-4988-B5BF-B4BAD8C4C9E2} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
 		{8063A8D8-20A4-41ED-AB51-F510BF6925E1} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
 		{844B3E44-E5CA-41FF-9EA1-214236504B06} = {CF15C20C-3512-4966-8BA8-20F6C98BB96E}
 		{8B8FC55F-39CF-431D-AF1B-D67A24CB4071} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
 		{97B81C83-4D70-4B5D-98E9-D3E8590AF674} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
-		{47C655D7-5BB0-4159-93A1-0F3F3A823378} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{B9719B28-3265-4232-AB7E-04BB1CA55DA1} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{246BB686-60C1-45E2-B435-719C55015E6F} = {8B8FC55F-39CF-431D-AF1B-D67A24CB4071}
 		{DC12019B-B5C2-4AB1-A0B1-89372FC05C48} = {8792BDC7-C64B-4270-A84C-579204AC79B5}
@@ -309,10 +283,8 @@ Global
 		{7EE6F9F5-399C-4EBC-8236-535A49261D6B} = {E9547AC6-1592-4CC0-9612-6A8629E23132}
 		{C9014F64-CD59-46F5-9590-8CFAAC5B9E67} = {E9547AC6-1592-4CC0-9612-6A8629E23132}
 		{218FD923-EE82-4B81-A2D3-41647D5CEF89} = {7EE6F9F5-399C-4EBC-8236-535A49261D6B}
-		{57078529-4B1A-4D83-951E-D2A20BCB9FB0} = {7EE6F9F5-399C-4EBC-8236-535A49261D6B}
 		{15B58F20-853B-41FC-B5B5-45E4A23C318A} = {7EE6F9F5-399C-4EBC-8236-535A49261D6B}
 		{26A88552-DBFA-4992-8D56-2C3242E2CACB} = {7EE6F9F5-399C-4EBC-8236-535A49261D6B}
-		{08E8609F-1D68-4E57-9E77-1004CE1ED9C5} = {C9014F64-CD59-46F5-9590-8CFAAC5B9E67}
 		{FF77DA5D-5F7C-40A1-9369-D55691EE45E0} = {C9014F64-CD59-46F5-9590-8CFAAC5B9E67}
 		{5FC89E6F-1E21-4345-BC29-6102C67D9D5C} = {C9014F64-CD59-46F5-9590-8CFAAC5B9E67}
 		{41B5FB23-BF1F-4F04-A278-B36478FC20B7} = {C9014F64-CD59-46F5-9590-8CFAAC5B9E67}

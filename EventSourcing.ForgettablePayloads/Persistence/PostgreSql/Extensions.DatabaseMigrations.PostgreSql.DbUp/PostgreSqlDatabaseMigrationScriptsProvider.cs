@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.PostgreSql
+namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp
 {
     /// <summary>
     /// Provider of PostgreSQL database migration scripts
@@ -21,7 +21,7 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persis
             .Where(name => name.StartsWith(ScriptResourceNamePrefix))
             .OrderBy(name => name)
             .ToList();
-        
+
         /// <summary>
         /// Gets database migration scripts for PostgreSQL.
         /// </summary>
@@ -46,7 +46,7 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persis
                         var script = new PostgreSqlScript(
                             resourceName,
                             content);
-                        
+
                         result.Add(script);
                     }
                 }
@@ -54,7 +54,7 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persis
 
             return result;
         }
-        
+
         /// <summary>
         /// Gets database migration scripts for PostgreSQL in an async manner.
         /// </summary>
@@ -79,7 +79,7 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persis
                         var script = new PostgreSqlScript(
                             resourceName,
                             content);
-                        
+
                         result.Add(script);
                     }
                 }

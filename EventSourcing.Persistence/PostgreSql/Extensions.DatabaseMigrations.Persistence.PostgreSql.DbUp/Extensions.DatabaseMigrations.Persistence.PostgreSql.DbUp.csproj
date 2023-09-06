@@ -31,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Extensions.DatabaseMigrations.Persistence.PostgreSql\Extensions.DatabaseMigrations.Persistence.PostgreSql.csproj" />
+        <EmbeddedResource Include="Scripts\*.sql" />
     </ItemGroup>
 
 </Project>

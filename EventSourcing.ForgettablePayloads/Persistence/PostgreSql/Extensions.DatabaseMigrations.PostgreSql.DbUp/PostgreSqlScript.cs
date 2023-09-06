@@ -1,22 +1,22 @@
-﻿namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer
+﻿namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp
 {
     /// <summary>
-    /// The SqlServer script
+    /// The PostgreSql script
     /// </summary>
-    public class SqlServerScript
+    public class PostgreSqlScript
     {
         /// <summary>
         /// The script's name
         /// </summary>
         public string Name { get; }
-        
+
         /// <summary>
         /// The script's content
         /// </summary>
         public string Content { get; }
-        
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerScript"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlScript"/> class.
         /// </summary>
         /// <param name="name">
         /// The <see cref="string"/> representing script's name.
@@ -24,7 +24,7 @@
         /// <param name="content">
         /// The <see cref="string"/> representing script's content.
         /// </param>
-        public SqlServerScript(string name, string content)
+        public PostgreSqlScript(string name, string content)
         {
             Name = name;
             Content = content;
