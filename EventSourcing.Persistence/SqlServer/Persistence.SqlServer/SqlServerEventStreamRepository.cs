@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Persistence.Enums;
 using EventSourcing.ValueObjects;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.Persistence.SqlServer
@@ -14,7 +14,7 @@ namespace EventSourcing.Persistence.SqlServer
     internal class SqlServerEventStreamRepository : IEventStreamRepository
     {
         private const string TableName = "EventStream";
-        
+
         private readonly ISqlServerEventStreamPersistenceConfiguration _configuration;
         private readonly ILogger<SqlServerEventStreamRepository> _logger;
 
@@ -25,7 +25,7 @@ namespace EventSourcing.Persistence.SqlServer
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        
+
         public async Task<EventStreamWriteResult> WriteAsync(
             EventStreamEntries eventStreamEntries,
             CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ namespace EventSourcing.Persistence.SqlServer
             }
 
             var (sqlCommand, sqlParameters) = PrepareInsertCommand(eventStreamEntries);
-            
+
             try
             {
                 var executionResult = await ExecuteCommand(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -55,7 +55,7 @@ namespace EventSourcing.Persistence.SqlServer
                     exception,
                     "An unexpected failure happened when trying to insert event stream entries. Entries to insert: {Entries}",
                     eventStreamEntries);
-                
+
                 return EventStreamWriteResult.UnknownFailure;
             }
         }
@@ -63,7 +63,7 @@ namespace EventSourcing.Persistence.SqlServer
         public async Task<EventStreamEntries> ReadAsync(EventStreamId streamId, CancellationToken cancellationToken)
         {
             var (sqlCommand, sqlParameters) = PrepareSelectCommand(streamId);
-            
+
             try
             {
                 return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -86,7 +86,7 @@ namespace EventSourcing.Persistence.SqlServer
             CancellationToken cancellationToken)
         {
             var (sqlCommand, sqlParameters) = PrepareSelectInRangeCommand(streamId, minimumSequenceInclusive, maximumSequenceInclusive);
-            
+
             try
             {
                 return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -179,7 +179,7 @@ namespace EventSourcing.Persistence.SqlServer
                     new SqlParameter($"@CreationTime_{i}", SqlDbType.DateTimeOffset) {Value = entry.CreationTime.Value},
                     new SqlParameter($"@CorrelationId_{i}", SqlDbType.UniqueIdentifier) {Value = entry.CorrelationId.Value}
                 });
-                
+
                 separator = ", ";
             }
             insertCommand.AppendLine("END TRY");

@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.Persistence.ValueObjects;
 using EventSourcing.ValueObjects;
+using Microsoft.Data.SqlClient;
 
 namespace EventSourcing.Persistence.SqlServer
 {
     internal class SqlServerEventStreamStagingRepository : IEventStreamStagingRepository
     {
         private const string TableName = "EventStreamStaging";
-        
+
         private readonly ISqlServerEventStreamPersistenceConfiguration _configuration;
 
         public SqlServerEventStreamStagingRepository(ISqlServerEventStreamPersistenceConfiguration configuration)
@@ -25,14 +25,14 @@ namespace EventSourcing.Persistence.SqlServer
         public async Task<IReadOnlyCollection<EventStreamStagedEntries>> SelectAsync(CancellationToken cancellationToken)
         {
             var (sqlCommand, sqlParameters) = PrepareSelectCommand();
-            
+
             return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<EventStreamStagedEntries> SelectAsync(EventStreamStagingId stagingId, CancellationToken cancellationToken)
         {
             var (sqlCommand, sqlParameters) = PrepareSelectByStagingIdCommand(stagingId);
-            
+
             var result = await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
             return result.SingleOrDefault();
         }
@@ -47,7 +47,7 @@ namespace EventSourcing.Persistence.SqlServer
             }
 
             var (sqlCommand, sqlParameters) = PrepareInsertCommand(stagedEntries);
-            
+
             var executionResult = await ExecuteCommand(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
             if (executionResult == stagedEntries.Entries.Count)
             {
@@ -147,7 +147,7 @@ namespace EventSourcing.Persistence.SqlServer
                     new SqlParameter($"@CreationTime_{i}", SqlDbType.DateTimeOffset) {Value = entry.CreationTime.Value},
                     new SqlParameter($"@CorrelationId_{i}", SqlDbType.UniqueIdentifier) {Value = entry.CorrelationId.Value}
                 });
-                
+
                 separator = ", ";
             }
 
@@ -197,7 +197,7 @@ namespace EventSourcing.Persistence.SqlServer
         private class EventStreamEntryWithStagingIdAndStagingTime : EventStreamEntry
         {
             public EventStreamStagingId StagingId { get; }
-            
+
             public EventStreamStagedEntriesStagingTime StagingTime { get; }
 
             public EventStreamEntryWithStagingIdAndStagingTime(
@@ -205,11 +205,11 @@ namespace EventSourcing.Persistence.SqlServer
                 EventStreamStagedEntriesStagingTime stagingTime,
                 EventStreamId streamId,
                 EventStreamEntryId entryId,
-                EventStreamEntrySequence entrySequence, 
+                EventStreamEntrySequence entrySequence,
                 EventStreamEventDescriptor eventDescriptor,
                 EventStreamEntryCausationId causationId,
                 EventStreamEntryCreationTime creationTime,
-                EventStreamEntryCorrelationId correlationId) 
+                EventStreamEntryCorrelationId correlationId)
                 : base(
                     streamId,
                     entryId,
