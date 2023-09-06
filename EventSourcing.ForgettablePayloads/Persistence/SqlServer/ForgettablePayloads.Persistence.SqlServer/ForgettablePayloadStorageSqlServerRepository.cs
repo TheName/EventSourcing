@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventSourcing.ForgettablePayloads.ValueObjects;
 using EventSourcing.ValueObjects;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
 namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
@@ -14,7 +14,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
     internal class ForgettablePayloadStorageSqlServerRepository : IForgettablePayloadStorageRepository
     {
         private const string TableName = "[EventStream.ForgettablePayloads]";
-        
+
         private readonly ISqlServerEventStreamForgettablePayloadPersistenceConfiguration _configuration;
         private readonly ILogger<ForgettablePayloadStorageSqlServerRepository> _logger;
 
@@ -25,7 +25,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        
+
         public async Task<IReadOnlyCollection<ForgettablePayloadDescriptor>> ReadAsync(EventStreamId eventStreamId, CancellationToken cancellationToken)
         {
             var sqlCommand = $"SELECT EventStreamId, EventStreamEntryId, PayloadId, PayloadState, PayloadCreationTime, PayloadLastModifiedTime, PayloadSequence, PayloadContent, PayloadContentSerializationFormat, PayloadTypeIdentifier, PayloadTypeIdentifierFormat FROM {TableName} WHERE EventStreamId = @EventStreamId";
@@ -33,7 +33,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
             {
                 new SqlParameter("@EventStreamId", SqlDbType.UniqueIdentifier) { Value = eventStreamId.Value }
             };
-            
+
             try
             {
                 return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -60,7 +60,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
                 new SqlParameter("@EventStreamId", SqlDbType.UniqueIdentifier) { Value = eventStreamId.Value },
                 new SqlParameter("@EventStreamEntryId", SqlDbType.UniqueIdentifier) { Value = eventStreamEntryId.Value }
             };
-            
+
             try
             {
                 return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -84,7 +84,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
             {
                 new SqlParameter("@PayloadId", SqlDbType.UniqueIdentifier) { Value = forgettablePayloadId.Value }
             };
-            
+
             try
             {
                 var result = await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -108,7 +108,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
             {
                 new SqlParameter("@PayloadState", SqlDbType.VarChar) { Value = forgettablePayloadState.Value }
             };
-            
+
             try
             {
                 return await ExecuteReader(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -141,7 +141,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
                 new SqlParameter("@PayloadTypeIdentifier", SqlDbType.VarChar) { Value = forgettablePayloadDescriptor.PayloadTypeIdentifier.Value },
                 new SqlParameter("@PayloadTypeIdentifierFormat", SqlDbType.VarChar) { Value = forgettablePayloadDescriptor.PayloadTypeIdentifierFormat.Value }
             };
-            
+
             try
             {
                 var executionResult = await ExecuteCommand(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -153,7 +153,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
                     exception,
                     "An unexpected failure happened when trying to insert a forgettable payload descriptor. Instance: {ForgettablePayloadDescriptor}",
                     forgettablePayloadDescriptor);
-                
+
                 throw;
             }
         }
@@ -176,7 +176,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
                 new SqlParameter("@PayloadTypeIdentifierFormat", SqlDbType.VarChar) { Value = forgettablePayloadDescriptor.PayloadTypeIdentifierFormat.Value },
                 new SqlParameter("@ExpectedPayloadSequence", SqlDbType.BigInt) { Value = forgettablePayloadDescriptor.PayloadSequence.Value - 1 }
             };
-            
+
             try
             {
                 var executionResult = await ExecuteCommand(sqlCommand, sqlParameters, cancellationToken).ConfigureAwait(false);
@@ -188,7 +188,7 @@ namespace EventSourcing.ForgettablePayloads.Persistence.SqlServer
                     exception,
                     "An unexpected failure happened when trying to update a forgettable payload descriptor. Instance: {ForgettablePayloadDescriptor}",
                     forgettablePayloadDescriptor);
-                
+
                 throw;
             }
         }
