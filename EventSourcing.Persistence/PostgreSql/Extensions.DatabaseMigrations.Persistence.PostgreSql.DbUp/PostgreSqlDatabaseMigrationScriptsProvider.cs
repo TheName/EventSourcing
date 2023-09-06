@@ -5,32 +5,32 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer
+namespace EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.DbUp
 {
     /// <summary>
-    /// Provider of SQL Server database migration scripts
+    /// Provider of PostgreSQL database migration scripts
     /// </summary>
-    public static class SqlServerDatabaseMigrationScriptsProvider
+    public static class PostgreSqlDatabaseMigrationScriptsProvider
     {
-        private const string ScriptResourceNamePrefix = "EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer.Scripts.";
+        private const string ScriptResourceNamePrefix = "EventSourcing.Extensions.DatabaseMigrations.Persistence.PostgreSql.Scripts.";
 
-        private static Assembly CurrentAssembly { get; } = typeof(SqlServerDatabaseMigrationScriptsProvider).Assembly;
+        private static Assembly CurrentAssembly { get; } = typeof(PostgreSqlDatabaseMigrationScriptsProvider).Assembly;
 
         private static IReadOnlyList<string> ResourceNames { get; } = CurrentAssembly
             .GetManifestResourceNames()
             .Where(name => name.StartsWith(ScriptResourceNamePrefix))
             .OrderBy(name => name)
             .ToList();
-        
+
         /// <summary>
-        /// Gets database migration scripts for SQL Server.
+        /// Gets database migration scripts for PostgreSQL.
         /// </summary>
         /// <returns>
-        /// A collection of database migration scripts for SQL Server.
+        /// A collection of database migration scripts for PostgreSQL.
         /// </returns>
-        public static IReadOnlyList<SqlServerScript> GetDatabaseMigrationScripts()
+        public static IReadOnlyList<PostgreSqlScript> GetDatabaseMigrationScripts()
         {
-            var result = new List<SqlServerScript>();
+            var result = new List<PostgreSqlScript>();
             foreach (var resourceName in ResourceNames)
             {
                 using (var resourceStream = CurrentAssembly.GetManifestResourceStream(resourceName))
@@ -43,10 +43,10 @@ namespace EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer
                     using (var streamReader = new StreamReader(resourceStream))
                     {
                         var content = streamReader.ReadToEnd();
-                        var script = new SqlServerScript(
+                        var script = new PostgreSqlScript(
                             resourceName,
                             content);
-                        
+
                         result.Add(script);
                     }
                 }
@@ -54,16 +54,16 @@ namespace EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer
 
             return result;
         }
-        
+
         /// <summary>
-        /// Gets database migration scripts for SQL Server in an async manner.
+        /// Gets database migration scripts for PostgreSQL in an async manner.
         /// </summary>
         /// <returns>
-        /// A task that will return a collection of database migration scripts for SQL Server.
+        /// A task that will return a collection of database migration scripts for PostgreSQL.
         /// </returns>
-        public static async Task<IReadOnlyList<SqlServerScript>> GetDatabaseMigrationScriptsAsync()
+        public static async Task<IReadOnlyList<PostgreSqlScript>> GetDatabaseMigrationScriptsAsync()
         {
-            var result = new List<SqlServerScript>();
+            var result = new List<PostgreSqlScript>();
             foreach (var resourceName in ResourceNames)
             {
                 using (var resourceStream = CurrentAssembly.GetManifestResourceStream(resourceName))
@@ -76,10 +76,10 @@ namespace EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer
                     using (var streamReader = new StreamReader(resourceStream))
                     {
                         var content = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-                        var script = new SqlServerScript(
+                        var script = new PostgreSqlScript(
                             resourceName,
                             content);
-                        
+
                         result.Add(script);
                     }
                 }

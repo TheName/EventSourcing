@@ -5,14 +5,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer
+namespace EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer.DbUp
 {
     /// <summary>
     /// Provider of SQL Server database migration scripts
     /// </summary>
     public static class SqlServerDatabaseMigrationScriptsProvider
     {
-        private const string ScriptResourceNamePrefix = "EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persistence.SqlServer.Scripts.";
+        private const string ScriptResourceNamePrefix = "EventSourcing.Extensions.DatabaseMigrations.Persistence.SqlServer.Scripts.";
 
         private static Assembly CurrentAssembly { get; } = typeof(SqlServerDatabaseMigrationScriptsProvider).Assembly;
 
@@ -21,7 +21,7 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persis
             .Where(name => name.StartsWith(ScriptResourceNamePrefix))
             .OrderBy(name => name)
             .ToList();
-        
+
         /// <summary>
         /// Gets database migration scripts for SQL Server.
         /// </summary>
@@ -46,7 +46,7 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persis
                         var script = new SqlServerScript(
                             resourceName,
                             content);
-                        
+
                         result.Add(script);
                     }
                 }
@@ -54,7 +54,7 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persis
 
             return result;
         }
-        
+
         /// <summary>
         /// Gets database migration scripts for SQL Server in an async manner.
         /// </summary>
@@ -79,7 +79,7 @@ namespace EventSourcing.ForgettablePayloads.Extensions.DatabaseMigrations.Persis
                         var script = new SqlServerScript(
                             resourceName,
                             content);
-                        
+
                         result.Add(script);
                     }
                 }
